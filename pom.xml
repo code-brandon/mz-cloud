@@ -26,12 +26,18 @@
         <jjwt-other.version>0.10.6</jjwt-other.version>
         <hutool.version>5.7.16</hutool.version>
         <jna.version>5.9.0</jna.version>
+        <springfox.version>3.0.0</springfox.version>
     </properties>
 
     <dependencies>
 
 
     </dependencies>
+
+    <modules>
+        <module>mz-modules</module>
+        <module>mz-common</module>
+    </modules>
 
     <dependencyManagement>
         <dependencies>
@@ -100,7 +106,12 @@
                 <artifactId>poi-ooxml</artifactId>
                 <version>${poi.version}</version>
             </dependency>
-
+            <!--swagger 依赖-->
+            <dependency>
+                <groupId>io.springfox</groupId>
+                <artifactId>springfox-boot-starter</artifactId>
+                <version>${springfox.version}</version>
+            </dependency>
             <!--Token生成与解析-->
             <dependency>
                 <groupId>io.jsonwebtoken</groupId>
