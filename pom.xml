@@ -158,6 +158,7 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-test</artifactId>
                 <scope>test</scope>
+                <version>${spring-boot.version}</version>
                 <exclusions>
                     <exclusion>
                         <groupId>org.junit.vintage</groupId>
