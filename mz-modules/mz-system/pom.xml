@@ -15,6 +15,12 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <modules>
+        <module>system-api</module>
+        <module>system-model</module>
+        <module>system-provider</module>
+    </modules>
+
     <description>MZ系统业务模块</description>
 
 </project>
