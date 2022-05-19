@@ -37,9 +37,9 @@
 ```ini
 mz-modules
 ├── mz-system -- system 模块 
-├──   ├── system-api -- system feign api 暴露
-├──   ├── system-model -- 实体对象抽离
-├──   ├── system-provider -- 服务能力提供
+├──   ├── mz-system-api -- system feign api 暴露
+├──   ├── mz-system-model -- 实体对象抽离
+├──   ├── mz-system-provider -- 服务能力提供
 ```
 
 ## 提交指南
