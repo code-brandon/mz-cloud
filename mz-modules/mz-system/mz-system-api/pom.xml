@@ -2,32 +2,18 @@
 <project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.mz.system.provider</groupId>
-    <artifactId>system-provider</artifactId>
+    <groupId>com.mz.system.api</groupId>
+    <artifactId>mz-system-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>system-provider</name>
+    <name>mz-system-api</name>
     <packaging>jar</packaging>
-    <description>system 业务模块</description>
+    <description>system api 远程调用模块</description>
 
     <parent>
         <artifactId>mz-system</artifactId>
         <groupId>com.mz.system</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-
-    <dependencies>
-
-        <dependency>
-            <groupId>com.mz.system.model</groupId>
-            <artifactId>system-model</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter</artifactId>
-        </dependency>
-    </dependencies>
 
     <build>
         <plugins>
@@ -45,9 +31,6 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>2.3.7.RELEASE</version>
-                <configuration>
-                    <mainClass>com.mz.system.provider.SystemProviderApplication</mainClass>
-                </configuration>
                 <executions>
                     <execution>
                         <id>repackage</id>

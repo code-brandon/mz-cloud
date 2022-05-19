@@ -3,9 +3,9 @@
          xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.mz.system.model</groupId>
-    <artifactId>system-model</artifactId>
+    <artifactId>mz-system-model</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>system-model</name>
+    <name>mz-system-model</name>
     <packaging>jar</packaging>
     <description>system 业务实体模块</description>
 
