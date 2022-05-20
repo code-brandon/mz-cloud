@@ -17,4 +17,8 @@
 
     <description>MZ系统业务模块</description>
 
+    <modules>
+        <module>mz-system</module>
+    </modules>
+
 </project>
