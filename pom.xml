@@ -6,6 +6,7 @@
     <artifactId>mz-cloud</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mz-cloud</name>
+    <packaging>pom</packaging>
     <description>微服务架构多模块</description>
 
     <properties>
@@ -29,11 +30,6 @@
         <springfox.version>3.0.0</springfox.version>
         <servlet.version>4.0.1</servlet.version>
     </properties>
-
-    <dependencies>
-
-
-    </dependencies>
 
     <modules>
         <module>mz-modules</module>
@@ -192,6 +188,10 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerArguments>
+                        <!-- TODO 解决maven命令编译报错，因为rt.jar 和jce.jar在jre的lib下面，不在jdk的lib下面，导致maven找不到（java7以后会出现这个问题）-->
+                        <bootclasspath>${java.home}\lib\rt.jar;${java.home}\lib\jce.jar</bootclasspath>
+                    </compilerArguments>
                 </configuration>
             </plugin>
         </plugins>
