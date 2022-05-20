@@ -27,6 +27,7 @@
         <hutool.version>5.7.16</hutool.version>
         <jna.version>5.9.0</jna.version>
         <springfox.version>3.0.0</springfox.version>
+        <servlet.version>4.0.1</servlet.version>
     </properties>
 
     <dependencies>
@@ -37,6 +38,7 @@
     <modules>
         <module>mz-modules</module>
         <module>mz-common</module>
+        <module>mz-gateway</module>
     </modules>
 
     <dependencyManagement>
@@ -140,6 +142,12 @@
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.servlet</groupId>
+                <artifactId>javax.servlet-api</artifactId>
+                <version>${servlet.version}</version>
             </dependency>
 
             <dependency>
