@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mz.gateway</groupId>
+    <artifactId>mz-gateway</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mz-gateway</name>
+    <packaging>pom</packaging>
+    <description>MZ微服务系统网关模块</description>
+
+   <parent>
+       <artifactId>mz-cloud</artifactId>
+       <groupId>com.mz.cloud</groupId>
+       <version>0.0.1-SNAPSHOT</version>
+   </parent>
+
+    <modules>
+        <module>mz-gateway-api</module>
+        <module>mz-gateway-model</module>
+        <module>mz-gateway-provider</module>
+    </modules>
+
+</project>

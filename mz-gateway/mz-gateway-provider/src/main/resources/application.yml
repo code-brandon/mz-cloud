@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: mz-common-gateway-provider
+  cloud:
+    gateway:
+      # 注意跳转条件的优先级
+      routes:
+        - id: mz-system-provider
+          uri: lb://mz-system-provider
+          predicates:
+            - Path=/api/system/**
+          # 将api删掉
+          filters:
+            - RewritePath=/api/(?<segment>.*),/$\{segment}
+server:
+  port: 88
