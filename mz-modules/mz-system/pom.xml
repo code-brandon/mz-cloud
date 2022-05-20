@@ -10,8 +10,8 @@
 
 
     <parent>
-        <artifactId>mz-cloud</artifactId>
-        <groupId>com.mz.cloud</groupId>
+        <artifactId>mz-modules</artifactId>
+        <groupId>com.mz.modules</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
