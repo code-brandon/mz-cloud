@@ -6,6 +6,7 @@
     <artifactId>mz-common</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>mz-common</name>
+    <packaging>pom</packaging>
     <description>MZ微服务系统公共模块</description>
 
     <parent>
