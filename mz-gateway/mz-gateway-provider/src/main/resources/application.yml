@@ -1,6 +1,12 @@
+# 应用名称
 spring:
   application:
     name: mz-common-gateway-provider
+  # redis 配置
+  redis:
+    host: ${REDIS_HOST:192.168.56.2}
+    port: 6379
+    password: 123456
   cloud:
     gateway:
       # 注意跳转条件的优先级
@@ -12,5 +18,21 @@ spring:
           # 将api删掉
           filters:
             - RewritePath=/api/(?<segment>.*),/$\{segment}
+      # 是否启用新端点
+      actuator:
+        verbose:
+          enabled: false
 server:
   port: 88
+# 网关可控点Api开启
+management:
+  endpoint:
+    gateway:
+      enabled: true
+    shutdown:
+      enabled: true
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+

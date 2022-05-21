@@ -2,6 +2,7 @@ package com.mz.gateway.provider;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * What -- MZ微服务网关启动类
@@ -13,6 +14,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  * @ClassName: MzCommonGatewayProviderApplication
  * @CreateTime 2022/5/20 21:16
  */
+@EnableDiscoveryClient
 @SpringBootApplication
 public class MzGatewayProviderApplication {
 
