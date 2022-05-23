@@ -1,0 +1,3 @@
+#org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+#  com.mz.common.redis.config.MzCacheConfig,\
+#  com.mz.common.redis.config.MzRedisConfig

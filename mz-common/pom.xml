@@ -17,5 +17,6 @@
 
     <modules>
         <module>mz-common-core</module>
+        <module>mz-common-redis</module>
     </modules>
 </project>
