@@ -18,5 +18,6 @@
     <modules>
         <module>mz-common-core</module>
         <module>mz-common-redis</module>
+        <module>mz-common-swagger</module>
     </modules>
 </project>
