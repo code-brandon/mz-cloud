@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.core.constants;
 
 /**
  * What -- 常量
@@ -11,8 +11,8 @@ package com.mz.common.core.utils;
  * @CreateTime 2022/5/20 21:57
  */
 public class Constant {
-	/** 超级管理员ID */
-	public static final int SUPER_ADMIN = 1;
+	/** 超级管理员标识符 */
+	public static final String ADMIN = "admin";
     /**
      * 当前页码
      */
@@ -122,7 +122,12 @@ public class Constant {
         /**
          * 腾讯云
          */
-        QCLOUD(3);
+        QCLOUD(3),
+
+        /**
+         * minio
+         */
+        MINIO(4);
 
         private int value;
 
@@ -146,6 +151,11 @@ public class Constant {
     public static final String GBK = "GBK";
 
     /**
+     * ISO-8859-1 字符集
+     */
+    public static final String ISO_8859_1 = "ISO-8859-1";
+
+    /**
      * http请求
      */
     public static final String HTTP = "http://";
@@ -158,12 +168,17 @@ public class Constant {
     /**
      * 通用成功标识
      */
-    public static final String SUCCESS = "0";
+    public static final Integer SUCCESS = 0;
 
     /**
      * 通用失败标识
      */
-    public static final String FAIL = "1";
+    public static final Integer FAIL = 1;
+
+    /**
+     * 通用错误标识
+     */
+    public static final Integer ERROR = 500;
 
     /**
      * 登录成功

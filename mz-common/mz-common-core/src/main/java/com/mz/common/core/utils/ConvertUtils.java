@@ -1,8 +1,5 @@
 package com.mz.common.core.utils;
 
-
-
-
 import org.springframework.util.StringUtils;
 
 import java.math.BigDecimal;
@@ -17,7 +14,7 @@ import java.util.Set;
  *
  * @author 小政同学 QQ:xiaozheng666888@qq.com
  */
-public class Convert {
+public class ConvertUtils {
     /**
      * 转换为字符串<br>
      * 如果给定的值为null，或者转换失败，返回默认值<br>
@@ -648,7 +645,7 @@ public class Convert {
      * @return 字符串
      */
     public static String utf8Str(Object obj) {
-        return str(obj, CharsetKit.CHARSET_UTF_8);
+        return str(obj, CharsetKitUtils.CHARSET_UTF_8);
     }
 
     /**

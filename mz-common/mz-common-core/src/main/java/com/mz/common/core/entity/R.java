@@ -1,5 +1,6 @@
-package com.mz.common.core.utils;
+package com.mz.common.core.entity;
 
+import com.mz.common.core.constants.Constant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -40,7 +41,7 @@ public class R<T> {
     public static R error() {
         R r = new R();
         r.setData(false);
-        r.setCode(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        r.setCode(Constant.ERROR);
         r.setMessage("未知异常，请联系管理员");
         return r;
     }
@@ -74,8 +75,8 @@ public class R<T> {
     public static R ok() {
         R r = new R();
         r.setData(true);
-        r.setCode(HttpStatus.R_OK.value());
-        r.setMessage(HttpStatus.R_OK.getReasonPhrase());
+        r.setCode(Constant.SUCCESS);
+        r.setMessage("操作成功！");
         return r;
     }
 
@@ -87,8 +88,8 @@ public class R<T> {
 
     public static R fail() {
         R r = new R();
-        r.setCode(HttpStatus.R_FAIL.value());
-        r.setMessage(HttpStatus.R_FAIL.getReasonPhrase());
+        r.setCode(Constant.FAIL);
+        r.setMessage("操作失败");
         r.setData(false);
         return r;
     }

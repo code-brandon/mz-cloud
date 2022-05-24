@@ -2,6 +2,7 @@ package com.mz.common.core.utils.uuid;
 
 import com.sun.xml.internal.ws.util.UtilException;
 
+import java.io.Serializable;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -13,7 +14,7 @@ import java.util.concurrent.ThreadLocalRandom;
  *
  * @author 小政同学 QQ:xiaozheng666888@qq.com
  */
-public final class UUID implements java.io.Serializable, Comparable<UUID> {
+public final class UUIDUtils implements Serializable, Comparable<UUIDUtils> {
     private static final long serialVersionUID = -1185015143654744140L;
     /**
      * 此UUID的最高64有效位
@@ -29,7 +30,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      *
      * @param data 数据
      */
-    private UUID(byte[] data) {
+    private UUIDUtils(byte[] data) {
         long msb = 0;
         long lsb = 0;
         assert data.length == 16 : "data must be 16 bytes in length";
@@ -49,7 +50,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @param mostSigBits  用于 {@code UUID} 的最高有效 64 位
      * @param leastSigBits 用于 {@code UUID} 的最低有效 64 位
      */
-    public UUID(long mostSigBits, long leastSigBits) {
+    public UUIDUtils(long mostSigBits, long leastSigBits) {
         this.mostSigBits = mostSigBits;
         this.leastSigBits = leastSigBits;
     }
@@ -59,7 +60,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      *
      * @return 随机生成的 {@code UUID}
      */
-    public static UUID fastUUID() {
+    public static UUIDUtils fastUUID() {
         return randomUUID(false);
     }
 
@@ -68,7 +69,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      *
      * @return 随机生成的 {@code UUID}
      */
-    public static UUID randomUUID() {
+    public static UUIDUtils randomUUID() {
         return randomUUID(true);
     }
 
@@ -78,7 +79,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @param isSecure 是否使用{@link SecureRandom}如果是可以获得更安全的随机码，否则可以得到更好的性能
      * @return 随机生成的 {@code UUID}
      */
-    public static UUID randomUUID(boolean isSecure) {
+    public static UUIDUtils randomUUID(boolean isSecure) {
         final Random ng = isSecure ? Holder.numberGenerator : getRandom();
 
         byte[] randomBytes = new byte[16];
@@ -87,7 +88,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         randomBytes[6] |= 0x40; /* set to version 4 */
         randomBytes[8] &= 0x3f; /* clear variant */
         randomBytes[8] |= 0x80; /* set to IETF variant */
-        return new UUID(randomBytes);
+        return new UUIDUtils(randomBytes);
     }
 
     /**
@@ -96,7 +97,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @param name 用于构造 UUID 的字节数组。
      * @return 根据指定数组生成的 {@code UUID}
      */
-    public static UUID nameUUIDFromBytes(byte[] name) {
+    public static UUIDUtils nameUUIDFromBytes(byte[] name) {
         MessageDigest md;
         try {
             md = MessageDigest.getInstance("MD5");
@@ -108,7 +109,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         md5Bytes[6] |= 0x30; /* set to version 3 */
         md5Bytes[8] &= 0x3f; /* clear variant */
         md5Bytes[8] |= 0x80; /* set to IETF variant */
-        return new UUID(md5Bytes);
+        return new UUIDUtils(md5Bytes);
     }
 
     /**
@@ -118,7 +119,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 具有指定值的 {@code UUID}
      * @throws IllegalArgumentException 如果 name 与 {@link #toString} 中描述的字符串表示形式不符抛出此异常
      */
-    public static UUID fromString(String name) {
+    public static UUIDUtils fromString(String name) {
         String[] components = name.split("-");
         if (components.length != 5) {
             throw new IllegalArgumentException("Invalid UUID string: " + name);
@@ -137,7 +138,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
         leastSigBits <<= 48;
         leastSigBits |= Long.decode(components[4]).longValue();
 
-        return new UUID(mostSigBits, leastSigBits);
+        return new UUIDUtils(mostSigBits, leastSigBits);
     }
 
     /**
@@ -394,10 +395,10 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      */
     @Override
     public boolean equals(Object obj) {
-        if ((null == obj) || (obj.getClass() !=UUID.class)) {
+        if ((null == obj) || (obj.getClass() != UUIDUtils.class)) {
             return false;
         }
-       UUID id = (UUID) obj;
+       UUIDUtils id = (UUIDUtils) obj;
         return (mostSigBits == id.mostSigBits && leastSigBits == id.leastSigBits);
     }
 
@@ -411,7 +412,7 @@ public final class UUID implements java.io.Serializable, Comparable<UUID> {
      * @return 在此 UUID 小于、等于或大于 val 时，分别返回 -1、0 或 1。
      */
     @Override
-    public int compareTo(UUID val) {
+    public int compareTo(UUIDUtils val) {
         // The ordering is intentionally set up so that the UUIDs
         // can simply be numerically compared as two numbers
         return (this.mostSigBits < val.mostSigBits ? -1 : //

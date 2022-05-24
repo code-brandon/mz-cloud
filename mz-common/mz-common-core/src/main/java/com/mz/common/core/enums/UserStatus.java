@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.core.enums;
 
 /**
  * What -- 用户状态

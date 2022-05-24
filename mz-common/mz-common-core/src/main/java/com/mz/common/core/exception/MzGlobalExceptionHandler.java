@@ -1,6 +1,6 @@
 package com.mz.common.core.exception;
 
-import com.mz.common.core.utils.R;
+import com.mz.common.core.entity.R;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

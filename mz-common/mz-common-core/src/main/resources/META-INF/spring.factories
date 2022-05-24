@@ -1,2 +1,4 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.mz.common.core.web.MzCorsFilter
 
 
