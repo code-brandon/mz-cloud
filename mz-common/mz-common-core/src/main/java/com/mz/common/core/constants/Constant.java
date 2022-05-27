@@ -270,4 +270,9 @@ public class Constant {
      */
     public static final String RESOURCE_PREFIX = "/profile";
 
+    /**
+     * 网关路由 cache key
+     */
+    public static final String ROUTE_KEY = "mz_cloud_route";
+
 }
