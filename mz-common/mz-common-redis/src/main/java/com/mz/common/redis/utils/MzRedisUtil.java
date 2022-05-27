@@ -1,7 +1,10 @@
 package com.mz.common.redis.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.redis.connection.DataType;
 import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations.TypedTuple;
@@ -24,10 +27,20 @@ import java.util.concurrent.TimeUnit;
 // @Component
 public class MzRedisUtil {
 
+    @Autowired
+    @Qualifier("stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
 
-    public void setRedisTemplate(StringRedisTemplate redisTemplate) {
-        this.redisTemplate = redisTemplate;
+    @Autowired
+    @Qualifier("redisTemplate")
+    private RedisTemplate oRedisTemplate;
+
+    public StringRedisTemplate getRedisTemplate() {
+        return redisTemplate;
+    }
+
+    public RedisTemplate getoRedisTemplate() {
+        return oRedisTemplate;
     }
 
     //region key相关操作
