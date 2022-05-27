@@ -17,7 +17,6 @@
 
     <modules>
         <module>mz-gateway-api</module>
-        <module>mz-gateway-model</module>
         <module>mz-gateway-provider</module>
     </modules>
 
