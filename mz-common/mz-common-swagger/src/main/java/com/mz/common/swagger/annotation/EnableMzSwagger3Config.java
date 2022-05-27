@@ -20,6 +20,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({Swagger3Config.class, SwaggerProperties.class})
+@Import({SwaggerProperties.class,Swagger3Config.class})
 public @interface EnableMzSwagger3Config{
 }

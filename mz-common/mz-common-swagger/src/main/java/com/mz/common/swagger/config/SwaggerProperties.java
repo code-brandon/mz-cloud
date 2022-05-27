@@ -2,8 +2,6 @@ package com.mz.common.swagger.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * What -- Swagger 配置文件实体类
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component;
  */
 @Data
 @ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
-@Component
 public class SwaggerProperties {
     public static final String PREFIX="spring.swagger";
 

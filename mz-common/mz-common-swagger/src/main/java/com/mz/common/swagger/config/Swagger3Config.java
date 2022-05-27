@@ -1,10 +1,14 @@
 package com.mz.common.swagger.config;
 
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -30,21 +34,23 @@ import java.util.*;
 @ConditionalOnBean({SwaggerProperties.class })
 public class Swagger3Config {
 
+    private final Log log = LogFactory.getLog(Swagger3Config.class);
+
     @Autowired
     private SwaggerProperties properties;
 
     @Bean
     public Docket createRestApi() {
-
+        log.info(this.properties);
+        Assert.notNull(properties, "SwaggerProperties 为空 请配置 Swagger文档信息");
         return new Docket(DocumentationType.OAS_30)
-                .groupName("默认")
                 .apiInfo(apiInfo())
                 // 授权信息
                 .securitySchemes(securitySchemes())
                 // 全局授权信息
                 .securityContexts(securityContexts())
                 .select()
-                .apis(Objects.isNull(properties) ? RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class) : RequestHandlerSelectors.basePackage(properties.getBasePackage()))
+                .apis(StringUtils.isEmpty(properties.getBasePackage()) ? RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class) :  RequestHandlerSelectors.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())
                 .build()/*.forCodeGeneration(true)*/
                 // 支持的通信协议
