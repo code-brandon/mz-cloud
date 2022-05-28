@@ -1,4 +1,4 @@
-package com.mz.gateway.provider.listener;
+package com.mz.gateway.listener;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.event.RefreshRoutesResultEvent;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * Describe --
  * <br>
  *
- * @Package: com.mz.gateway.provider.listener
+ * @Package: com.mz.gateway.listener
  * @ClassName: RefreshRoutesResultListener
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/5/25 18:12

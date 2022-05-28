@@ -1,10 +1,10 @@
-package com.mz.gateway.provider;
+package com.mz.gateway;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class MzGatewayProviderApplicationTests {
+class MzGatewayApplicationTests {
 
     @Test
     void contextLoads() {

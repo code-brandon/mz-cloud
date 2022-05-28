@@ -1,4 +1,4 @@
-package com.mz.gateway.provider.handler;
+package com.mz.gateway.handler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package com.mz.gateway.provider.config;
+package com.mz.gateway.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

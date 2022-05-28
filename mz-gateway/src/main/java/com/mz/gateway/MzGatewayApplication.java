@@ -1,5 +1,6 @@
-package com.mz.gateway.provider;
+package com.mz.gateway;
 
+import com.mz.common.redis.annotation.EnableMzRedisAutoConfigure;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -16,10 +17,11 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @EnableDiscoveryClient
 @SpringBootApplication
-public class MzGatewayProviderApplication {
+@EnableMzRedisAutoConfigure
+public class MzGatewayApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(MzGatewayProviderApplication.class, args);
+        SpringApplication.run(MzGatewayApplication.class, args);
     }
 
 }
