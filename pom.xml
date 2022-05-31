@@ -39,6 +39,7 @@
         <module>mz-modules</module>
         <module>mz-common</module>
         <module>mz-gateway</module>
+        <module>mz-auth</module>
     </modules>
 
     <dependencyManagement>
