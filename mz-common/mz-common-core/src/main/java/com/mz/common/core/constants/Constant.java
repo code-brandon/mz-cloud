@@ -275,4 +275,9 @@ public class Constant {
      */
     public static final String ROUTE_KEY = "mz_cloud_route";
 
+    /**
+     * 认证中心 cache key
+     */
+    public static final String OAUTH_KEY = "mz_cloud_oauth:";
+
 }
