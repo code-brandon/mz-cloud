@@ -19,5 +19,6 @@
         <module>mz-common-core</module>
         <module>mz-common-redis</module>
         <module>mz-common-swagger</module>
+        <module>mz-common-security</module>
     </modules>
 </project>

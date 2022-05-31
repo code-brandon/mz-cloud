@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns = "http://maven.apache.org/POM/4.0.0" xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation = "http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.mz.common.security</groupId>
+    <artifactId>mz-common-security</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <name>mz-common-security</name>
+    <packaging>jar</packaging>
+    <description>MZ微服务安全模块</description>
+
+    <parent>
+        <artifactId>mz-common</artifactId>
+        <groupId>com.mz.common</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <dependencies>
+
+        <dependency>
+            <groupId>com.mz.common.core</groupId>
+            <artifactId>mz-common-core</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common.redis</groupId>
+            <artifactId>mz-common-redis</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <!--安全模块-->
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
+        </dependency>
+    </dependencies>
+</project>
