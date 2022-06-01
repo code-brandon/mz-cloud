@@ -1,5 +1,6 @@
 package com.mz.system.provider;
 
+import com.mz.common.swagger.annotation.EnableMzSwagger2Config;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -16,6 +17,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  */
 @EnableResourceServer
 @SpringBootApplication
+@EnableMzSwagger2Config
 public class MzSystemProviderApplication {
 
     public static void main(String[] args) {

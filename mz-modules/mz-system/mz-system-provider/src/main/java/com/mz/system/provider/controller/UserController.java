@@ -2,7 +2,10 @@ package com.mz.system.provider.controller;
 
 
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,9 +22,11 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/user")
+@Api("资源服务器测试")
 public class UserController {
 
-    @RequestMapping("/getuser")
+    @ApiOperation("获取用户名")
+    @GetMapping("/getuser")
     public Object getUser(Authentication authentication) {
         return authentication.getPrincipal();
     }
