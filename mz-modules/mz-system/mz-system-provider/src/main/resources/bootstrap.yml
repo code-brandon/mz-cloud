@@ -1,0 +1,7 @@
+# 应用名称
+spring:
+  application:
+    # 从POM中获取值
+    name: @pom.artifactId@
+  profiles:
+    active: @profiles.active@
