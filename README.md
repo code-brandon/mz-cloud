@@ -1,6 +1,46 @@
 # 工程简介
 
+## 公共yml （Nacos）
 
+> Data Id: application-dev.yml
+>
+> Group: DEFAULT_GROUP
+>
+> 归属应用: 所有应用
+
+```yml
+# 应用名称
+spring:
+  # redis 配置
+  redis:
+    host: ${REDIS_HOST:192.168.56.2}
+    port: 6379
+    password: 123456
+    jedis:
+      pool:
+        max-active: 20 # 连接池最大连接数（使用负值表示没有限制）
+        max-wait: -1  # 连接池最大阻塞等待时间（使用负值表示没有限制）
+        max-idle: 10   # 连接池中的最大空闲连接
+        min-idle: 3   # 连接池中的最小空闲连接
+        time-between-eviction-runs: 100 # 连接超时时间（毫秒）
+  swagger:
+    author:
+      name: 小政同学i丷
+      email: xiaozheng666888@qq.com
+    api-info:
+      title: mz-cloud接口文档
+      version: v1.0
+# 可控点Api开启
+management:
+  endpoints:
+    web:
+      exposure:
+        include: gateway
+  # 网关可控点
+  endpoint:
+    health:
+      show-details: always
+```
 
 # 延伸阅读
 
