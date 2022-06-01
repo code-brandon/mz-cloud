@@ -1,7 +1,12 @@
 package com.mz.common.core.config;
 
 import cn.hutool.core.date.DatePattern;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.cfg.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -21,6 +26,7 @@ import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -50,6 +56,17 @@ public class JacksonConfig {
 			builder.simpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
 			builder.serializerByType(Long.class, ToStringSerializer.instance);
 			builder.modules(new MzJavaTimeModule());
+
+			ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+			// 忽略value为null时key的输出
+			// objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
+			// 解决序列化 空String对象为Null，改为 ”“
+			objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
+				@Override
+				public void serialize(Object value, JsonGenerator jg, SerializerProvider sp) throws IOException {
+					jg.writeString("");
+				}
+			});
 		};
 	}
 
@@ -66,6 +83,10 @@ public class JacksonConfig {
 			this.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ISO_LOCAL_TIME));
 			// Instant 类型序列化
 			this.addSerializer(Instant.class, InstantSerializer.INSTANCE);
+
+			// 解决Long类型太长 传入前端导致精度丢失
+			this.addSerializer(Long.class, ToStringSerializer.instance);
+			this.addSerializer(Long.TYPE, ToStringSerializer.instance);
 
 			// ======================= 时间反序列化规则 ==============================
 			// yyyy-MM-dd HH:mm:ss

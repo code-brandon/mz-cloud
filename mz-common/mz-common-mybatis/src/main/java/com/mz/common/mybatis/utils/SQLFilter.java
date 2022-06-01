@@ -1,13 +1,17 @@
-package com.mz.common.core.xss;
+package com.mz.common.mybatis.utils;
 
-import com.mz.common.core.exception.MzException;
 import org.springframework.util.StringUtils;
 
 
 /**
- * SQL过滤
+ * What -- SQL过滤
+ * <br>
+ * Describe --
+ * <br>
  *
- * @author Mark sunlightcs@gmail.com
+ * @author 小政同学    QQ:xiaozheng666888@qq.com
+ * @ClassName: SQLFilter
+ * @CreateTime 2022/6/1 18:07
  */
 public class SQLFilter {
 
@@ -34,7 +38,11 @@ public class SQLFilter {
         //判断是否包含非法字符
         for(String keyword : keywords){
             if(str.indexOf(keyword) != -1){
-                throw new MzException("包含非法字符");
+                try {
+                    throw new Exception("包含非法字符");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
 
