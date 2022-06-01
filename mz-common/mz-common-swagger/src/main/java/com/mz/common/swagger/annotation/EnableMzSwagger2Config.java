@@ -1,6 +1,6 @@
 package com.mz.common.swagger.annotation;
 
-import com.mz.common.swagger.config.Swagger3Config;
+import com.mz.common.swagger.config.SwaggerConfig;
 import com.mz.common.swagger.config.SwaggerProperties;
 import org.springframework.context.annotation.Import;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
@@ -21,7 +21,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({SwaggerProperties.class,Swagger3Config.class})
+@Import({SwaggerProperties.class, SwaggerConfig.class})
 @EnableSwagger2
 public @interface EnableMzSwagger2Config {
 }

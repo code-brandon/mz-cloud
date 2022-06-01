@@ -1,6 +1,7 @@
 package com.mz.common.swagger.config;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,36 +22,36 @@ import java.util.*;
 
 
 /**
- * What -- Swagger3 配置类
+ * What -- Swagger 配置类
  * <br>
  * Describe --
  * <br>
  *
  * @author 小政同学    QQ:xiaozheng666888@qq.com
- * @ClassName: Swagger3Config
+ * @ClassName: SwaggerConfig
  * @CreateTime 2022/5/24 16:08
  */
 @Configuration
+@Slf4j
 @ConditionalOnBean({SwaggerProperties.class })
-public class Swagger3Config {
-
-    private final Log log = LogFactory.getLog(Swagger3Config.class);
+public class SwaggerConfig {
 
     @Autowired
     private SwaggerProperties properties;
 
     @Bean
     public Docket createRestApi() {
-        log.info(this.properties);
+        log.info("SwaggerConfig 加载----配置文件信息：{}",properties);
         Assert.notNull(properties, "SwaggerProperties 为空 请配置 Swagger文档信息");
         return new Docket(DocumentationType.OAS_30)
                 .apiInfo(apiInfo())
+                .pathMapping(StringUtils.isEmpty(properties.getPath()) ? "" : properties.getPath())
                 // 授权信息
                 .securitySchemes(securitySchemes())
                 // 全局授权信息
                 .securityContexts(securityContexts())
                 .select()
-                .apis(StringUtils.isEmpty(properties.getBasePackage()) ? RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class) :  RequestHandlerSelectors.basePackage(properties.getBasePackage()))
+                .apis(StringUtils.isEmpty(properties.getBasePackage()) ? RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class) : RequestHandlerSelectors.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())
                 .build()/*.forCodeGeneration(true)*/
                 // 支持的通信协议

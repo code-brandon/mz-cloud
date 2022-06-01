@@ -24,6 +24,11 @@ public class SwaggerProperties {
     private String basePackage;
 
     /**
+     * api 前缀
+     */
+    private String path;
+
+    /**
      * 作者相关信息
      */
     private Author author;
@@ -45,9 +50,7 @@ public class SwaggerProperties {
     @Data
     public static class Author{
         private String name;
-
         private String email;
-
         private String url;
     }
 }
