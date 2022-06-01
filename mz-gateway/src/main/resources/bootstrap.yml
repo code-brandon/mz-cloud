@@ -1,7 +1,10 @@
+# 应用名称
 spring:
-  cloud:
-    nacos:
-      discovery:
-        server-addr: ${NACOS_HOST:192.168.56.2}:8848
-      config:
-        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+  application:
+    # 从POM中获取值
+    name: @pom.artifactId@
+  profiles:
+    active: @profiles.active@
+server:
+  port: 88
+
