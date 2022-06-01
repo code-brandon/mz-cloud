@@ -1,6 +1,7 @@
 package com.mz.common.swagger.config;
 
 import lombok.Data;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -15,6 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
+@ConditionalOnProperty(name =SwaggerProperties.PREFIX,matchIfMissing = false)
 public class SwaggerProperties {
     public static final String PREFIX="spring.swagger";
 
