@@ -2,7 +2,7 @@
 MZ网关模块
 ## 接口文档
 http://localhost:88/doc.html
-http://localhost:88/swagger-ui
+http://localhost:88/swagger-ui/index.html
 ## 动态路由Api
 
 ### 网关远程端点-获取所有路由
@@ -13,9 +13,9 @@ GET 127.0.0.1:88/actuator/gateway/routes
 ```json
 [
 	{
-		"route_id": "123456",
+		"route_id": "mz-system-provider",
 		"route_definition": {
-			"id": "123456",
+			"id": "mz-system-provider",
 			"predicates": [
 				{
 					"name": "Path",
@@ -28,7 +28,7 @@ GET 127.0.0.1:88/actuator/gateway/routes
 				{
 					"name": "RewritePath",
 					"args": {
-						"_genkey_0": "/api/(?<segment>.*)",
+						"_genkey_0": "/api/system/(?<segment>.*)",
 						"_genkey_1": "/$\\{segment}"
 					}
 				}
@@ -61,7 +61,7 @@ POST 127.0.0.1:88/actuator/gateway/routes/{路由ID}
 		{
 			"name": "RewritePath",
 			"args": {
-				"_genkey_0": "/api/(?<segment>.*)",
+				"_genkey_0": "/api/system/(?<segment>.*)",
 				"_genkey_1": "/$\\{segment}"
 			}
 		}
@@ -75,7 +75,7 @@ POST 127.0.0.1:88/actuator/gateway/routes/{路由ID}
 #### 返回结果
 ```json
 {
-	"id": "123456",
+	"id": "mz-system-provider",
 	"predicates": [
 		{
 			"name": "Path",
@@ -88,7 +88,7 @@ POST 127.0.0.1:88/actuator/gateway/routes/{路由ID}
 		{
 			"name": "RewritePath",
 			"args": {
-				"_genkey_0": "/api/(?<segment>.*)",
+				"_genkey_0": "/api/system/(?<segment>.*)",
 				"_genkey_1": "/$\\{segment}"
 			}
 		}

@@ -43,7 +43,7 @@ public class SwaggerProvider implements SwaggerResourcesProvider, WebFluxConfigu
 
     /**
      * 聚合其他服务接口
-     * 
+     *
      * @return
      */
     @Override
@@ -61,8 +61,12 @@ public class SwaggerProvider implements SwaggerResourcesProvider, WebFluxConfigu
                         .filter(predicateDefinition -> !"mz-auth".equalsIgnoreCase(routeDefinition.getId()))
                         .peek(predicateDefinition -> log.debug("路由配置参数：{}", predicateDefinition.getArgs()))
                         .forEach(predicateDefinition -> resourceList
-                                .add(swaggerResource(routeDefinition.getId(), predicateDefinition.getArgs()
-                                        .get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", SWAGGER3URL)))));
+                                .add(swaggerResource(routeDefinition.getId(),
+                                        predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", SWAGGER2URL)
+                                        )
+                                )
+                        )
+                );
         return resourceList;
     }
 
@@ -70,14 +74,14 @@ public class SwaggerProvider implements SwaggerResourcesProvider, WebFluxConfigu
         SwaggerResource swaggerResource = new SwaggerResource();
         swaggerResource.setName(name);
         swaggerResource.setLocation(location);
-        swaggerResource.setSwaggerVersion("3.0");
+        swaggerResource.setSwaggerVersion("2.0");
         return swaggerResource;
     }
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // swagger-ui 地址
-        registry.addResourceHandler("/swagger-ui/**","/swagger-ui.html")
+        registry.addResourceHandler("/swagger-ui/**", "/swagger-ui.html")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
     }
 }
