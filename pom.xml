@@ -35,6 +35,7 @@
         <guava.version>29.0-jre</guava.version>
         <minio.version>7.1.0</minio.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
+        <aspectj.version>1.9.9.1</aspectj.version>
     </properties>
 
     <modules>
@@ -208,6 +209,14 @@
                 <artifactId>minio</artifactId>
                 <version>${minio.version}</version>
             </dependency>
+
+            <!-- 切面 -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
+            </dependency>
+
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
