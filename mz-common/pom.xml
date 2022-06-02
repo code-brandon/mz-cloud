@@ -20,5 +20,6 @@
         <module>mz-common-redis</module>
         <module>mz-common-swagger</module>
         <module>mz-common-security</module>
+        <module>mz-common-mybatis</module>
     </modules>
 </project>
