@@ -1,5 +1,6 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
   com.mz.common.security.config.MzResourceServerConfig,\
-  com.mz.common.security.config.MzTokenStoreConfig
+  com.mz.common.security.config.MzTokenStoreConfig,\
+  com.mz.common.security.resource.IgnoreAllUrlProperties
 
 
