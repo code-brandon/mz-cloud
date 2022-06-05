@@ -95,13 +95,13 @@ public class R<T> {
     }
 
     public static R fail(String message) {
-        R r = error();
+        R r = fail();
         r.setMessage(message);
         return r;
     }
 
     public static R fail(int code, String message) {
-        R r = error();
+        R r = fail();
         r.setCode(code);
         r.setMessage(message);
         return r;
