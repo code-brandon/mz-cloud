@@ -13,19 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.mz.sentinel.dashboard.controller;
+package com.mz.sentinel.dashboard.controller.v3;
 
 import com.alibaba.csp.sentinel.util.StringUtil;
+import com.alibaba.fastjson.JSON;
 import com.mz.sentinel.dashboard.auth.AuthAction;
 import com.mz.sentinel.dashboard.auth.AuthService.PrivilegeType;
+import com.mz.sentinel.dashboard.client.CommandFailedException;
 import com.mz.sentinel.dashboard.client.SentinelApiClient;
 import com.mz.sentinel.dashboard.datasource.entity.rule.FlowRuleEntity;
 import com.mz.sentinel.dashboard.discovery.MachineInfo;
 import com.mz.sentinel.dashboard.domain.Result;
 import com.mz.sentinel.dashboard.repository.rule.InMemoryRuleRepositoryAdapter;
+import com.mz.sentinel.dashboard.rule.DynamicRuleProvider;
+import com.mz.sentinel.dashboard.rule.DynamicRulePublisher;
+import com.mz.sentinel.dashboard.util.AsyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Date;
@@ -35,16 +41,20 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 
 /**
- * Flow rule controller.
- *
- * @author leyou
- * @author Eric Zhao
+ * What -- Flow rule controller (v3).
+ * <br>
+ * Describe -- redis 持久化
+ * <br>
+ * TODO 暂时将路径映射改为 v1
+ * @author 小政同学    QQ:xiaozheng666888@qq.com
+ * @ClassName: FlowControllerV3
+ * @CreateTime 2022/6/5 15:34
  */
-// @RestController
-// @RequestMapping(value = "/v1/flow")
-public class FlowControllerV1 {
+@RestController
+@RequestMapping(value = "/v1/flow")
+public class FlowControllerV3 {
 
-    private final Logger logger = LoggerFactory.getLogger(FlowControllerV1.class);
+    private final Logger logger = LoggerFactory.getLogger(FlowControllerV3.class);
 
     @Autowired
     private InMemoryRuleRepositoryAdapter<FlowRuleEntity> repository;
@@ -52,23 +62,30 @@ public class FlowControllerV1 {
     @Autowired
     private SentinelApiClient sentinelApiClient;
 
+    @Autowired
+    @Qualifier("flowRuleRedisProvider")
+    private DynamicRuleProvider<List<FlowRuleEntity>> ruleProvider;
+    @Autowired
+    @Qualifier("flowRuleRedisPublisher")
+    private DynamicRulePublisher<List<FlowRuleEntity>> rulePublisher;
+
     @GetMapping("/rules")
     @AuthAction(PrivilegeType.READ_RULE)
-    public Result<List<FlowRuleEntity>> apiQueryMachineRules(@RequestParam String app,
-                                                             @RequestParam String ip,
-                                                             @RequestParam Integer port) {
+    public Result<List<FlowRuleEntity>> apiQueryMachineRules(@RequestParam String app) {
 
         if (StringUtil.isEmpty(app)) {
             return Result.ofFail(-1, "app can't be null or empty");
         }
-        if (StringUtil.isEmpty(ip)) {
-            return Result.ofFail(-1, "ip can't be null or empty");
-        }
-        if (port == null) {
-            return Result.ofFail(-1, "port can't be null");
-        }
         try {
-            List<FlowRuleEntity> rules = sentinelApiClient.fetchFlowRuleOfMachine(app, ip, port);
+            List<FlowRuleEntity> rules = ruleProvider.getRules(app);
+            if (rules != null && !rules.isEmpty()) {
+                for (FlowRuleEntity entity : rules) {
+                    entity.setApp(app);
+                    if (entity.getClusterConfig() != null && entity.getClusterConfig().getFlowId() != null) {
+                        entity.setId(entity.getClusterConfig().getFlowId());
+                    }
+                }
+            }
             rules = repository.saveAll(rules);
             return Result.ofSuccess(rules);
         } catch (Throwable throwable) {
@@ -78,14 +95,11 @@ public class FlowControllerV1 {
     }
 
     private <R> Result<R> checkEntityInternal(FlowRuleEntity entity) {
+        if (entity == null) {
+            return Result.ofFail(-1, "invalid body");
+        }
         if (StringUtil.isBlank(entity.getApp())) {
             return Result.ofFail(-1, "app can't be null or empty");
-        }
-        if (StringUtil.isBlank(entity.getIp())) {
-            return Result.ofFail(-1, "ip can't be null or empty");
-        }
-        if (entity.getPort() == null) {
-            return Result.ofFail(-1, "port can't be null");
         }
         if (StringUtil.isBlank(entity.getLimitApp())) {
             return Result.ofFail(-1, "limitApp can't be null or empty");
@@ -125,8 +139,9 @@ public class FlowControllerV1 {
     }
 
     @PostMapping("/rule")
-    @AuthAction(PrivilegeType.WRITE_RULE)
+    @AuthAction(value = PrivilegeType.WRITE_RULE)
     public Result<FlowRuleEntity> apiAddFlowRule(@RequestBody FlowRuleEntity entity) {
+
         Result<FlowRuleEntity> checkResult = checkEntityInternal(entity);
         if (checkResult != null) {
             return checkResult;
@@ -139,23 +154,78 @@ public class FlowControllerV1 {
         entity.setResource(entity.getResource().trim());
         try {
             entity = repository.save(entity);
+            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+        } catch (Throwable throwable) {
+            logger.error("Failed to add flow rule", throwable);
+            return Result.ofThrowable(-1, throwable);
+        }
+        return Result.ofSuccess(entity);
+    }
 
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(5000, TimeUnit.MILLISECONDS);
-            return Result.ofSuccess(entity);
-        } catch (Throwable t) {
-            Throwable e = t instanceof ExecutionException ? t.getCause() : t;
-            logger.error("Failed to add new flow rule, app={}, ip={}", entity.getApp(), entity.getIp(), e);
+    @PutMapping("/rule/{id}")
+    @AuthAction(PrivilegeType.WRITE_RULE)
+    public Result<FlowRuleEntity> apiUpdateFlowRule(@PathVariable("id") Long id,
+                                                    @RequestBody FlowRuleEntity entity) {
+        if (id == null || id <= 0) {
+            return Result.ofFail(-1, "Invalid id");
+        }
+        entity = repository.findById(id);
+        if (entity == null) {
+            return Result.ofFail(-1, "id " + id + " does not exist");
+        }
+
+        entity.setApp(entity.getApp());
+        entity.setIp(entity.getIp());
+        entity.setPort(entity.getPort());
+        Result<FlowRuleEntity> checkResult = checkEntityInternal(entity);
+        if (checkResult != null) {
+            return checkResult;
+        }
+
+        entity.setId(id);
+        Date date = new Date();
+        entity.setGmtCreate(entity.getGmtCreate());
+        entity.setGmtModified(date);
+        try {
+            entity = repository.save(entity);
+            if (entity == null) {
+                return Result.ofFail(-1, "save entity fail");
+            }
+            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+        } catch (Throwable throwable) {
+            logger.error("Failed to update flow rule", throwable);
+            return Result.ofThrowable(-1, throwable);
+        }
+        return Result.ofSuccess(entity);
+    }
+
+    @DeleteMapping("/rule/{id}")
+    @AuthAction(PrivilegeType.DELETE_RULE)
+    public Result<Long> apiDeleteRule(@PathVariable("id") Long id) {
+        if (id == null || id <= 0) {
+            return Result.ofFail(-1, "Invalid id");
+        }
+        FlowRuleEntity entity = repository.findById(id);
+        if (entity == null) {
+            return Result.ofSuccess(null);
+        }
+
+        try {
+            repository.delete(id);
+            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+        } catch (Exception e) {
             return Result.ofFail(-1, e.getMessage());
         }
+        return Result.ofSuccess(id);
     }
 
     @PutMapping("/save.json")
     @AuthAction(PrivilegeType.WRITE_RULE)
     public Result<FlowRuleEntity> apiUpdateFlowRule(Long id, String app,
-                                                  String limitApp, String resource, Integer grade,
-                                                  Double count, Integer strategy, String refResource,
-                                                  Integer controlBehavior, Integer warmUpPeriodSec,
-                                                  Integer maxQueueingTimeMs) {
+                                                    String limitApp, String resource, Integer grade,
+                                                    Double count, Integer strategy, String refResource,
+                                                    Integer controlBehavior, Integer warmUpPeriodSec,
+                                                    Integer maxQueueingTimeMs) {
         if (id == null) {
             return Result.ofFail(-1, "id can't be null");
         }
@@ -219,12 +289,12 @@ public class FlowControllerV1 {
                 return Result.ofFail(-1, "save entity fail: null");
             }
 
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(5000, TimeUnit.MILLISECONDS);
+            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(15000, TimeUnit.MILLISECONDS);
             return Result.ofSuccess(entity);
         } catch (Throwable t) {
             Throwable e = t instanceof ExecutionException ? t.getCause() : t;
             logger.error("Error when updating flow rules, app={}, ip={}, ruleId={}", entity.getApp(),
-                entity.getIp(), id, e);
+                    entity.getIp(), id, e);
             return Result.ofFail(-1, e.getMessage());
         }
     }
@@ -236,8 +306,8 @@ public class FlowControllerV1 {
         if (id == null) {
             return Result.ofFail(-1, "id can't be null");
         }
-        FlowRuleEntity oldEntity = repository.findById(id);
-        if (oldEntity == null) {
+        FlowRuleEntity entity = repository.findById(id);
+        if (entity == null) {
             return Result.ofSuccess(null);
         }
 
@@ -247,18 +317,35 @@ public class FlowControllerV1 {
             return Result.ofFail(-1, e.getMessage());
         }
         try {
-            publishRules(oldEntity.getApp(), oldEntity.getIp(), oldEntity.getPort()).get(5000, TimeUnit.MILLISECONDS);
+            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(5000, TimeUnit.MILLISECONDS);
             return Result.ofSuccess(id);
         } catch (Throwable t) {
             Throwable e = t instanceof ExecutionException ? t.getCause() : t;
-            logger.error("Error when deleting flow rules, app={}, ip={}, id={}", oldEntity.getApp(),
-                oldEntity.getIp(), id, e);
+            logger.error("Error when deleting flow rules, app={}, ip={}, id={}", entity.getApp(),
+                    entity.getIp(), id, e);
             return Result.ofFail(-1, e.getMessage());
         }
     }
 
-    private CompletableFuture<Void> publishRules(String app, String ip, Integer port) {
+    // old publishRules
+    private CompletableFuture<Void> publishRules_back(String app, String ip, Integer port) {
         List<FlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
+        return sentinelApiClient.setFlowRuleOfMachineAsync(app, ip, port, rules);
+    }
+    //修改publishRules
+    private CompletableFuture<Void> publishRules(String app, String ip, Integer port)
+    {
+        List<FlowRuleEntity> rules = repository.findAllByApp(app);
+        try {
+            //修改了redis中的存储及发布修改的规则，客户端app订阅channel后将规则保存在本地内存中
+            rulePublisher.publish(app, rules);
+            logger.info("添加{},限流规则成功{}",app, JSON.toJSONString(rules));
+        } catch (Exception e) {
+            e.printStackTrace();
+            logger.warn("publishRules failed", e);
+            return AsyncUtils.newFailedFuture(new CommandFailedException("Sentinel 推送规则到Redis失败"));
+        }
+        //核心代码，sentinel-dashboard通过http的形式进行数据推送，客户端接收后将规则保存在本地内存中
         return sentinelApiClient.setFlowRuleOfMachineAsync(app, ip, port, rules);
     }
 }

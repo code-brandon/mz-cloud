@@ -8,5 +8,6 @@ spring:
         file-extension: properties
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+          - application-${spring.profiles.active}.yml
 server:
   port: 20000
