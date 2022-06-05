@@ -142,6 +142,22 @@ angular
           }
       })
 
+      .state('dashboard.flow', {
+          templateUrl: 'app/views/flow_v3.html',
+          url: '/v3/flow/:app',
+          controller: 'FlowControllerV3',
+          resolve: {
+              loadMyFiles: ['$ocLazyLoad', function ($ocLazyLoad) {
+                  return $ocLazyLoad.load({
+                      name: 'sentinelDashboardApp',
+                      files: [
+                          'app/scripts/controllers/flow_v3.js',
+                      ]
+                  });
+              }]
+          }
+      })
+
       .state('dashboard.paramFlow', {
         templateUrl: 'app/views/param_flow.html',
         url: '/paramFlow/:app',
