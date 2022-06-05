@@ -36,6 +36,8 @@
         <minio.version>7.1.0</minio.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <aspectj.version>1.9.9.1</aspectj.version>
+        <curator.version>4.0.1</curator.version>
+        <maven.deploy.version>2.8.2</maven.deploy.version>
     </properties>
 
     <modules>
@@ -43,6 +45,7 @@
         <module>mz-common</module>
         <module>mz-gateway</module>
         <module>mz-auth</module>
+        <module>mz-sentinel-dashboard</module>
     </modules>
 
     <dependencyManagement>
