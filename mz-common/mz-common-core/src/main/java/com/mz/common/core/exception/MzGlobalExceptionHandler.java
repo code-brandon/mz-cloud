@@ -3,8 +3,13 @@ package com.mz.common.core.exception;
 import com.mz.common.core.entity.R;
 import feign.FeignException;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * What -- 全局异常处理器(处理业务异常)
@@ -50,13 +55,33 @@ public class MzGlobalExceptionHandler {
     }
 
     /**
+     * 字段 异常捕获
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public R feignException(MethodArgumentNotValidException e) {
+        BindingResult bindingResult = e.getBindingResult();
+        Map<String,String> map = new HashMap<>();
+        bindingResult.getFieldErrors().stream().forEach(fieldError -> {
+            // 返回对象的受影响字段
+            String field = fieldError.getField();
+            // 返回用于解析此消息的默认消息。
+            String message = fieldError.getDefaultMessage();
+            // 将错误信息放到MAP中
+            map.put(field, message);
+        });
+        return R.fail(MzCodeEnum.VAILD_EXCEPTION.getCode(),MzCodeEnum.VAILD_EXCEPTION.getMsg()).data(map);
+    }
+
+    /**
      * 自定义异常
      * @param e
      * @return
      */
     @ExceptionHandler(MzException.class)
     public R baseException(MzException e) {
-        return R.error(e.getMessage());
+        return R.error(MzCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
     }
 
 

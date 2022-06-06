@@ -20,7 +20,7 @@ import org.springframework.context.annotation.Configuration;
 @Setter
 @ConfigurationProperties(prefix ="minio.config")
 // 判断yml配置文件中是否有改属性，true加载Bean
-@ConditionalOnProperty(name ="minio.config",matchIfMissing = false)
+@ConditionalOnProperty(name ="minio.config.enabled",matchIfMissing = false)
 public class MinioConfig {
  
 

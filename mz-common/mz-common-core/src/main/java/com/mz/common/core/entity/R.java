@@ -81,9 +81,8 @@ public class R<T> {
     }
 
     public R data(T data) {
-        R r = ok();
-        r.setData(data);
-        return r;
+        this.setData(data);
+        return this;
     }
 
     public static R fail() {
