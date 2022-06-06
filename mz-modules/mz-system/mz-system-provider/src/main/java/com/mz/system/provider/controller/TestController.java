@@ -25,9 +25,9 @@ import java.util.Date;
  * @CreateTime: 2022/5/29 18:18
  */
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/test")
 @Api("资源服务器测试")
-public class UserController {
+public class TestController {
 
     @ApiOperation("获取用户名")
     @GetMapping("/getuser")

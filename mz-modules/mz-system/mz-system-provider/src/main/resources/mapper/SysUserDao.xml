@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mz.system.provider.dao.SysUserDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.mz.system.model.entity.SysUserEntity" id="sysUserMap">
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="loginName" column="login_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="email" column="email"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="sex" column="sex"/>
+        <result property="avatar" column="avatar"/>
+        <result property="password" column="password"/>
+        <result property="status" column="STATUS"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+    <resultMap type="com.mz.system.model.dto.SysUserDto" id="sysUserDtoMap">
+        <result property="userId" column="user_id"/>
+        <result property="deptId" column="dept_id"/>
+        <result property="userName" column="user_name"/>
+        <result property="loginName" column="login_name"/>
+        <result property="nickName" column="nick_name"/>
+        <result property="userType" column="user_type"/>
+        <result property="email" column="email"/>
+        <result property="phonenumber" column="phonenumber"/>
+        <result property="sex" column="sex"/>
+        <result property="avatar" column="avatar"/>
+        <result property="password" column="password"/>
+        <result property="status" column="STATUS"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="loginIp" column="login_ip"/>
+        <result property="loginDate" column="login_date"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property = "ifAdmin" column = "ifAdmin"/>
+        <!--<collection property = "permissions" column="user_id" ofType="java.lang.String" select="getAuthorities">
+            <constructor>
+                <arg column="perms"/>
+            </constructor>
+        </collection>-->
+    </resultMap>
+    <!--根据用户名查询当前用户-->
+    <select id = "loadUserByUserName" resultMap="sysUserDtoMap">
+        select
+            su.*,
+            ( select
+                if
+                    ( count( 1 ) > 0, true, false )
+                from
+                    sys_role sr
+                    left join sys_user_role sur on sur.role_id = sr.role_id
+                where
+                    sur.user_id = su.user_id
+                    and sr.status = 0
+                    and sr.del_flag = 0
+                    and sr.role_key = 'admin'
+            ) as ifAdmin
+        from sys_user su
+        where su.login_name = #{username} and su.status = 0 and su.del_flag = 0
+    </select>
+    <!--查询当前用户的权限值-->
+    <select id = "getAuthorities" resultType = "java.lang.String">
+        SELECT sm.perms
+        FROM sys_menu sm
+        LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
+        WHERE srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
+        and sm.perms  is not null and ltrim(sm.perms)&lt;&gt; ' '
+    </select>
+
+</mapper>
