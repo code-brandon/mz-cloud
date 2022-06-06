@@ -1,6 +1,7 @@
 package com.mz.common.core.exception;
 
 import com.mz.common.core.entity.R;
+import feign.FeignException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,6 +37,16 @@ public class MzGlobalExceptionHandler {
     @ExceptionHandler(MzBaseException.class)
     public R baseException(MzBaseException e) {
         return R.error(e.getMessage());
+    }
+
+    /**
+     * feign 异常捕获
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(FeignException.class)
+    public R feignException(FeignException e) {
+        return R.error(e.status(),"Feign:" + e.getMessage());
     }
 
     /**
