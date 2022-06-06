@@ -16,7 +16,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @Data
 @ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
-@ConditionalOnProperty(name =SwaggerProperties.PREFIX,matchIfMissing = false)
+@ConditionalOnProperty(name =SwaggerProperties.PREFIX+".enabled",matchIfMissing = true)
 public class SwaggerProperties {
     public static final String PREFIX="spring.swagger";
 
