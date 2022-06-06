@@ -21,5 +21,7 @@
         <module>mz-common-swagger</module>
         <module>mz-common-security</module>
         <module>mz-common-mybatis</module>
+        <module>mz-common-feign</module>
+        <module>mz-common-sentinel</module>
     </modules>
 </project>
