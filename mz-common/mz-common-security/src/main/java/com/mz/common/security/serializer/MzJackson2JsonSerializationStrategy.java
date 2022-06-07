@@ -19,7 +19,7 @@ import org.springframework.security.web.jackson2.WebJackson2Module;
  * <br>
  * Describe -- 用于对OAuth 存入Redis值的序列化
  * <br>
- *
+ * TODO 测试发现使用后会出现 User 无法转为 MzSysUserSecurity
  * @author 小政同学    QQ:xiaozheng666888@qq.com
  * @ClassName: MzJackson2JsonSerializationStrategy
  * @CreateTime 2022/5/31 10:50
