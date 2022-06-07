@@ -38,6 +38,18 @@
         </dependency>
 
         <dependency>
+            <groupId>com.mz.system.api</groupId>
+            <artifactId>mz-system-api</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common.feign</groupId>
+            <artifactId>mz-common-feign</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
