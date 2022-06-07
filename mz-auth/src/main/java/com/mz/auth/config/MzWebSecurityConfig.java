@@ -1,6 +1,8 @@
 package com.mz.auth.config;
 
+import com.mz.auth.handler.MzAuthenticationFailureHandler;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,9 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @EnableWebSecurity
 public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private MzAuthenticationFailureHandler mzAuthenticationFailureHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
@@ -38,7 +43,8 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 // 表单认证放行
                 .formLogin()
-                .permitAll();
+                .permitAll()
+                .failureHandler(mzAuthenticationFailureHandler);
     }
 
 

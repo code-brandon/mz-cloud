@@ -22,9 +22,9 @@ import java.util.Collection;
 import java.util.Objects;
 
 /**
- * What --
+ * What -- Mz 用户详细信息服务实现
  * <br>
- * Describe --
+ * Describe -- 登录业务处理
  * <br>
  *
  * @Package: com.mz.auth.service
@@ -41,6 +41,7 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
 
     /**
      * 按用户名加载用户
+     *
      * @param username
      * @return
      * @throws UsernameNotFoundException
@@ -61,10 +62,10 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
                 log.info("登录用户：{} 已被停用.", username);
                 throw new UsernameNotFoundException("对不起，您的账号：" + username + " 已停用");
             }
-            log.error("{}",sysUserDto);
+            log.error("{}", sysUserDto);
             return createLoginUser(sysUserDto);
         }
-        throw new MzBaseException("nz-auth",String.valueOf(MzCodeEnum.FEIGN_EXCEPTION.getCode()),null,MzCodeEnum.FEIGN_EXCEPTION.getMsg());
+        throw new MzBaseException("nz-auth", String.valueOf(MzCodeEnum.FEIGN_EXCEPTION.getCode()), null, MzCodeEnum.FEIGN_EXCEPTION.getMsg());
     }
 
     /**
@@ -97,9 +98,9 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
                 sysUserDto.getLoginDate(),
                 sysUserDto.getUserName(),
                 sysUserDto.getPassword(),
-        true, true, true, true,
+                true, true, true, true,
                 authorities);
-        log.error("{}",mzSysUserSecurity);
+        log.error("{}", mzSysUserSecurity);
         return mzSysUserSecurity;
     }
 }

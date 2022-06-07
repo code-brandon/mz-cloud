@@ -1,5 +1,6 @@
 package com.mz.auth.config;
 
+import com.mz.auth.handler.MzWebResponseExceptionTranslator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Configuration;
@@ -75,8 +76,8 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
                 .userDetailsService(MzUserDetailsServiceImpl)
                 .tokenStore(tokenStore)
                 // 允许的令牌端点请求方法
-                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST);
+                .allowedTokenEndpointRequestMethods(HttpMethod.GET, HttpMethod.POST)
                 // 认证失败处理
-                // .exceptionTranslator(new MzResourceExceptionTranslator());
+                .exceptionTranslator(new MzWebResponseExceptionTranslator());
     }
 }
