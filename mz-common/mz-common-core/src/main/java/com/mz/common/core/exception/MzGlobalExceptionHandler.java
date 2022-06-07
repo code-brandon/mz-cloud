@@ -60,7 +60,7 @@ public class MzGlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public R feignException(MethodArgumentNotValidException e) {
+    public R methodException(MethodArgumentNotValidException e) {
         BindingResult bindingResult = e.getBindingResult();
         Map<String,String> map = new HashMap<>();
         bindingResult.getFieldErrors().stream().forEach(fieldError -> {

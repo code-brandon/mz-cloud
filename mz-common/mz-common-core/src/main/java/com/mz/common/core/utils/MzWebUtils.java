@@ -127,11 +127,38 @@ public class MzWebUtils extends org.springframework.web.util.WebUtils {
 	 * 返回json
 	 * @param response HttpServletResponse
 	 * @param result 结果对象
+	 */
+	public void renderJson(HttpServletResponse response, Object result,int code) {
+		renderJson(response, result, MediaType.APPLICATION_JSON_VALUE,code);
+	}
+
+	/**
+	 * 返回json
+	 * @param response HttpServletResponse
+	 * @param result 结果对象
 	 * @param contentType contentType
 	 */
 	public void renderJson(HttpServletResponse response, Object result, String contentType) {
 		response.setCharacterEncoding(Constant.UTF8);
 		response.setContentType(contentType);
+		try (PrintWriter out = response.getWriter()) {
+			out.append(JSONUtil.toJsonStr(result));
+		}
+		catch (IOException e) {
+			log.error(e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * 返回json
+	 * @param response HttpServletResponse
+	 * @param result 结果对象
+	 * @param contentType contentType
+	 */
+	public void renderJson(HttpServletResponse response, Object result, String contentType,int code) {
+		response.setCharacterEncoding(Constant.UTF8);
+		response.setContentType(contentType);
+		response.setStatus(code);
 		try (PrintWriter out = response.getWriter()) {
 			out.append(JSONUtil.toJsonStr(result));
 		}

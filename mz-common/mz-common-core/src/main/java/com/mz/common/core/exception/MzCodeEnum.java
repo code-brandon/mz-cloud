@@ -35,7 +35,11 @@ public enum MzCodeEnum {
     SMS_CODE_EXCEPTION(10002,"验证码获取频率太高，请稍后再试"),
     USER_EXIST_EXCEPTION(15001,"用户存在!"),
     PHONE_EXIST_EXCEPTION(15002,"手机号存在!"),
-    LOGINACCT_PASSWORD_INVAILD_EXCEPTION(15003,"账号或密码错误!");
+    LOGINACCT_PASSWORD_INVAILD_EXCEPTION(15003,"账号或密码错误!"),
+    OAUTH_AUTH_EXCEPTION(15004,"OAuth_Auth异常!"),
+    OAUTH_ACCESS_EXCEPTION(15006,"OAuth_Access异常!"),
+    OAUTH_EXCEPTION(15007,"OAuth异常!"),
+    FEIGN_EXCEPTION(20000,"Feign远程调用异常！！");
 
     /**
      * 状态码
