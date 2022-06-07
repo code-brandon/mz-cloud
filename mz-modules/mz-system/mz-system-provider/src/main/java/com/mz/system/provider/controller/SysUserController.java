@@ -2,16 +2,20 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.security.annotation.Ignore;
 import com.mz.system.model.dto.SysUserDto;
 import com.mz.system.model.entity.SysUserEntity;
-import com.mz.system.model.vo.LoginBodyVo;
 import com.mz.system.provider.service.SysUserService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -66,14 +70,14 @@ public class SysUserController {
 
     /**
      * 按用户名获取用户信息 (登录暴漏接口)
-     * @param loginBodyVo 用户登录数据
+     * @param userName 用户名
      * @return 单条数据
      */
     @ApiOperation("按用户名获取用户信息")
     @PostMapping("/getUserInfoByUserName")
-    public R<SysUserDto> loadUserByUserName(@Valid @RequestBody @ApiParam(name = "", value = " 实体对象", required = true) LoginBodyVo loginBodyVo){
-        SysUserDto sysUserDto = sysUserService.loadUserByUserNameAndPassword(loginBodyVo);
-
+    @Ignore
+    public R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "username") @NotBlank String userName){
+        SysUserDto sysUserDto = sysUserService.loadUserByUserName(userName);
         return R.ok().data(sysUserDto);
     }
 

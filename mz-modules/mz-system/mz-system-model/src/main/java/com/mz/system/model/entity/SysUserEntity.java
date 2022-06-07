@@ -1,10 +1,8 @@
 package com.mz.system.model.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -84,8 +82,6 @@ public class SysUserEntity implements Serializable {
 	/**
 	 * 密码
 	 */
-    @JsonIgnore
-    @JSONField(serialize = false)
 	@ApiModelProperty("密码")
 	private String password;
 	/**

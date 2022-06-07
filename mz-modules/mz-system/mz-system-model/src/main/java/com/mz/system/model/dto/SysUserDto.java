@@ -25,7 +25,7 @@ public class SysUserDto extends SysUserEntity implements  Serializable {
     /**
      * 权限列表
      */
-    private Set<String> permissions;
+    private Set<String> authorities;
 
     /**
      * 校色列表

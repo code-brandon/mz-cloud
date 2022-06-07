@@ -49,11 +49,11 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property = "ifAdmin" column = "ifAdmin"/>
-        <!--<collection property = "permissions" column="user_id" ofType="java.lang.String" select="getAuthorities">
+        <collection property = "authorities" column="user_id" ofType="java.lang.String" select="getAuthorities">
             <constructor>
                 <arg column="perms"/>
             </constructor>
-        </collection>-->
+        </collection>
     </resultMap>
     <!--根据用户名查询当前用户-->
     <select id = "loadUserByUserName" resultMap="sysUserDtoMap">

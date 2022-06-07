@@ -1,12 +1,14 @@
 package com.mz.system.provider.controller;
 
 
-
 import cn.hutool.core.date.DateUtil;
+import com.mz.common.core.entity.R;
 import com.mz.common.security.annotation.Ignore;
+import com.mz.common.security.entity.MzSysUserSecurity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,8 +33,9 @@ public class TestController {
 
     @ApiOperation("获取用户名")
     @GetMapping("/getuser")
-    public Object getUser(Authentication authentication) {
-        return authentication.getPrincipal();
+    public R<MzSysUserSecurity> getUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return R.ok().data((MzSysUserSecurity) authentication.getPrincipal());
     }
 
     @Ignore
