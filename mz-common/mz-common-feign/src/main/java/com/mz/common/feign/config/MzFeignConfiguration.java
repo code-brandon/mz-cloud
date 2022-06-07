@@ -51,10 +51,12 @@ public class MzFeignConfiguration {
     }
 
     /**
-     * 使用Feign 替换掉WebMvc
+     * 使用Feign 替换掉WebMvc , TODO 注意Feign的契约 否则抛出以下类似异常
+     * - Class MzSysUcerApi has annotations [FeignClient] that are not used by contract Default
+     * - Method loadUserByUserName has an annotation PostMapping that is not used by contract Default
      * @return
      */
-    @Bean
+    // @Bean
     public Contract feignContract() {
         return new Contract.Default();
     }
