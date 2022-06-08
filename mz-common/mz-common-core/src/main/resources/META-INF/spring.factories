@@ -1,5 +1,5 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.mz.common.core.web.MzCorsFilter,\
+  com.mz.common.core.web.MzCorsConfig,\
   com.mz.common.core.config.JacksonConfig,\
   com.mz.common.core.exception.MzGlobalExceptionHandler,\
   com.mz.common.core.config.MinioConfig,\
