@@ -5,6 +5,7 @@ import com.mz.common.security.handler.MzAuthenticationEntryPointHandler;
 import com.mz.common.security.resource.IgnoreAllUrlProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.ExpressionUrlAuthorizationConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
@@ -23,6 +24,8 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  * @CreateTime: 2022/5/29 17:29
  */
 @Configuration
+// 开启SpringSecurity注解支持
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class MzResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
