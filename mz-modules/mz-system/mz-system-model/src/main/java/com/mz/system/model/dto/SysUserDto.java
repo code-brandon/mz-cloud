@@ -1,5 +1,6 @@
 package com.mz.system.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mz.system.model.entity.SysUserEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,6 +22,7 @@ import java.util.Set;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties(value = "handler")
 public class SysUserDto extends SysUserEntity implements  Serializable {
     /**
      * 权限列表
