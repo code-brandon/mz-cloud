@@ -15,10 +15,20 @@ import reactor.core.publisher.Mono;
 
 import java.net.URI;
 
+/**
+ * What -- Mz网关请求拦截
+ * <br>
+ * Describe --
+ * <br>
+ *
+ * @author 小政同学    QQ:xiaozheng666888@qq.com
+ * @ClassName: MzRequestFilter
+ * @CreateTime 2022/6/8 19:23
+ */
 @Order(-1) //过滤器的权重
 @Slf4j
 @Component
-public class AuthorizeFilter implements GlobalFilter {
+public class MzRequestFilter implements GlobalFilter {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         ServerHttpRequest request = exchange.getRequest();
