@@ -26,17 +26,22 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
-    <!-- 获取数据库非空的字段
-    SELECT sm.* FROM sys_role_menu srm
-    RIGHT JOIN sys_menu sm ON sm.menu_id = srm.menu_id
-    WHERE srm.role_id=2 and sm.perms  is not null and ltrim(sm.perms)<> ' '
-    -->
+
     <!--<select id = "listByUserId" resultType = "com.xiaozheng.admin.security.to.MenuTreeDto">
         SELECT sm.*
         FROM sys_menu sm
                  LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
         WHERE srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
     </select>-->
+
+    <!--查询当前用户的权限值-->
+    <select id = "getAuthorities" resultType = "java.lang.String">
+        SELECT sm.perms
+        FROM sys_menu sm
+        LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
+        WHERE srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
+        and sm.perms  is not null and ltrim(sm.perms)&lt;&gt; ' '
+    </select>
 
 
 </mapper>

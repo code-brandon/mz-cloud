@@ -6,8 +6,6 @@ import com.mz.system.model.entity.SysUserEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
-import java.util.Set;
-
 /**
  * 用户信息表
  * 
@@ -25,10 +23,4 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
      * @return
      */
     SysUserDto loadUserByUserName(String username);
-
-    /**
-     * 获取权限
-     * @return
-     */
-    Set<String> getAuthorities(Long userId);
 }

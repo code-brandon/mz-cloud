@@ -49,9 +49,14 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property = "ifAdmin" column = "ifAdmin"/>
-        <collection property = "authorities" column="user_id" ofType="java.lang.String" select="getAuthorities">
+        <collection property = "authorities" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysMenuDao.getAuthorities" fetchType="lazy">
             <constructor>
                 <arg column="perms"/>
+            </constructor>
+        </collection>
+        <collection property = "rolePermission" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysRoleDao.getRolePermissions" fetchType="lazy">
+            <constructor>
+                <arg column="role_key"/>
             </constructor>
         </collection>
     </resultMap>
@@ -73,14 +78,6 @@
             ) as ifAdmin
         from sys_user su
         where su.login_name = #{username} and su.status = 0 and su.del_flag = 0
-    </select>
-    <!--查询当前用户的权限值-->
-    <select id = "getAuthorities" resultType = "java.lang.String">
-        SELECT sm.perms
-        FROM sys_menu sm
-        LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
-        WHERE srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
-        and sm.perms  is not null and ltrim(sm.perms)&lt;&gt; ' '
     </select>
 
 </mapper>

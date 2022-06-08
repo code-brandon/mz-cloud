@@ -24,4 +24,12 @@ public interface SysRoleDao extends BaseMapper<SysRoleEntity> {
      * @return
      */
     Set<String> getRolePermissions(Long userId);
+
+    /**
+     * 根据用户ID和角色Key判断是否是当前角色
+     * @param userId
+     * @param RoleKey
+     * @return
+     */
+    boolean isRole(Long userId, String RoleKey);
 }

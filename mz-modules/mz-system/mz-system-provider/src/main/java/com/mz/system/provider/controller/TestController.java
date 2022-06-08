@@ -7,6 +7,7 @@ import com.mz.common.security.annotation.Ignore;
 import com.mz.common.security.entity.MzSysUserSecurity;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +34,7 @@ public class TestController {
 
     @ApiOperation("获取用户名")
     @GetMapping("/getuser")
+    @PreAuthorize("hasRole('admin')")
     public R<MzSysUserSecurity> getUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         return R.ok().data((MzSysUserSecurity) authentication.getPrincipal());

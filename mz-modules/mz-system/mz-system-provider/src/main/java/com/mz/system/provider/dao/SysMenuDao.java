@@ -5,6 +5,8 @@ import com.mz.system.model.entity.SysMenuEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Repository;
 
+import java.util.Set;
+
 /**
  * 菜单权限表
  * 
@@ -15,5 +17,12 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface SysMenuDao extends BaseMapper<SysMenuEntity> {
+
+    /**
+     * 根据用户ID获取菜单权限
+     * @param userId
+     * @return
+     */
+    Set<String> getAuthorities(Long userId);
 
 }
