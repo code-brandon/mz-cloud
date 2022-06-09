@@ -3,7 +3,9 @@ package com.mz.common.mybatis.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.mz.common.mybatis.plugin.MzObjectWrapperFactoryConverter;
 import com.mz.common.mybatis.plugin.MzSqlFilterArgumentResolver;
+import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
@@ -56,5 +58,11 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 		// 开启 count 的 join 优化,只针对部分 left join
 		paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
 		return paginationInterceptor;
+	}
+
+	@Bean
+	@ConfigurationPropertiesBinding
+	public MzObjectWrapperFactoryConverter mzObjectWrapperFactoryConverter() {
+		return new MzObjectWrapperFactoryConverter();
 	}
 }
