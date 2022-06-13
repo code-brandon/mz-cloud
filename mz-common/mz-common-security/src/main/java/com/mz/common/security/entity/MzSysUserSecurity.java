@@ -41,13 +41,6 @@ public class MzSysUserSecurity extends User  implements Serializable {
     private Long deptId;
 
     /**
-     * 登录账号
-     */
-    @Getter
-    @Setter
-    @ApiModelProperty("登录账号")
-    private String loginName;
-    /**
      * 用户昵称
      */
     @Getter
@@ -115,12 +108,11 @@ public class MzSysUserSecurity extends User  implements Serializable {
     }
 
 
-    public MzSysUserSecurity(Long userId, Long deptId, String loginName, String nickName, String userType, String email, String phonenumber, String sex, String status, String loginIp, Date loginDate,
+    public MzSysUserSecurity(Long userId, Long deptId, String nickName, String userType, String email, String phonenumber, String sex, String status, String loginIp, Date loginDate,
                              String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
         this.deptId = deptId;
-        this.loginName = loginName;
         this.nickName = nickName;
         this.userType = userType;
         this.email = email;

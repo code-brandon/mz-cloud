@@ -87,7 +87,6 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
         MzSysUserSecurity mzSysUserSecurity = new MzSysUserSecurity(
                 sysUserDto.getUserId(),
                 sysUserDto.getDeptId(),
-                sysUserDto.getLoginName(),
                 sysUserDto.getNickName(),
                 sysUserDto.getUserType(),
                 sysUserDto.getEmail(),
@@ -100,7 +99,7 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
                 sysUserDto.getPassword(),
                 true, true, true, true,
                 authorities);
-        log.error("{}", mzSysUserSecurity);
+        log.debug("{}", mzSysUserSecurity);
         return mzSysUserSecurity;
     }
 }
