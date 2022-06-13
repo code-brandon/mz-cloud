@@ -1,12 +1,7 @@
 package com.mz.common.core.config;
 
 import cn.hutool.core.date.DatePattern;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.cfg.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -18,6 +13,10 @@ import com.fasterxml.jackson.datatype.jsr310.ser.InstantSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalTimeSerializer;
+import com.mz.common.core.serializer.MzCustomBeanSerializerModifier;
+import com.mz.common.core.serializer.MzCustomNullJsonSerializers;
+import com.mz.common.core.serializer.MzJacksonAnnotationIntrospector;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -25,8 +24,9 @@ import org.springframework.boot.autoconfigure.jackson.Jackson2ObjectMapperBuilde
 import org.springframework.boot.autoconfigure.jackson.JacksonAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import java.io.IOException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Locale;
@@ -42,32 +42,45 @@ import java.util.TimeZone;
  * @ClassName: JacksonConfiguration
  * @CreateTime 2022/5/23 22:09
  */
+@Slf4j
 @Configuration(proxyBeanMethods = false)
 @ConditionalOnClass(ObjectMapper.class)
 @AutoConfigureBefore(JacksonAutoConfiguration.class)
 public class JacksonConfig {
 
+	/**
+	 * 进一步自定义ObjectMapper的 bean 实现的回调接口，保留其默认自动配置。
+	 * @return
+	 */
 	@Bean
+	@Primary
 	@ConditionalOnMissingBean
 	public Jackson2ObjectMapperBuilderCustomizer customizer() {
+		log.info("JacksonConfig 初始化");
 		return builder -> {
 			builder.locale(Locale.CHINA);
 			builder.timeZone(TimeZone.getTimeZone(ZoneId.systemDefault()));
 			builder.simpleDateFormat(DatePattern.NORM_DATETIME_PATTERN);
-			builder.serializerByType(Long.class, ToStringSerializer.instance);
 			builder.modules(new MzJavaTimeModule());
-
-			ObjectMapper objectMapper = builder.createXmlMapper(false).build();
-			// 忽略value为null时key的输出
-			// objectMapper.setSerializationInclusion(JsonInclude.Include.ALWAYS);
-			// 解决序列化 空String对象为Null，改为 ”“
-			objectMapper.getSerializerProvider().setNullValueSerializer(new JsonSerializer<Object>() {
-				@Override
-				public void serialize(Object value, JsonGenerator jg, SerializerProvider sp) throws IOException {
-					jg.writeString("");
-				}
-			});
 		};
+	}
+
+	/**
+	 * 自定义 Jackson 的默认属性
+	 * @param builder
+	 * @return
+	 */
+	@Bean
+	@ConditionalOnMissingBean(Jackson2ObjectMapperBuilder.class)
+	public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
+		ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+		// 解决序列化 空字段为Null
+		objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(new MzCustomBeanSerializerModifier()));
+		// 该序列化程序将用于写入与 Java 空值匹配的 JSON 值，而不是默认值（它只是写入 JSON 空值）。
+		objectMapper.getSerializerProvider().setNullValueSerializer(new MzCustomNullJsonSerializers.NullObjectJsonSerializer());
+		// 添加 自定义 项目注解内省器
+		objectMapper.setAnnotationIntrospector(new MzJacksonAnnotationIntrospector());
+		return objectMapper;
 	}
 
 	class MzJavaTimeModule extends SimpleModule {
