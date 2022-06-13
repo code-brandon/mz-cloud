@@ -1,9 +1,11 @@
 package com.mz.system.provider.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysDeptEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +18,11 @@ import java.util.Map;
 public interface SysDeptService extends IService<SysDeptEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 获取部门树列表
+     * @return
+     */
+    List<Tree<Long>> getDeptTree();
 }
 

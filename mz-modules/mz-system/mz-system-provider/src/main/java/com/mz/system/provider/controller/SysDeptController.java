@@ -1,5 +1,6 @@
 package com.mz.system.provider.controller;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysDeptEntity;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -43,6 +45,17 @@ public class SysDeptController {
     public R<SysDeptEntity> list(@RequestParam Map<String, Object> params){
         PageUtils page = sysDeptService.queryPage(params);
         return R.ok().data(page);
+    }
+
+    /**
+     * 获取部门树列表
+     * @return
+     */
+    @ApiOperation("获取部门树列表")
+    @GetMapping("/getDeptTree")
+    public R<List<Tree<Long>>> getDeptTree() {
+        List<Tree<Long>> trees = sysDeptService.getDeptTree();
+        return R.ok().data(trees);
     }
 
 
