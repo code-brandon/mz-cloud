@@ -1,6 +1,7 @@
 package com.mz.auth.config;
 
 import com.mz.auth.handler.MzAuthenticationFailureHandler;
+import com.mz.auth.handler.MzLogoutSuccessHandler;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -29,13 +30,16 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MzAuthenticationFailureHandler mzAuthenticationFailureHandler;
 
+    @Autowired
+    private MzLogoutSuccessHandler mzLogoutSuccessHandler;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 //对每个 URL 进行身份验证，并将授予用户“admin”和“user”的访问权限。
                 .authorizeRequests()
                 // 指定放行资源
-                .antMatchers("/oauth/**", "/login/**", "/logout/**")
+                .antMatchers("/oauth/**", "/login/**")
                 .permitAll()
                 // 其他URL都需要认证
                 .anyRequest()
@@ -44,7 +48,16 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 表单认证放行
                 .formLogin()
                 .permitAll()
-                .failureHandler(mzAuthenticationFailureHandler);
+                .failureHandler(mzAuthenticationFailureHandler)
+                .and()
+                // 默认为 /logout
+                .logout()
+                .logoutSuccessHandler(mzLogoutSuccessHandler)
+                // 无效会话
+                .invalidateHttpSession(true)
+                // 清除身份验证
+                .clearAuthentication(true)
+                .permitAll();
     }
 
 
