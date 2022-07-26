@@ -83,6 +83,15 @@ public class MzSysUserSecurity extends User  implements Serializable {
     @Setter
     @ApiModelProperty("帐号状态（0正常 1停用）")
     private String status;
+
+    /**
+     * 是否为超级管理员
+     */
+    @Getter
+    @Setter
+    @ApiModelProperty("是否为超级管理员")
+    private boolean ifAdmin;
+
     /**
      * 最后登录IP
      */
@@ -108,7 +117,7 @@ public class MzSysUserSecurity extends User  implements Serializable {
     }
 
 
-    public MzSysUserSecurity(Long userId, Long deptId, String nickName, String userType, String email, String phonenumber, String sex, String status, String loginIp, Date loginDate,
+    public MzSysUserSecurity(Long userId, Long deptId, String nickName, String userType, String email, String phonenumber, String sex, String status, boolean ifAdmin, String loginIp, Date loginDate,
                              String username, String password, boolean enabled, boolean accountNonExpired, boolean credentialsNonExpired, boolean accountNonLocked, Collection<? extends GrantedAuthority> authorities) {
         super(username, password, enabled, accountNonExpired, credentialsNonExpired, accountNonLocked, authorities);
         this.userId = userId;
@@ -119,6 +128,7 @@ public class MzSysUserSecurity extends User  implements Serializable {
         this.phonenumber = phonenumber;
         this.sex = sex;
         this.status = status;
+        this.ifAdmin = ifAdmin;
         this.loginIp = loginIp;
         this.loginDate = loginDate;
     }
