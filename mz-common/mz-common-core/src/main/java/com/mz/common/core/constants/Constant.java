@@ -206,6 +206,11 @@ public class Constant {
     public static final String TOKEN_PREFIX = "Bearer ";
 
     /**
+     * 认证字段
+     */
+    public static final String AUTHORIZATION = "Authorization";
+
+    /**
      * 令牌前缀
      */
     public static final String LOGIN_USER_KEY = "login_user_key";
@@ -229,6 +234,11 @@ public class Constant {
      * 创建时间
      */
     public static final String JWT_CREATED = "created";
+
+    /**
+     * root 节点 树结构的跟节点ID
+     */
+    public static final Long ROOT_NODE = 0L;
 
     /**
      * 用户权限

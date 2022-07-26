@@ -1,6 +1,6 @@
 package com.mz.common.core.utils.uuid;
 
-import com.sun.xml.internal.ws.util.UtilException;
+import cn.hutool.core.exceptions.UtilException;
 
 import java.io.Serializable;
 import java.security.MessageDigest;
