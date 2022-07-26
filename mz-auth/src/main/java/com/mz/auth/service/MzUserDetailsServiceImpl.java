@@ -93,6 +93,7 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
                 sysUserDto.getPhonenumber(),
                 sysUserDto.getSex(),
                 sysUserDto.getStatus(),
+                sysUserDto.isIfAdmin(),
                 sysUserDto.getLoginIp(),
                 sysUserDto.getLoginDate(),
                 sysUserDto.getUserName(),
