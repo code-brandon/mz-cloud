@@ -2,8 +2,6 @@ package com.mz.common.swagger.config;
 
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
@@ -39,6 +37,8 @@ public class SwaggerConfig {
     @Autowired
     private SwaggerProperties properties;
 
+    private final String Authorization = "Authorization";
+
     @Bean
     public Docket createRestApi() {
         log.info("SwaggerConfig 加载----配置文件信息：{}",properties);
@@ -71,21 +71,21 @@ public class SwaggerConfig {
 
         List<ApiKey> result = new ArrayList<>();
         //添加OAuth2的令牌认证
-        ApiKey apiKey = new ApiKey("Authorization", "Authorization", "Header");
+        ApiKey apiKey = new ApiKey(Authorization, Authorization, "Header");
         result.add(apiKey);
         return Collections.singletonList(apiKey);
     }
 
 
     private HttpAuthenticationScheme tokenScheme() {
-        return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name("Authorization").build();
+        return HttpAuthenticationScheme.JWT_BEARER_BUILDER.name(Authorization).build();
     }
 
     private List<SecurityContext> securityContexts() {
         return Collections.singletonList(
                 SecurityContext.builder()
-                        .securityReferences(Collections.singletonList(new SecurityReference("Authorization",
-                                new AuthorizationScope[]{new AuthorizationScope("global", "Authorization")}))).build()
+                        .securityReferences(Collections.singletonList(new SecurityReference(Authorization,
+                                new AuthorizationScope[]{new AuthorizationScope("global", Authorization)}))).build()
         );
     }
 
