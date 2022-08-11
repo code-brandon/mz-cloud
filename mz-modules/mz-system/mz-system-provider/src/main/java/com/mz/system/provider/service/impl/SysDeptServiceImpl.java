@@ -7,6 +7,7 @@ import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mz.common.core.constants.Constant;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
 import com.mz.system.model.entity.SysDeptEntity;
@@ -45,7 +46,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
             objectTreeNode.setWeight(m.getOrderNum());
             return objectTreeNode;
         }).collect(Collectors.toList());
-        List<Tree<Long>> treeList = TreeUtil.build(nodeList,100L);
+        List<Tree<Long>> treeList = TreeUtil.build(nodeList, Constant.ROOT_NODE);
         log.info("{}", JSONUtil.toJsonStr(treeList));
 
         return treeList;
