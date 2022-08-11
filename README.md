@@ -1,5 +1,33 @@
 # 工程简介
 
+### 项目介绍：
+
+> 快速开发实现微服务系统的基础功能，现在没有前端对接，仅仅为微服务架子
+
+### 项目架构：
+
+* 后端：Spring Boot、Spring Cloud & Alibaba、Spring Security、Nacos、Sentinel、Mybatis-Plus、MySQL
+* 前端：Vue、Element UI、Vuex、Js-Cookie、Axios
+* 文件存储：Minio
+
+### 主要实现功能：
+
+* 实现Spring Cloud Gateway网关集成Swagger、拓展Spring Cloud Gateway实现路由信息保存至Redis
+* Spring Security  OAuth2认证登录，用户信息存入Redis中，自定义权限注解
+* 自定义注解 Ignore ，实现安全接口暴露
+* 文件管理，管理上传至Minio中的文件
+* ELK框架进行日志收集
+* 拉取 sentinel-dashboard 源码，将原有的流量规则存入内存中，改为存放至Redis，以每个微服务的服务名作为Key
+* 公共sentinel模块，以每个微服务的服务名作为Key，服务启动时通过Key拉取每个服务的流量规则
+* 可视化路由规则，动态CURD路由规则
+* 基于Jackson扩展实现字典翻译序列化给前端
+* 通用后台管理所具备的功能 （待完成）
+
+### 部分主要功能Api (密码：1911298402)
+```http 
+https://console-docs.apipost.cn/preview/8b34795e0baff634/4568002cadae4682
+```
+
 ## 公共yml （Nacos）
 
 > Data Id: application-dev.yml
