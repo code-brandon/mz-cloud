@@ -3,6 +3,7 @@ package com.mz.system.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mz.common.mybatis.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 菜单权限表
@@ -24,7 +24,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("sys_menu")
-public class SysMenuEntity implements Serializable {
+public class SysMenuEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -49,10 +49,10 @@ public class SysMenuEntity implements Serializable {
     @ApiModelProperty("显示顺序")
 	private Integer orderNum;
     /**
-     * 请求路径
+     * 菜单图标
      */
-    @ApiModelProperty("请求路径")
-    private String href;
+    @ApiModelProperty("菜单图标")
+    private String icon;
 	/**
 	 * 路由地址
 	 */
@@ -98,26 +98,6 @@ public class SysMenuEntity implements Serializable {
 	 */
     @ApiModelProperty("权限标识")
 	private String perms;
-	/**
-	 * 创建者
-	 */
-    @ApiModelProperty("创建者")
-	private String createBy;
-	/**
-	 * 创建时间
-	 */
-    @ApiModelProperty("创建时间")
-	private Date createTime;
-	/**
-	 * 更新者
-	 */
-    @ApiModelProperty("更新者")
-	private String updateBy;
-	/**
-	 * 更新时间
-	 */
-    @ApiModelProperty("更新时间")
-	private Date updateTime;
 	/**
 	 * 备注
 	 */

@@ -3,6 +3,7 @@ package com.mz.system.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mz.common.mybatis.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("sys_user")
-public class SysUserEntity implements Serializable {
+public class SysUserEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -43,12 +44,6 @@ public class SysUserEntity implements Serializable {
 	 */
     @ApiModelProperty("用户账号")
 	private String userName;
-
-	/**
-	 * 登录账号
-	 */
-	@ApiModelProperty("登录账号")
-	private String loginName;
 	/**
 	 * 用户昵称
 	 */
@@ -104,26 +99,6 @@ public class SysUserEntity implements Serializable {
 	 */
     @ApiModelProperty("最后登录时间")
 	private Date loginDate;
-	/**
-	 * 创建者
-	 */
-    @ApiModelProperty("创建者")
-	private String createBy;
-	/**
-	 * 创建时间
-	 */
-    @ApiModelProperty("创建时间")
-	private Date createTime;
-	/**
-	 * 更新者
-	 */
-    @ApiModelProperty("更新者")
-	private String updateBy;
-	/**
-	 * 更新时间
-	 */
-    @ApiModelProperty("更新时间")
-	private Date updateTime;
 	/**
 	 * 备注
 	 */
