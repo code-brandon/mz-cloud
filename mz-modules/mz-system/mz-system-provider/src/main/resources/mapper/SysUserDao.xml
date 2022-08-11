@@ -8,7 +8,6 @@
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="userName" column="user_name"/>
-        <result property="loginName" column="login_name"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
         <result property="email" column="email"/>
@@ -31,7 +30,6 @@
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
         <result property="userName" column="user_name"/>
-        <result property="loginName" column="login_name"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
         <result property="email" column="email"/>
@@ -77,7 +75,7 @@
                     and sr.role_key = 'admin'
             ) as ifAdmin
         from sys_user su
-        where su.login_name = #{username} and su.status = 0 and su.del_flag = 0
+        where su.user_name = #{username} and su.status = 0 and su.del_flag = 0
     </select>
 
 </mapper>
