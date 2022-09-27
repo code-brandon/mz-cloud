@@ -6,20 +6,26 @@ import com.mz.common.core.entity.R;
 import com.mz.common.core.enums.UserStatus;
 import com.mz.common.core.exception.MzBaseException;
 import com.mz.common.core.exception.MzCodeEnum;
-import com.mz.common.security.entity.MzSysUserSecurity;
+import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.service.MzUserDetailsService;
 import com.mz.system.api.MzSysUcerApi;
 import com.mz.system.model.dto.SysUserDto;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * What -- Mz 用户详细信息服务实现
@@ -62,7 +68,6 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
                 log.info("登录用户：{} 已被停用.", username);
                 throw new UsernameNotFoundException("对不起，您的账号：" + username + " 已停用");
             }
-            log.error("{}", sysUserDto);
             return createLoginUser(sysUserDto);
         }
         throw new MzBaseException("nz-auth", String.valueOf(MzCodeEnum.FEIGN_EXCEPTION.getCode()), null, MzCodeEnum.FEIGN_EXCEPTION.getMsg());
@@ -75,32 +80,29 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
      * @return
      */
     private UserDetails createLoginUser(SysUserDto sysUserDto) {
-        Collection<? extends GrantedAuthority> authorities = null;
+        Collection<GrantedAuthority> authorities = null;
 
         // 判断用户角色是否是管理员
         if (sysUserDto.isIfAdmin()) {
             authorities = AuthorityUtils.createAuthorityList("*:*:*", SecurityConstants.MZ_ROLE + "admin");
         } else {
-            authorities = AuthorityUtils.createAuthorityList(sysUserDto.getAuthorities().toArray(new String[0]));
+            // 组装角色
+            Set<GrantedAuthority> roles = sysUserDto.getRolePermission().stream().filter(role -> {
+                return !StringUtils.isEmpty(role);
+            }).map(role -> {
+                return new SimpleGrantedAuthority(SecurityConstants.MZ_ROLE + role);
+            }).collect(Collectors.toSet());
+            authorities = AuthorityUtils.createAuthorityList(sysUserDto.getAuthorities().toArray(new String[10]));
+            authorities.addAll(roles);
         }
+        MzUserDetailsSecurity detailsSecurity = new MzUserDetailsSecurity();
+        BeanUtils.copyProperties(sysUserDto, detailsSecurity);
+        detailsSecurity.setAuthorities(authorities);
+        return detailsSecurity;
+    }
 
-        MzSysUserSecurity mzSysUserSecurity = new MzSysUserSecurity(
-                sysUserDto.getUserId(),
-                sysUserDto.getDeptId(),
-                sysUserDto.getNickName(),
-                sysUserDto.getUserType(),
-                sysUserDto.getEmail(),
-                sysUserDto.getPhonenumber(),
-                sysUserDto.getSex(),
-                sysUserDto.getStatus(),
-                sysUserDto.isIfAdmin(),
-                sysUserDto.getLoginIp(),
-                sysUserDto.getLoginDate(),
-                sysUserDto.getUserName(),
-                sysUserDto.getPassword(),
-                true, true, true, true,
-                authorities);
-        log.debug("{}", mzSysUserSecurity);
-        return mzSysUserSecurity;
+    @Override
+    public UserDetails loadUserByUsername(Map<String, String> parameters) {
+        return this.loadUserByUsername(parameters.get("username"));
     }
 }

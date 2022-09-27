@@ -2,15 +2,20 @@ package com.mz.auth.config;
 
 import com.mz.auth.handler.MzAuthenticationFailureHandler;
 import com.mz.auth.handler.MzLogoutSuccessHandler;
+import com.mz.auth.provider.MzAuthenticationProvider;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 /**
  * What -- Security 配置
@@ -33,13 +38,23 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     private MzLogoutSuccessHandler mzLogoutSuccessHandler;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Qualifier("mzUserDetailsServiceImpl")
+    @Autowired
+    private UserDetailsService mzUserDetailsServiceImpl;
+
+    @Autowired
+    private MzAuthenticationProvider authenticationProvider;
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 //对每个 URL 进行身份验证，并将授予用户“admin”和“user”的访问权限。
                 .authorizeRequests()
                 // 指定放行资源
-                .antMatchers("/oauth/**", "/login/**")
+                .antMatchers("/oauth/**", "/login/**","/rsa/**")
                 .permitAll()
                 // 其他URL都需要认证
                 .anyRequest()
@@ -75,5 +90,17 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     public void configure(WebSecurity web) {
         web.ignoring().antMatchers("/css/**");
+    }
+
+    /**
+     * 身份验证管理器生成器
+     * @param auth the {@link AuthenticationManagerBuilder} to use
+     * @throws Exception
+     */
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        // 根据传入的自定义AuthenticationProvider添加身份验证。由于AuthenticationProvider实现未知，因此必须在外部完成所有自定义，并立即返回AuthenticationManagerBuilder 。
+        auth.authenticationProvider(authenticationProvider);
+        auth.userDetailsService(mzUserDetailsServiceImpl).passwordEncoder(passwordEncoder);
     }
 }
