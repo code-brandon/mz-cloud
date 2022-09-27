@@ -12,7 +12,7 @@ import org.springframework.util.StringUtils;
 import java.util.Collection;
 
 /**
- * What -- mz 权限访问
+ * What -- mz 自定义权限访问
  * <br>
  * Describe --
  * <br>

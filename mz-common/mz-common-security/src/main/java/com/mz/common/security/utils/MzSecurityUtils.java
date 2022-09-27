@@ -4,6 +4,7 @@ package com.mz.common.security.utils;
 import cn.hutool.core.util.StrUtil;
 import com.mz.common.core.constants.SecurityConstants;
 import com.mz.common.security.entity.MzSysUserSecurity;
+import com.mz.common.security.entity.MzUserDetailsSecurity;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -36,10 +37,10 @@ public class MzSecurityUtils {
 	/**
 	 * 获取用户
 	 */
-	public MzSysUserSecurity getMzSysUserSecurity(Authentication authentication) {
+	public <T>T getMzSysUserSecurity(Authentication authentication) {
 		Object principal = authentication.getPrincipal();
-		if (principal instanceof MzSysUserSecurity) {
-			return (MzSysUserSecurity) principal;
+		if (principal instanceof MzSysUserSecurity || principal instanceof MzUserDetailsSecurity) {
+			return (T) principal;
 		}
 		return null;
 	}
@@ -47,7 +48,7 @@ public class MzSecurityUtils {
 	/**
 	 * 获取用户
 	 */
-	public MzSysUserSecurity getMzSysUserSecurity() {
+	public  <T>T getMzSysUserSecurity() {
 		Authentication authentication = getAuthentication();
 		if (authentication == null) {
 			return null;

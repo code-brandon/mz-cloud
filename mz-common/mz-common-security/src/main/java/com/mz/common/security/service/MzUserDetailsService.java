@@ -1,6 +1,9 @@
 package com.mz.common.security.service;
 
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+
+import java.util.Map;
 
 /**
  * What -- 拓展 用户详细信息服务
@@ -14,4 +17,11 @@ import org.springframework.security.core.userdetails.UserDetailsService;
  * @CreateTime: 2022/5/30 22:08
  */
 public interface MzUserDetailsService extends UserDetailsService {
+
+    /**
+     * 自定义登录
+     * @param parameters
+     * @return
+     */
+    UserDetails loadUserByUsername(Map<String, String> parameters);
 }

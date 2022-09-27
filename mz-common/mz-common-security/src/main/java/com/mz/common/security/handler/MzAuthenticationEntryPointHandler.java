@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * What -- Mz 身份验证入口点处理程序 （资源服务器）
  * <br>
- * Describe --
+ * Describe -- 如果身份验证失败并且调用方已请求特定内容类型响应
  * <br>
  *
  * @Package: com.mz.common.security.handler
