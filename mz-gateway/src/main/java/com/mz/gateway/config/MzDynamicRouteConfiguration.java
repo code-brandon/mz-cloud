@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 public class MzDynamicRouteConfiguration {
 
 	/**
-	 * 配置文件设置为空 redis 加载为准
+	 * 配置文件设置为 redis 加载为准
 	 *
 	 * @return
 	 */

@@ -9,8 +9,20 @@ spring:
         shared-configs:
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
     gateway:
+      # 启用网关功能。
       enabled: true
+      discovery:
+        locator:
+          #开启从注册中心动态创建路由的功能
+          enabled: false
+          #使用小写服务名，默认是大写
+          lower-case-service-id: true
       # 是否启用新端点
       actuator:
         verbose:
           enabled: false
+#  security:
+#    oauth2:
+#      resource-server:
+#        jwt:
+#          jwk-set-uri: 'http://localhost:9000/rsa/publicKey' #配置RSA的公钥访问地址

@@ -21,12 +21,12 @@ import java.util.List;
  * <br>
  *
  * @author 小政同学    QQ:xiaozheng666888@qq.com
- * @ClassName: SwaggerProvider
+ * @ClassName: SwaggerProviderConfig
  * @CreateTime 2022/5/24 14:30
  */
 @Slf4j
 @Component
-public class SwaggerProvider implements SwaggerResourcesProvider, WebFluxConfigurer {
+public class SwaggerProviderConfig implements SwaggerResourcesProvider, WebFluxConfigurer {
     /**
      * Swagger2默认的url后缀
      */

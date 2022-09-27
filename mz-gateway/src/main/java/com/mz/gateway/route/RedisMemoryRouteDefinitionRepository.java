@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * What --
+ * What -- Redis 内存路由定义库
  * <br>
  * Describe --
  * <br>
@@ -42,7 +42,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     private final GatewayProperties gatewayProperties;
 
     /**
-     * 动态路由入口
+     * 动态路由入口,获取路由定义
      * @return
      */
     @Override
@@ -67,12 +67,20 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
         return Flux.fromIterable(definitionList);
     }
 
+    /**
+     * 刷新路由
+     */
     private void refreshRoutes() {
-        log.info("保存路由信息{}", DateUtil.formatBetween(System.currentTimeMillis()));
+        log.info("刷新路由信息{}", DateUtil.formatBetween(System.currentTimeMillis()));
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }
 
 
+    /**
+     * 保存路由信息
+     * @param route
+     * @return
+     */
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
         return route.flatMap(r -> {
@@ -83,6 +91,11 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
         });
     }
 
+    /**
+     * 删除路由信息
+     * @param routeId
+     * @return
+     */
     @Override
     public Mono<Void> delete(Mono<String> routeId) {
         routeId.subscribe(id -> {
