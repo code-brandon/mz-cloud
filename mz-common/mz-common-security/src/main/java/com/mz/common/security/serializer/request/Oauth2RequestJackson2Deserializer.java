@@ -1,4 +1,4 @@
-package com.mz.common.security.serializer.requse;
+package com.mz.common.security.serializer.request;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;

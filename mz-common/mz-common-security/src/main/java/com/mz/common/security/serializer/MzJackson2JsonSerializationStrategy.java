@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mz.common.security.serializer.access.Oauth2AccessTokenMixIn;
 import com.mz.common.security.serializer.authen.Oauth2AuthenticationMixIn;
-import com.mz.common.security.serializer.requse.Oauth2RequestMixIn;
+import com.mz.common.security.serializer.request.Oauth2RequestMixIn;
 import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.security.jackson2.CoreJackson2Module;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;

@@ -1,4 +1,4 @@
-package com.mz.common.security.serializer.requse;
+package com.mz.common.security.serializer.request;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

@@ -16,6 +16,16 @@ import java.io.IOException;
 
 public class Oauth2AuthenticationJackson2Deserializer extends JsonDeserializer<OAuth2Authentication> {
 
+    /**
+     * 反序列化
+     * @param p Parsed used for reading JSON content
+     * @param ctxt Context that can be used to access information about
+     *   this deserialization activity.
+     *
+     * @return
+     * @throws IOException
+     * @throws JsonProcessingException
+     */
     @Override
     public OAuth2Authentication deserialize(JsonParser p, DeserializationContext ctxt) throws IOException, JsonProcessingException {
 
