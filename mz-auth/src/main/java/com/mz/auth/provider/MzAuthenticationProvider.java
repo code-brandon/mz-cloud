@@ -38,7 +38,7 @@ public class MzAuthenticationProvider extends DaoAuthenticationProvider {
         // 额外的身份验证检查 （获取用户名密码之后）
         JSONObject details = JSONObject.parseObject(JSONObject.toJSONString(authentication.getDetails()));
         String grant_type = details.getString("grant_type");
-        if(Objects.isNull(grant_type)){
+        if(!Objects.isNull(grant_type)){
             super.additionalAuthenticationChecks(userDetails, authentication);
         }else {
             if (authentication.getCredentials() == null) {

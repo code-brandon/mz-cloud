@@ -30,6 +30,6 @@ public class MzAuthenticationFailureHandler implements AuthenticationFailureHand
 
 	@Override
 	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		MzWebUtils.renderJson(response, JSON.toJSONString(R.error(MzCodeEnum.OAUTH_EXCEPTION.getCode(), MzCodeEnum.OAUTH_EXCEPTION.getMsg() + exception.getMessage())));
+		MzWebUtils.renderJson(response, JSON.toJSONString(R.error(MzCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(), MzCodeEnum.OAUTH_AUTH_EXCEPTION.getMsg() + exception.getMessage())));
 	}
 }

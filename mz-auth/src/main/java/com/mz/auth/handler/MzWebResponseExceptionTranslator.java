@@ -29,21 +29,19 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
     @Override
     public ResponseEntity translate(Exception e) {
         log.warn("登录失败: ", e);
-        String message;
+        MzCodeEnum oauthAuthException = MzCodeEnum.UNKNOW_EXCEPTION;
         if (e instanceof AuthException || e.getCause() instanceof AuthException) {
-            message = e.getMessage();
+            oauthAuthException = MzCodeEnum.OAUTH_EXCEPTION;
         } else if (e instanceof InternalAuthenticationServiceException) {
-            message = "身份验证失败";
+            oauthAuthException = MzCodeEnum.OAUTH_AUTH_EXCEPTION;
         } else if (e instanceof InvalidGrantException) {
-            message = "用户名或密码错误";
+            oauthAuthException = MzCodeEnum.LOGINACCT_PASSWORD_INVAILD_EXCEPTION;
         } else if (e instanceof InvalidTokenException) {
-            message = "Token无效或过期";
+            oauthAuthException = MzCodeEnum.OAUTH_TOKEN_EXCEPTION;
         } else if (e instanceof UnsupportedGrantTypeException) {
-            message = "不支持的授予类型";
-        } else {
-            message = "登录失败";
+            oauthAuthException = MzCodeEnum.OAUTH_GRANTTYPE_EXCEPTION;
         }
-        return ResponseEntity.ok(R.fail(MzCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(),message));
+        return ResponseEntity.ok(R.fail(oauthAuthException));
     }
 
 }
