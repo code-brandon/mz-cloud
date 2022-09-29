@@ -37,7 +37,7 @@ public class SysLogininforEntity implements Serializable {
 	 * 用户账号
 	 */
     @ApiModelProperty("用户账号")
-	private String userName;
+	private String username;
 	/**
 	 * 登录IP地址
 	 */

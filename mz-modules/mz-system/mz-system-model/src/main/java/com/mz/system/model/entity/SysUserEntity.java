@@ -43,7 +43,7 @@ public class SysUserEntity extends BaseEntity implements Serializable {
 	 * 用户账号
 	 */
     @ApiModelProperty("用户账号")
-	private String userName;
+	private String username;
 	/**
 	 * 用户昵称
 	 */

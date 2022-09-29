@@ -3,7 +3,6 @@ package com.mz.system.provider.controller;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.security.annotation.Ignore;
-import com.mz.common.security.entity.MzSysUserSecurity;
 import com.mz.common.security.utils.MzSecurityUtils;
 import com.mz.system.model.dto.SysUserDto;
 import com.mz.system.model.entity.SysUserEntity;
@@ -55,7 +54,7 @@ public class SysUserController {
 
     @ApiOperation("获取用户名")
     @GetMapping("/getUser")
-    public R<MzSysUserSecurity> getUser() {
+    public R getUser() {
         return R.ok().data(MzSecurityUtils.getMzSysUserSecurity());
     }
 

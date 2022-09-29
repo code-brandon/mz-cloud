@@ -7,7 +7,7 @@
     <resultMap type="com.mz.system.model.entity.SysUserEntity" id="sysUserMap">
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
-        <result property="userName" column="user_name"/>
+        <result property="username" column="username"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
         <result property="email" column="email"/>
@@ -29,7 +29,7 @@
     <resultMap type="com.mz.system.model.dto.SysUserDto" id="sysUserDtoMap">
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
-        <result property="userName" column="user_name"/>
+        <result property="username" column="username"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
         <result property="email" column="email"/>
@@ -75,7 +75,7 @@
                     and sr.role_key = 'admin'
             ) as ifAdmin
         from sys_user su
-        where su.user_name = #{username} and su.status = 0 and su.del_flag = 0
+        where su.username = #{username} and su.status = 0 and su.del_flag = 0
     </select>
 
 </mapper>
