@@ -1,6 +1,7 @@
 package com.mz.common.core.entity;
 
 import com.mz.common.core.constants.Constant;
+import com.mz.common.core.exception.MzCodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -59,6 +60,13 @@ public class R<T> {
         return r;
     }
 
+    public static R error(MzCodeEnum mzCodeEnum) {
+        R r = error();
+        r.setCode(mzCodeEnum.getCode());
+        r.setMessage(mzCodeEnum.getMsg());
+        return r;
+    }
+
     public static R ok(String message) {
         R r = ok();
         r.setMessage(message);
@@ -69,6 +77,13 @@ public class R<T> {
         R r = ok();
         r.setCode(code);
         r.setMessage(message);
+        return r;
+    }
+
+    public static R ok(MzCodeEnum mzCodeEnum) {
+        R r = ok();
+        r.setCode(mzCodeEnum.getCode());
+        r.setMessage(mzCodeEnum.getMsg());
         return r;
     }
 
@@ -103,6 +118,13 @@ public class R<T> {
         R r = fail();
         r.setCode(code);
         r.setMessage(message);
+        return r;
+    }
+
+    public static R fail(MzCodeEnum mzCodeEnum) {
+        R r = fail();
+        r.setCode(mzCodeEnum.getCode());
+        r.setMessage(mzCodeEnum.getMsg());
         return r;
     }
 }
