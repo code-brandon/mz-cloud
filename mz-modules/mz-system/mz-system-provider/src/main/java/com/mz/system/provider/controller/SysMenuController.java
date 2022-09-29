@@ -2,7 +2,9 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.res.MenuResVo;
 import com.mz.system.provider.service.SysMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -43,6 +46,17 @@ public class SysMenuController {
     public R<SysMenuEntity> list(@RequestParam Map<String, Object> params){
         PageUtils page = sysMenuService.queryPage(params);
         return R.ok().data(page);
+    }
+
+    /**
+     * 获取菜单树
+     * @return
+     */
+    @ApiOperation("获取菜单树")
+    @GetMapping("/getMenuTree")
+    public R<List<MenuResVo>> getMenuTree(){
+        List<SysMenuDto> menuTree = sysMenuService.getMenuTree();
+        return R.ok().data(sysMenuService.buildMenus(menuTree));
     }
 
 

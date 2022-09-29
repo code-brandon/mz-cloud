@@ -9,7 +9,7 @@
         <result property="menuName" column="menu_name"/>
         <result property="parentId" column="parent_id"/>
         <result property="orderNum" column="order_num"/>
-        <result property="href" column="href"/>
+        <result property="icon" column="icon"/>
         <result property="path" column="path"/>
         <result property="component" column="component"/>
         <result property="query" column="QUERY"/>
@@ -27,12 +27,21 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
-    <!--<select id = "listByUserId" resultType = "com.xiaozheng.admin.security.to.MenuTreeDto">
+    <!--当前用户所具有菜单-->
+    <select id = "getMenuByUserId" resultType="com.mz.system.model.dto.SysMenuDto">
         SELECT sm.*
         FROM sys_menu sm
-                 LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
-        WHERE srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
-    </select>-->
+        <if test="ifAdmin != true">
+            LEFT JOIN sys_role_menu srm ON srm.menu_id = sm.menu_id
+        </if>
+        <where>
+            <if test = "ifAdmin != true">
+                srm.role_id in (SELECT sur.role_id FROM sys_user_role sur WHERE sur.user_id = #{userId})
+            </if>
+            and sm.menu_type in ('M', 'C') and sm.status = 0
+        </where>
+        order by sm.parent_id, sm.order_num
+    </select>
 
     <!--查询当前用户的权限值-->
     <select id = "getAuthorities" resultType = "java.lang.String">

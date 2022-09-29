@@ -2,8 +2,11 @@ package com.mz.system.provider.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.res.MenuResVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -16,5 +19,28 @@ import java.util.Map;
 public interface SysMenuService extends IService<SysMenuEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    /**
+     * 菜单树
+     * @return
+     */
+    List<SysMenuDto> getMenuTree();
+
+    /**
+     * 根据父节点的ID获取所有子节点
+     *
+     * @param list     分类表
+     * @param parentId 传入的父节点ID
+     * @return String
+     */
+    List<SysMenuDto> getChildPerms(List<SysMenuDto> list, Long parentId);
+
+    /**
+     * 构建前端路由所需要的菜单
+     *
+     * @param menus 菜单列表
+     * @return 路由列表
+     */
+    List<MenuResVo> buildMenus(List<SysMenuDto> menus);
 }
 

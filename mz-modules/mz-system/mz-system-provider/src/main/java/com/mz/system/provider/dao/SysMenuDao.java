@@ -1,10 +1,13 @@
 package com.mz.system.provider.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -24,5 +27,13 @@ public interface SysMenuDao extends BaseMapper<SysMenuEntity> {
      * @return
      */
     Set<String> getAuthorities(Long userId);
+
+    /**
+     * 当前用户所具有菜单
+     *
+     * @param userId
+     * @return
+     */
+    List<SysMenuDto> getMenuByUserId(@Param("userId") Long userId, @Param("ifAdmin") Boolean ifAdmin);
 
 }
