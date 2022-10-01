@@ -5,9 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.support.NameUtils;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.config.ResourceHandlerRegistry;
-import org.springframework.web.reactive.config.WebFluxConfigurer;
 import springfox.documentation.swagger.web.SwaggerResource;
 import springfox.documentation.swagger.web.SwaggerResourcesProvider;
 
@@ -26,7 +25,8 @@ import java.util.List;
  */
 @Slf4j
 @Component
-public class SwaggerProviderConfig implements SwaggerResourcesProvider, WebFluxConfigurer {
+@Primary
+public class SwaggerProviderConfig implements SwaggerResourcesProvider{
     /**
      * Swagger2默认的url后缀
      */
@@ -62,7 +62,7 @@ public class SwaggerProviderConfig implements SwaggerResourcesProvider, WebFluxC
                         .peek(predicateDefinition -> log.debug("路由配置参数：{}", predicateDefinition.getArgs()))
                         .forEach(predicateDefinition -> resourceList
                                 .add(swaggerResource(routeDefinition.getId(),
-                                        predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", SWAGGER2URL)
+                                        predicateDefinition.getArgs().get(NameUtils.GENERATED_NAME_PREFIX + "0").replace("/**", SWAGGER3URL)
                                         )
                                 )
                         )
@@ -76,12 +76,5 @@ public class SwaggerProviderConfig implements SwaggerResourcesProvider, WebFluxC
         swaggerResource.setLocation(location);
         swaggerResource.setSwaggerVersion("2.0");
         return swaggerResource;
-    }
-
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // swagger-ui 地址
-        registry.addResourceHandler("/swagger-ui/**", "/swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/springfox-swagger-ui/");
     }
 }
