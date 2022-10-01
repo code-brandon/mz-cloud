@@ -1,8 +1,8 @@
 package com.mz.common.swagger.config;
 
 import lombok.Data;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * What -- Swagger 配置文件实体类
@@ -15,10 +15,10 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @CreateTime 2022/5/24 16:08
  */
 @Data
-@ConfigurationProperties(prefix = SwaggerProperties.PREFIX)
-@ConditionalOnProperty(name =SwaggerProperties.PREFIX+".enabled",matchIfMissing = true)
+@Configuration
+@ConfigurationProperties(SwaggerProperties.PREFIX)
 public class SwaggerProperties {
-    public static final String PREFIX="spring.swagger";
+    public static final String PREFIX="springfox.swagger";
 
     /**
      * 包

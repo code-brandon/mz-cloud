@@ -3,7 +3,6 @@ package com.mz.common.swagger.config;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
@@ -29,9 +28,9 @@ import java.util.*;
  * @ClassName: SwaggerConfig
  * @CreateTime 2022/5/24 16:08
  */
-@Configuration
+
 @Slf4j
-@ConditionalOnBean({SwaggerProperties.class })
+@Configuration
 public class SwaggerConfig {
 
     @Autowired
@@ -53,9 +52,9 @@ public class SwaggerConfig {
                 .select()
                 .apis(StringUtils.isEmpty(properties.getBasePackage()) ? RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class) : RequestHandlerSelectors.basePackage(properties.getBasePackage()))
                 .paths(PathSelectors.any())
-                .build()/*.forCodeGeneration(true)*/
+                .build().forCodeGeneration(true)
                 // 支持的通信协议
-                .protocols(new HashSet<String>(Arrays.asList("http", "https")));
+                .protocols(new HashSet<>(Arrays.asList("http", "https")));
     }
 
     private ApiInfo apiInfo() {
@@ -69,11 +68,11 @@ public class SwaggerConfig {
 
     private List<SecurityScheme> securitySchemes(){
 
-        List<ApiKey> result = new ArrayList<>();
+        List<SecurityScheme> result = new ArrayList<>();
         //添加OAuth2的令牌认证
         ApiKey apiKey = new ApiKey(Authorization, Authorization, "Header");
         result.add(apiKey);
-        return Collections.singletonList(apiKey);
+        return result;
     }
 
 

@@ -1,1 +1,3 @@
-
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.mz.common.swagger.config.SwaggerProperties,\
+  com.mz.common.swagger.config.SwaggerConfig
