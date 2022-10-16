@@ -2,6 +2,7 @@ package com.mz.auth.handler;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.core.exception.MzCodeEnum;
+import com.netflix.client.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
@@ -28,12 +29,16 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
 
     @Override
     public ResponseEntity translate(Exception e) {
-        log.warn("登录失败: ", e);
+        log.warn("登录失败: ", e.getLocalizedMessage());
         MzCodeEnum oauthAuthException = MzCodeEnum.UNKNOW_EXCEPTION;
         if (e instanceof AuthException || e.getCause() instanceof AuthException) {
             oauthAuthException = MzCodeEnum.OAUTH_EXCEPTION;
         } else if (e instanceof InternalAuthenticationServiceException) {
-            oauthAuthException = MzCodeEnum.OAUTH_AUTH_EXCEPTION;
+            if (e.getCause().getCause() instanceof ClientException) {
+                oauthAuthException = MzCodeEnum.OAUTH_CLIENT_EXCEPTION;
+            } else {
+                oauthAuthException = MzCodeEnum.OAUTH_AUTH_EXCEPTION;
+            }
         } else if (e instanceof InvalidGrantException) {
             oauthAuthException = MzCodeEnum.LOGINACCT_PASSWORD_INVAILD_EXCEPTION;
         } else if (e instanceof InvalidTokenException) {

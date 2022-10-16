@@ -41,6 +41,8 @@ public enum MzCodeEnum {
     OAUTH_ACCESS_EXCEPTION(15006,"OAuth_Access异常!"),
     OAUTH_TOKEN_EXCEPTION(15007,"Token无效或过期!"),
     OAUTH_GRANTTYPE_EXCEPTION(15008,"不支持的授予类型!"),
+    OAUTH_CLIENT_EXCEPTION(15009,"远程客户端出现异常!" ),
+
     FEIGN_EXCEPTION(20000,"Feign远程调用异常！！");
 
     /**
