@@ -18,7 +18,7 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 @ConditionalOnWebApplication(type = ConditionalOnWebApplication.Type.REACTIVE)
-public class MzDynamicRouteConfiguration {
+public class MzDynamicRouteConfig {
 
 	/**
 	 * 配置文件设置为 redis 加载为准
