@@ -71,7 +71,7 @@ public class MzGlobalExceptionHandler {
             // 将错误信息放到MAP中
             map.put(field, message);
         });
-        return R.fail(MzCodeEnum.VAILD_EXCEPTION.getCode(),MzCodeEnum.VAILD_EXCEPTION.getMsg()).data(map);
+        return R.fail(MzCodeEnum.VAILD_EXCEPTION.getCode(),MzCodeEnum.VAILD_EXCEPTION.getMsg(),map);
     }
 
     /**

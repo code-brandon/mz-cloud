@@ -22,6 +22,7 @@ public class MzDictJsonSerializer extends JsonSerializer<Object> {
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         String key = dictFormat.dictKey();
         String type = dictFormat.dictType();
+        String newField = dictFormat.newField();
         String defaultValue = dictFormat.defaultValue();
 
         if (StringUtils.isBlank(type) || Objects.isNull(value)) {
@@ -29,7 +30,13 @@ public class MzDictJsonSerializer extends JsonSerializer<Object> {
             gen.writeObject(value);
         } else {
             String cacheValue = DictCacheUtils.getCache(type, StringUtils.isBlank(key) ? String.valueOf(value) : key);
-            gen.writeObject(StringUtils.isNotBlank(cacheValue) ? cacheValue : StringUtils.isNotBlank(defaultValue) ? defaultValue : value);
+            if (StringUtils.isBlank(newField)) {
+                gen.writeObject(StringUtils.isNotBlank(cacheValue) ? cacheValue : StringUtils.isNotBlank(defaultValue) ? defaultValue : value);
+            } else {
+                gen.writeObject(value);
+                gen.writeFieldName(newField);
+                gen.writeObject(cacheValue);
+            }
         }
     }
 }

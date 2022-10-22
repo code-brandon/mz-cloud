@@ -25,6 +25,12 @@ public class R<T> {
     private String message;
 
     /**
+     * 正常返回的时间戳
+     */
+    @ApiModelProperty("返回的时间戳")
+    private long timestamp = System.currentTimeMillis();
+
+    /**
      * 正常返回时返回的数据
      */
     @ApiModelProperty("返回的数据")
@@ -36,93 +42,154 @@ public class R<T> {
     public R(int code, String message, T data) {
         setCode(code);
         setMessage(message);
-        data(data);
+        setData(data);
     }
 
-    public static R error() {
-        R r = new R();
-        r.setData(false);
+    public static <T> R<T>  error() {
+        R<T> r = new R<>();
         r.setCode(Constant.ERROR);
         r.setMessage("未知异常，请联系管理员");
         return r;
     }
 
-    public static R error(String message) {
-        R r = error();
+    public static <T> R<T>  error(T data) {
+        R<T> r = new R<>();
+        r.setData(data);
+        r.setCode(Constant.ERROR);
+        r.setMessage("未知异常，请联系管理员");
+        return r;
+    }
+
+    public static <T> R<T>  error(String message) {
+        R<T> r = error();
         r.setMessage(message);
         return r;
     }
 
-    public static R error(int code, String message) {
-        R r = error();
+    public static <T> R<T> error(int code, String message) {
+        R<T> r = error();
         r.setCode(code);
         r.setMessage(message);
         return r;
     }
 
-    public static R error(MzCodeEnum mzCodeEnum) {
-        R r = error();
-        r.setCode(mzCodeEnum.getCode());
-        r.setMessage(mzCodeEnum.getMsg());
-        return r;
-    }
-
-    public static R ok(String message) {
-        R r = ok();
+    public static <T> R<T> error(String message,T data) {
+        R<T> r = error();
+        r.setData(data);
         r.setMessage(message);
         return r;
     }
 
-    public static R ok(int code, String message) {
-        R r = ok();
+    public static <T> R<T> error(int code, String message,T data) {
+        R<T> r = error();
+        r.setData(data);
         r.setCode(code);
         r.setMessage(message);
         return r;
     }
 
-    public static R ok(MzCodeEnum mzCodeEnum) {
-        R r = ok();
+    public static <T> R<T>  error(MzCodeEnum mzCodeEnum) {
+        R<T> r = error();
         r.setCode(mzCodeEnum.getCode());
         r.setMessage(mzCodeEnum.getMsg());
         return r;
     }
 
-    public static R ok() {
-        R r = new R();
-        r.setData(true);
+    public static <T> R<T> ok() {
+        R<T> r = new R<>();
         r.setCode(Constant.SUCCESS);
         r.setMessage("操作成功！");
         return r;
     }
 
-    public R data(T data) {
-        this.setData(data);
-        return this;
-    }
-
-    public static R fail() {
-        R r = new R();
-        r.setCode(Constant.FAIL);
-        r.setMessage("操作失败");
-        r.setData(false);
+    public static <T> R<T> ok(T data) {
+        R<T> r = new R<>();
+        r.setData(data);
+        r.setCode(Constant.SUCCESS);
+        r.setMessage("操作成功！");
         return r;
     }
 
-    public static R fail(String message) {
-        R r = fail();
+    public static <T> R<T>  ok(String message) {
+        R<T> r = ok();
         r.setMessage(message);
         return r;
     }
 
-    public static R fail(int code, String message) {
-        R r = fail();
+    public static <T> R<T>  ok(String message,T data) {
+        R<T> r = ok();
+        r.setData(data);
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T>  ok(int code, String message) {
+        R<T> r = ok();
         r.setCode(code);
         r.setMessage(message);
         return r;
     }
 
-    public static R fail(MzCodeEnum mzCodeEnum) {
-        R r = fail();
+    public static <T> R<T>  ok(int code, String message,T data) {
+        R<T> r = ok();
+        r.setData(data);
+        r.setCode(code);
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T>  ok(MzCodeEnum mzCodeEnum) {
+        R<T> r = ok();
+        r.setCode(mzCodeEnum.getCode());
+        r.setMessage(mzCodeEnum.getMsg());
+        return r;
+    }
+
+    public static <T> R<T> fail() {
+        R<T> r = new R<>();
+        r.setCode(Constant.FAIL);
+        r.setMessage("操作失败");
+        return r;
+    }
+
+    public static <T> R<T> fail(T data) {
+        R<T> r = new R<>();
+        r.setData(data);
+        r.setCode(Constant.FAIL);
+        r.setMessage("操作失败");
+        return r;
+    }
+
+    public static <T> R<T> fail(String message) {
+        R<T> r = fail();
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T> fail(int code, String message) {
+        R<T> r = fail();
+        r.setCode(code);
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T> fail(String message,T data) {
+        R<T> r = fail();
+        r.setData(data);
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T> fail(int code, String message,T data) {
+        R<T> r = fail();
+        r.setData(data);
+        r.setCode(code);
+        r.setMessage(message);
+        return r;
+    }
+
+    public static <T> R<T> fail(MzCodeEnum mzCodeEnum) {
+        R<T> r = fail();
         r.setCode(mzCodeEnum.getCode());
         r.setMessage(mzCodeEnum.getMsg());
         return r;
