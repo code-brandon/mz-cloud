@@ -19,6 +19,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -69,16 +70,16 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 				return null;
 			}
 
+			// 从线程变量中获取请求头携带的环境信息
 			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get("env");
 			List<Instance> instancesToChoose = instances;
+
 			if (StringUtils.isNotBlank(clusterName)) {
 				List<Instance> sameClusterInstances = instances.stream()
 						.filter(instance -> Objects.equals(clusterName,
 								instance.getClusterName()))
 						.collect(Collectors.toList());
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
-					instancesToChoose = sameClusterInstances;
-
 					if (!CollectionUtils.isEmpty(envs)) {
 						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> {
 							return !MapUtils.isEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get("env"));
@@ -87,14 +88,22 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 						}));
 						LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
-						instancesToChoose = MapUtils.isNotEmpty(envInstanceMap) ? envInstanceMap.get((envs).get(0)) : sameClusterInstances;
+						if (MapUtils.isNotEmpty(envInstanceMap)) {
+							instancesToChoose = envInstanceMap.get((envs).get(0));
+						} else {
+							instancesToChoose = new ArrayList<>();
+						}
+
+					} else {
+						List<Instance> envInstances = sameClusterInstances.stream().filter(f -> {
+							return !MapUtils.isEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get("env"));
+						}).collect(Collectors.toList());
+						instancesToChoose = envInstances;
 					}
 
 				}
 				else {
-					LOGGER.warn(
-							"A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}",
-							name, clusterName, instances);
+					LOGGER.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}", name, clusterName, instances);
 				}
 			}
 
