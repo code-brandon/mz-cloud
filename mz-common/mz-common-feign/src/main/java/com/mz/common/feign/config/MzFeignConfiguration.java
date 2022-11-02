@@ -45,6 +45,8 @@ public class MzFeignConfiguration {
                 if (Objects.nonNull(request)) {
                     // 同步请求头  给新请求同步了老请求的cookie
                     template.header("Cookie", request.getHeader("Cookie"));
+                    // 灰度环境标识
+                    template.header("env", request.getHeader("env"));
                 }
             }
         };
