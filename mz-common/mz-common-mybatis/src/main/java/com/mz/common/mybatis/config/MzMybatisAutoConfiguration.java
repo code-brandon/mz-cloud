@@ -1,10 +1,13 @@
 package com.mz.common.mybatis.config;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
-import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
+import com.mz.common.mybatis.exception.MzMybatisExceptionHandler;
 import com.mz.common.mybatis.plugin.MzObjectWrapperFactoryConverter;
 import com.mz.common.mybatis.plugin.MzSqlFilterArgumentResolver;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,19 +48,21 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 	}
 
 	/**
-	 * 旧版 分页插件配置
+	 * 新版 分页插件配置
 	 * @return
 	 */
 	@Bean
-	public PaginationInterceptor paginationInterceptor() {
-		PaginationInterceptor paginationInterceptor = new PaginationInterceptor();
+	public MybatisPlusInterceptor mybatisPlusInterceptor() {
+		MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+		PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();
 		// 设置请求的页面大于最大页后操作， true调回到首页，false 继续请求  默认false
 		paginationInterceptor.setOverflow(true);
 		// 设置最大单页限制数量，默认 500 条，-1 不受限制
-		paginationInterceptor.setLimit(10);
+		paginationInterceptor.setMaxLimit(10L);
 		// 开启 count 的 join 优化,只针对部分 left join
-		paginationInterceptor.setCountSqlParser(new JsqlParserCountOptimize(true));
-		return paginationInterceptor;
+		paginationInterceptor.setOptimizeJoin(true);
+		interceptor.addInnerInterceptor(paginationInterceptor);
+		return interceptor;
 	}
 
 	@Bean

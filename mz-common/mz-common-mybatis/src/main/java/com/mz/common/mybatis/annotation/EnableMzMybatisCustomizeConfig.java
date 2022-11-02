@@ -1,6 +1,7 @@
 package com.mz.common.mybatis.annotation;
 
 import com.mz.common.mybatis.config.MzMybatisAutoConfiguration;
+import com.mz.common.mybatis.exception.MzMybatisExceptionHandler;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -20,6 +21,6 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({MzMybatisAutoConfiguration.class})
+@Import({MzMybatisAutoConfiguration.class, MzMybatisExceptionHandler.class})
 public @interface EnableMzMybatisCustomizeConfig {
 }
