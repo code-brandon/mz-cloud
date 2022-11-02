@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysJobLogService extends IService<SysJobLogEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysJobLogEntity>  queryPage(Map<String, Object> params);
 }
 

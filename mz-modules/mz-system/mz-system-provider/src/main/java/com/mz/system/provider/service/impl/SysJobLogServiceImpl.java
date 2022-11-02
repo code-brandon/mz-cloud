@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysJobLogServiceImpl extends ServiceImpl<SysJobLogDao, SysJobLogEntity> implements SysJobLogService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysJobLogEntity>  queryPage(Map<String, Object> params) {
         IPage<SysJobLogEntity> page = this.page(
                 new Query<SysJobLogEntity>().getPage(params),
                 new QueryWrapper<SysJobLogEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

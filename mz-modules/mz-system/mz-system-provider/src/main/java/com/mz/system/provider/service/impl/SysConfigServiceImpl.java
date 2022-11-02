@@ -22,7 +22,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigDao, SysConfigEnt
                 new Query<SysConfigEntity>().getPage(params),
                 new QueryWrapper<SysConfigEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

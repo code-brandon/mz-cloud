@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysOperLogService extends IService<SysOperLogEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysOperLogEntity> queryPage(Map<String, Object> params);
 }
 

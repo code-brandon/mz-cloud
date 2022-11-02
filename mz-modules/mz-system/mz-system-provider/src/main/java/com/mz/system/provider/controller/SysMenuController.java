@@ -1,5 +1,6 @@
 package com.mz.system.provider.controller;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysMenuDto;
@@ -43,9 +44,9 @@ public class SysMenuController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysMenuEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysMenuService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysMenuEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysMenuEntity> page = sysMenuService.queryPage(params);
+        return R.ok(page);
     }
 
     /**
@@ -53,10 +54,26 @@ public class SysMenuController {
      * @return
      */
     @ApiOperation("获取菜单树")
+    @GetMapping("/getUserMenuTree")
+    public R<List<MenuResVo>> getUserMenuTree(){
+        List<SysMenuDto> menuTree = sysMenuService.getUserMenuTree();
+        return R.ok(sysMenuService.buildMenus(menuTree));
+    }
+
+    @ApiOperation("获取菜单树")
     @GetMapping("/getMenuTree")
-    public R<List<MenuResVo>> getMenuTree(){
-        List<SysMenuDto> menuTree = sysMenuService.getMenuTree();
-        return R.ok().data(sysMenuService.buildMenus(menuTree));
+    public R<List<Tree<Long>>> getMenuTree(){
+        List<Tree<Long>> menuTree = sysMenuService.getMenuTree();
+        return R.ok(menuTree);
+    }
+
+
+
+    @ApiOperation("获取菜单列表树")
+    @GetMapping("/getMenuListTree")
+    public R<List<Tree<Long>>> getMenuListTree(){
+        List<Tree<Long>> menuTree = sysMenuService.getMenuListTree();
+        return R.ok(menuTree);
     }
 
 
@@ -73,7 +90,7 @@ public class SysMenuController {
     public R<SysMenuEntity> info(@PathVariable("menuId") Long menuId){
             SysMenuEntity sysMenu = sysMenuService.getById(menuId);
 
-        return R.ok().data(sysMenu);
+        return R.ok(sysMenu);
     }
 
     /**
@@ -86,10 +103,10 @@ public class SysMenuController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysMenuEntity sysMenu){
+    public R<Boolean> save(@RequestBody SysMenuEntity sysMenu){
             sysMenuService.save(sysMenu);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -102,10 +119,10 @@ public class SysMenuController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysMenuEntity sysMenu){
+    public R<Boolean>  update(@RequestBody SysMenuEntity sysMenu){
             sysMenuService.updateById(sysMenu);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -118,10 +135,10 @@ public class SysMenuController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] menuIds){
+    public R<Boolean>  delete(@RequestBody Long[] menuIds){
             sysMenuService.removeByIds(Arrays.asList(menuIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

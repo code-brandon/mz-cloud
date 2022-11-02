@@ -21,6 +21,57 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
+    <sql id = "fromHead">
+        `role_id`,`role_name`,`role_key`,`role_sort`,`data_scope`,`menu_check_strictly`,`dept_check_strictly`,`status`,`del_flag`,`create_by`,`create_time`,`update_by`,`update_time`,`remark`
+    </sql>
+
+    <sql id="whereSelect">
+        <where>
+            <if test = "data.roleId != null and data.roleId.toString() != '0'">
+                and t.role_id = #{data.roleId}
+            </if>
+            <if test = "data.roleName != null and data.roleName.toString() != ''">
+                and t.role_name = #{data.roleName}
+            </if>
+            <if test = "data.roleKey != null and data.roleKey.toString() != ''">
+                and t.role_key = #{data.roleKey}
+            </if>
+            <if test = "data.roleSort != null and data.roleSort.toString() != '0'">
+                and t.role_sort = #{data.roleSort}
+            </if>
+            <if test = "data.dataScope != null and data.dataScope.toString() != ''">
+                and t.data_scope = #{data.dataScope}
+            </if>
+            <if test = "data.menuCheckStrictly != null and data.menuCheckStrictly.toString() != '0'">
+                and t.menu_check_strictly = #{data.menuCheckStrictly}
+            </if>
+            <if test = "data.deptCheckStrictly != null and data.deptCheckStrictly.toString() != '0'">
+                and t.dept_check_strictly = #{data.deptCheckStrictly}
+            </if>
+            <if test = "data.status != null and data.status.toString() != ''">
+                and t.status = #{data.status}
+            </if>
+            <if test = "data.delFlag != null and data.delFlag.toString() != ''">
+                and t.del_flag = #{data.delFlag}
+            </if>
+            <if test = "data.createBy != null and data.createBy.toString() != ''">
+                and t.create_by = #{data.createBy}
+            </if>
+            <if test = "data.createTime != null and data.createTime.toString() != ''">
+                and t.create_time = #{data.createTime}
+            </if>
+            <if test = "data.updateBy != null and data.updateBy.toString() != ''">
+                and t.update_by = #{data.updateBy}
+            </if>
+            <if test = "data.updateTime != null and data.updateTime.toString() != ''">
+                and t.update_time = #{data.updateTime}
+            </if>
+            <if test = "data.remark != null and data.remark.toString() != ''">
+                and t.remark = #{data.remark}
+            </if>
+        </where>
+    </sql>
+
     <select id = "getRolePermissions" resultType = "java.lang.String">
         select sr.role_key
         from sys_role sr
@@ -34,6 +85,13 @@
             left join sys_user_role sur on sur.role_id = sr.role_id
             where sur.user_id = #{userId} and sr.status = 0
                 and sr.del_flag = 0 and sr.role_key = #{roleKey}
+    </select>
+    <select id = "getRolePage" resultMap="sysRoleMap">
+        select
+        <include refid = "fromHead"/>
+        from sys_role t
+        <include refid = "whereSelect"/>
+        order by `create_time` desc
     </select>
 
 </mapper>

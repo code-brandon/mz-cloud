@@ -3,7 +3,11 @@ package com.mz.system.provider.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mz.system.model.entity.SysUserRoleEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 用户和角色关联表
@@ -15,5 +19,18 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
-	
+
+    /**
+     * 批量插入 用户和角色关联
+     * @param userRoles
+     * @return
+     */
+    int insertUserRoles(@Param("userRoles") Set<SysUserRoleEntity> userRoles);
+
+    /**
+     * 根据用户名获取角色ID集合
+     * @param userId
+     * @return
+     */
+    List<Long> getRoleIdsByUserId(@Param("userId") Long userId);
 }

@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeDao, SysDictTypeEntity> implements SysDictTypeService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysDictTypeEntity> queryPage(Map<String, Object> params) {
         IPage<SysDictTypeEntity> page = this.page(
                 new Query<SysDictTypeEntity>().getPage(params),
                 new QueryWrapper<SysDictTypeEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

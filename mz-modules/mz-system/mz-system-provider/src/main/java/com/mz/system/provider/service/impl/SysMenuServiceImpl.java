@@ -1,10 +1,16 @@
 package com.mz.system.provider.service.impl;
 
+import cn.hutool.core.lang.tree.Tree;
+import cn.hutool.core.lang.tree.TreeNode;
+import cn.hutool.core.lang.tree.TreeUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mz.common.core.constants.Constant;
 import com.mz.common.core.constants.UserConstants;
+import com.mz.common.core.utils.BeanMapUtils;
 import com.mz.common.core.utils.MzWebUtils;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
@@ -20,25 +26,65 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysMenuEntity> queryPage(Map<String, Object> params) {
         IPage<SysMenuEntity> page = this.page(
                 new Query<SysMenuEntity>().getPage(params),
                 new QueryWrapper<SysMenuEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
+    /**
+     * 当前登录用户的菜单列表
+     * @return
+     */
     @Override
-    public List<SysMenuDto> getMenuTree() {
+    public List<SysMenuDto> getUserMenuTree() {
         MzUserDetailsSecurity sysUserSecurity = MzSecurityUtils.getMzSysUserSecurity();
         List<SysMenuDto> menus = baseMapper.getMenuByUserId(sysUserSecurity .getUserId(), sysUserSecurity .isIfAdmin());
         return getChildPerms(menus, Constant.ROOT_NODE);
+    }
+
+    @Override
+    public List<Tree<Long>> getMenuTree() {
+        LambdaQueryWrapper<SysMenuEntity> queryWrapper = Wrappers.<SysMenuEntity>lambdaQuery()
+                .select(SysMenuEntity::getMenuId,
+                        SysMenuEntity::getMenuName,
+                        SysMenuEntity::getParentId,
+                        SysMenuEntity::getOrderNum);
+        List<SysMenuEntity> entities = baseMapper.selectList(queryWrapper);
+
+        List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
+            TreeNode<Long> objectTreeNode = new TreeNode<>();
+            objectTreeNode.setId(m.getMenuId());
+            objectTreeNode.setName(m.getMenuName());
+            objectTreeNode.setParentId(m.getParentId());
+            objectTreeNode.setWeight(m.getOrderNum());
+            return objectTreeNode;
+        }).collect(Collectors.toList());
+
+        return TreeUtil.build(nodeList, Constant.ROOT_NODE);
+    }
+
+    @Override
+    public List<Tree<Long>> getMenuListTree() {
+        List<SysMenuEntity> entities = list();
+
+        List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
+            TreeNode<Long> objectTreeNode = new TreeNode<>();
+            objectTreeNode.setId(m.getMenuId());
+            objectTreeNode.setWeight(m.getOrderNum());
+            objectTreeNode.setExtra(BeanMapUtils.beanToMap(m));
+            return objectTreeNode;
+        }).collect(Collectors.toList());
+        return TreeUtil.build(nodeList,Constant.ROOT_NODE);
     }
 
     /**
@@ -49,7 +95,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      */
     @Override
     public List<MenuResVo> buildMenus(List<SysMenuDto> menus) {
-        List<MenuResVo> routers = new LinkedList<MenuResVo>();
+        List<MenuResVo> routers = new LinkedList<>();
         for (SysMenuDto menu : menus) {
             MenuResVo router = new MenuResVo();
             router.setHidden("1".equals(menu.getVisible()));
@@ -58,15 +104,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             router.setComponent(getComponent(menu));
             router.setQuery(menu.getQuery());
             router.setIsFrame(menu.getIsFrame());
-            router.setMeta(new MetaResVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache().toString()), menu.getPath()));
+            router.setMeta(new MetaResVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("0", menu.getIsCache().toString()), menu.getPath()));
             List<SysMenuDto> cMenus = menu.getChildren();
-            if (!cMenus.isEmpty() && cMenus.size() > 0 && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
+            if (!cMenus.isEmpty()  && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
             } else if (isMenuFrame(menu)) {
                 router.setMeta(null);
-                List<MenuResVo> childrenList = new ArrayList<MenuResVo>();
+                List<MenuResVo> childrenList = new ArrayList<>();
                 MenuResVo children = new MenuResVo();
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
@@ -79,7 +125,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             } else if (menu.getParentId().intValue() == 0 && isInnerLink(menu)) {
                 router.setMeta(new MetaResVo(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
-                List<MenuResVo> childrenList = new ArrayList<MenuResVo>();
+                List<MenuResVo> childrenList = new ArrayList<>();
                 MenuResVo children = new MenuResVo();
                 String routerPath = innerLinkReplaceEach(menu.getPath());
                 children.setPath(routerPath);
@@ -104,7 +150,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      */
     @Override
     public List<SysMenuDto> getChildPerms(List<SysMenuDto> list, Long parentId) {
-        List<SysMenuDto> returnList = new ArrayList<SysMenuDto>();
+        List<SysMenuDto> returnList = new ArrayList<>();
         for (Iterator<SysMenuDto> iterator = list.iterator(); iterator.hasNext(); ) {
             SysMenuDto t = iterator.next();
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
@@ -137,7 +183,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * 得到子节点列表
      */
     private List<SysMenuDto> getChildList(List<SysMenuDto> list, SysMenuDto t) {
-        List<SysMenuDto> tlist = new ArrayList<SysMenuDto>();
+        List<SysMenuDto> tlist = new ArrayList<>();
         Iterator<SysMenuDto> it = list.iterator();
         while (it.hasNext()) {
             SysMenuDto n = it.next();
@@ -152,7 +198,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * 判断是否有子节点
      */
     private boolean hasChild(List<SysMenuDto> list, SysMenuDto t) {
-        return getChildList(list, t).size() > 0;
+        return !getChildList(list, t).isEmpty();
     }
 
     /**

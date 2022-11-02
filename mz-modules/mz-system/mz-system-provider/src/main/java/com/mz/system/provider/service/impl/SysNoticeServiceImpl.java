@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeDao, SysNoticeEntity> implements SysNoticeService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysNoticeEntity> queryPage(Map<String, Object> params) {
         IPage<SysNoticeEntity> page = this.page(
                 new Query<SysNoticeEntity>().getPage(params),
                 new QueryWrapper<SysNoticeEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

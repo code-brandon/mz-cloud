@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysPostServiceImpl extends ServiceImpl<SysPostDao, SysPostEntity> implements SysPostService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysPostEntity> queryPage(Map<String, Object> params) {
         IPage<SysPostEntity> page = this.page(
                 new Query<SysPostEntity>().getPage(params),
                 new QueryWrapper<SysPostEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

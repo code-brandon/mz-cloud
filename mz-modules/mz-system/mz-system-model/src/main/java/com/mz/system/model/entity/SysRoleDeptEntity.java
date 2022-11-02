@@ -30,7 +30,7 @@ public class SysRoleDeptEntity implements Serializable {
 	 * 角色ID
 	 */
     @ApiModelProperty("角色ID")
-	@TableId(type = IdType.AUTO)
+	@TableId(type = IdType.INPUT)
 	private Long roleId;
 	/**
 	 * 部门ID

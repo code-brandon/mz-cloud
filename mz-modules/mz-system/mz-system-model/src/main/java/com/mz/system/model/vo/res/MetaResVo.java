@@ -24,9 +24,9 @@ public class MetaResVo {
     private String icon;
 
     /**
-     * 设置为true，则不会被 <keep-alive>缓存
+     * 设置为true，则会被 <keep-alive>缓存
      */
-    private boolean noCache;
+    private boolean keepAlive;
 
     /**
      * 内链地址（http(s)://开头）
@@ -44,7 +44,7 @@ public class MetaResVo {
     public MetaResVo(String title, String icon, boolean noCache) {
         this.title = title;
         this.icon = icon;
-        this.noCache = noCache;
+        this.keepAlive = noCache;
     }
 
     public MetaResVo(String title, String icon, String link) {
@@ -56,18 +56,18 @@ public class MetaResVo {
     public MetaResVo(String title, String icon, boolean noCache, String link) {
         this.title = title;
         this.icon = icon;
-        this.noCache = noCache;
+        this.keepAlive = noCache;
         if (MzWebUtils.ishttp(link)) {
             this.link = link;
         }
     }
 
-    public boolean isNoCache() {
-        return noCache;
+    public boolean isKeepAlive() {
+        return keepAlive;
     }
 
-    public void setNoCache(boolean noCache) {
-        this.noCache = noCache;
+    public void setKeepAlive(boolean noCache) {
+        this.keepAlive = noCache;
     }
 
     public String getTitle() {

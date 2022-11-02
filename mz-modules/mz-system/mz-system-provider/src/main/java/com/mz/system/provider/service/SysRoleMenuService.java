@@ -3,6 +3,7 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysRoleMenuEntity;
+import com.mz.system.model.vo.req.SysRoleMenuReqVo;
 
 import java.util.Map;
 
@@ -15,6 +16,10 @@ import java.util.Map;
  */
 public interface SysRoleMenuService extends IService<SysRoleMenuEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysRoleMenuEntity> queryPage(Map<String, Object> params);
+
+    boolean saveRoleMenu(SysRoleMenuReqVo sysRoleMenuReqVo);
+
+    boolean updateRoleMenuById(SysRoleMenuReqVo sysRoleMenuReqVo);
 }
 

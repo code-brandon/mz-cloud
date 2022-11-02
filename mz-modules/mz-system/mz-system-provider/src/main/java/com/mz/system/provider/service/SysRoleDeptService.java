@@ -3,6 +3,7 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysRoleDeptEntity;
+import com.mz.system.model.vo.req.SysRoleDeptReqVo;
 
 import java.util.Map;
 
@@ -15,6 +16,8 @@ import java.util.Map;
  */
 public interface SysRoleDeptService extends IService<SysRoleDeptEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysRoleDeptEntity> queryPage(Map<String, Object> params);
+
+    boolean saveRoleDept(SysRoleDeptReqVo sysRoleDeptReqVo);
 }
 

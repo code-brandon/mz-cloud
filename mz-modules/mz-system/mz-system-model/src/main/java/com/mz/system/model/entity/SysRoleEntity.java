@@ -3,6 +3,7 @@ package com.mz.system.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mz.common.mybatis.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 角色信息表
@@ -24,7 +24,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("sys_role")
-public class SysRoleEntity implements Serializable {
+public class SysRoleEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -73,26 +73,6 @@ public class SysRoleEntity implements Serializable {
 	 */
     @ApiModelProperty("删除标志（0代表存在 2代表删除）")
 	private String delFlag;
-	/**
-	 * 创建者
-	 */
-    @ApiModelProperty("创建者")
-	private String createBy;
-	/**
-	 * 创建时间
-	 */
-    @ApiModelProperty("创建时间")
-	private Date createTime;
-	/**
-	 * 更新者
-	 */
-    @ApiModelProperty("更新者")
-	private String updateBy;
-	/**
-	 * 更新时间
-	 */
-    @ApiModelProperty("更新时间")
-	private Date updateTime;
 	/**
 	 * 备注
 	 */

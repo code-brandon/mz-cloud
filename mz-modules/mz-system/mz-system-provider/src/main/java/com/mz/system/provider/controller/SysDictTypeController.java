@@ -39,10 +39,10 @@ public class SysDictTypeController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<SysDictTypeEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysDictTypeService.queryPage(params);
-        return R.ok().data(page);
+    @PostMapping("/page")
+    public R<PageUtils<SysDictTypeEntity>> page(@RequestParam Map<String, Object> params){
+        PageUtils<SysDictTypeEntity> page = sysDictTypeService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysDictTypeController {
     public R<SysDictTypeEntity> info(@PathVariable("dictId") Long dictId){
             SysDictTypeEntity sysDictType = sysDictTypeService.getById(dictId);
 
-        return R.ok().data(sysDictType);
+        return R.ok(sysDictType);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysDictTypeController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysDictTypeEntity sysDictType){
+    public R<Boolean> save(@RequestBody SysDictTypeEntity sysDictType){
             sysDictTypeService.save(sysDictType);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysDictTypeController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysDictTypeEntity sysDictType){
+    public R<Boolean>  update(@RequestBody SysDictTypeEntity sysDictType){
             sysDictTypeService.updateById(sysDictType);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysDictTypeController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] dictIds){
+    public R<Boolean>  delete(@RequestBody Long[] dictIds){
             sysDictTypeService.removeByIds(Arrays.asList(dictIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

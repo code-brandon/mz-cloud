@@ -10,4 +10,16 @@
     </resultMap>
 
 
+    <insert id = "insertUserPosts">
+        insert into `sys_user_post` (`user_id`,`post_id`)
+        values
+        <foreach collection = "userPosts" separator = "," item = "item">
+            (#{item.userId},#{item.postId})
+        </foreach>
+    </insert>
+
+    <select id = "getPostIdsByUserId" resultType = "java.lang.Long">
+        select `post_id` from `sys_user_post` where user_id = #{userId}
+    </select>
+
 </mapper>

@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysUserRoleEntity> queryPage(Map<String, Object> params);
 }
 

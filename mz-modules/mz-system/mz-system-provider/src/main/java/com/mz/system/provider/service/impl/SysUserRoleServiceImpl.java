@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserRoleEntity> implements SysUserRoleService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysUserRoleEntity> queryPage(Map<String, Object> params) {
         IPage<SysUserRoleEntity> page = this.page(
                 new Query<SysUserRoleEntity>().getPage(params),
                 new QueryWrapper<SysUserRoleEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

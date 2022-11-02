@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysLogininforEntity> implements SysLogininforService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysLogininforEntity>  queryPage(Map<String, Object> params) {
         IPage<SysLogininforEntity> page = this.page(
                 new Query<SysLogininforEntity>().getPage(params),
                 new QueryWrapper<SysLogininforEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

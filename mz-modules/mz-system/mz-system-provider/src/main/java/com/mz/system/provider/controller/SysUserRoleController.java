@@ -40,9 +40,9 @@ public class SysUserRoleController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysUserRoleEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysUserRoleService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysUserRoleEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysUserRoleEntity> page = sysUserRoleService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysUserRoleController {
     public R<SysUserRoleEntity> info(@PathVariable("userId") Long userId){
             SysUserRoleEntity sysUserRole = sysUserRoleService.getById(userId);
 
-        return R.ok().data(sysUserRole);
+        return R.ok(sysUserRole);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysUserRoleController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysUserRoleEntity sysUserRole){
+    public R<Boolean> save(@RequestBody SysUserRoleEntity sysUserRole){
             sysUserRoleService.save(sysUserRole);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysUserRoleController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysUserRoleEntity sysUserRole){
+    public R<Boolean>  update(@RequestBody SysUserRoleEntity sysUserRole){
             sysUserRoleService.updateById(sysUserRole);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -100,14 +100,14 @@ public class SysUserRoleController {
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="sysUserRole",value="sysUserRole 实体对象",dataTypeClass = SysUserRoleEntity.class, paramType = "body",example="{'userIds':[zahngsan,lisi]}")
+            @ApiImplicitParam(name="userIds",value="userIds 数组对象",dataTypeClass = Long[].class, paramType = "body",example="['1','2']")
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] userIds){
+    public R<Boolean>  delete(@RequestBody Long[] userIds){
             sysUserRoleService.removeByIds(Arrays.asList(userIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

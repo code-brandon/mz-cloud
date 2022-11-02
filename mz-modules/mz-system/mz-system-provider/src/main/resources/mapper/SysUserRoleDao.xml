@@ -8,6 +8,16 @@
         <result property="userId" column="user_id"/>
         <result property="roleId" column="role_id"/>
     </resultMap>
+    <insert id = "insertUserRoles">
+        insert into `sys_user_role` (`user_id`,`role_id`)
+        values
+        <foreach collection = "userRoles" separator = "," item = "item">
+            (#{item.userId},#{item.roleId})
+        </foreach>
+    </insert>
+    <select id = "getRoleIdsByUserId" resultType = "java.lang.Long">
+        select `role_id` from `sys_user_role` where `user_id` = #{userId}
+    </select>
 
 
 </mapper>

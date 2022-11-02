@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysNoticeService extends IService<SysNoticeEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysNoticeEntity> queryPage(Map<String, Object> params);
 }
 

@@ -26,6 +26,10 @@
         <result property="remark" column="remark"/>
     </resultMap>
 
+    <sql id = "fromHead">
+        `user_id`,`dept_id`,`username`,`nick_name`,`user_type`,`email`,`phonenumber`,`sex`,`avatar`,`status`,`del_flag`,`login_ip`,`login_date`,`create_by`,`create_time`,`update_by`,`update_time`,`remark`
+    </sql>
+
     <resultMap type="com.mz.system.model.dto.SysUserDto" id="sysUserDtoMap">
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
@@ -47,12 +51,12 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
         <result property = "ifAdmin" column = "ifAdmin"/>
-        <collection property = "authorities" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysMenuDao.getAuthorities" fetchType="lazy">
+        <collection property = "authorities" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysMenuDao.getAuthorities">
             <constructor>
                 <arg column="perms"/>
             </constructor>
         </collection>
-        <collection property = "rolePermission" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysRoleDao.getRolePermissions" fetchType="lazy">
+        <collection property = "rolePermission" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysRoleDao.getRolePermissions">
             <constructor>
                 <arg column="role_key"/>
             </constructor>
@@ -77,5 +81,34 @@
         from sys_user su
         where su.username = #{username} and su.status = 0 and su.del_flag = 0
     </select>
+
+    <select id = "getUserPage" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+        select
+        <include refid = "fromHead"/>
+        from sys_user su
+        <where>
+            <if test = "userVo.username != null and userVo.username != ''">
+                and su.username = #{userVo.username}
+            </if>
+            <if test = "userVo.phonenumber != null and userVo.phonenumber != ''">
+                and su.phonenumber = #{userVo.phonenumber}
+            </if>
+            <if test = "userVo.status != null and userVo.status != 0">
+                and su.status = #{userVo.status}
+            </if>
+            <if test = "userVo.deptId != null and userVo.deptId != 0">
+                and (su.dept_id = #{userVo.deptId} or su.dept_id in ( select t.dept_id from sys_dept t where find_in_set(#{userVo.deptId}, t.ancestors) ))
+            </if>
+            and su.del_flag='0'
+        </where>
+        order by su.`create_time` desc
+    </select>
+
+    <resultMap type="com.mz.system.model.vo.res.SysUserResVo" id="sysUserVoMap" extends="sysUserMap">
+        <collection property = "postIds" column = "user_id" ofType = "Long" select = "com.mz.system.provider.dao.SysUserPostDao.getPostIdsByUserId"/>
+        <collection property = "roleIds" column = "user_id" ofType = "Long" select = "com.mz.system.provider.dao.SysUserRoleDao.getRoleIdsByUserId"/>
+    </resultMap>
+
+
 
 </mapper>

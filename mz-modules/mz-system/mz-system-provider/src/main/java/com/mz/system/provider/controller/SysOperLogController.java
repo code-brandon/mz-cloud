@@ -40,9 +40,9 @@ public class SysOperLogController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysOperLogEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysOperLogService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysOperLogEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysOperLogEntity> page = sysOperLogService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysOperLogController {
     public R<SysOperLogEntity> info(@PathVariable("operId") Long operId){
             SysOperLogEntity sysOperLog = sysOperLogService.getById(operId);
 
-        return R.ok().data(sysOperLog);
+        return R.ok(sysOperLog);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysOperLogController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysOperLogEntity sysOperLog){
+    public R<Boolean> save(@RequestBody SysOperLogEntity sysOperLog){
             sysOperLogService.save(sysOperLog);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysOperLogController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysOperLogEntity sysOperLog){
+    public R<Boolean>  update(@RequestBody SysOperLogEntity sysOperLog){
             sysOperLogService.updateById(sysOperLog);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysOperLogController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] operIds){
+    public R<Boolean>  delete(@RequestBody Long[] operIds){
             sysOperLogService.removeByIds(Arrays.asList(operIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysLogininforService extends IService<SysLogininforEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysLogininforEntity> queryPage(Map<String, Object> params);
 }
 

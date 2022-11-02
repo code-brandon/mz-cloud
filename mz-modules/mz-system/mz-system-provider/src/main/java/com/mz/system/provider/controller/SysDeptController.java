@@ -41,21 +41,28 @@ public class SysDeptController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<SysDeptEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysDeptService.queryPage(params);
-        return R.ok().data(page);
+    @GetMapping("/page")
+    public R<PageUtils<SysDeptEntity>> page(@RequestParam Map<String, Object> params){
+        PageUtils<SysDeptEntity> page = sysDeptService.queryPage(params);
+        return R.ok(page);
+    }
+
+    @ApiOperation("获取部门列表树")
+    @GetMapping("/getDeptListTree")
+    public R<List<Tree<Long>>> getDeptListTree() {
+        List<Tree<Long>> trees = sysDeptService.getDeptListTree();
+        return R.ok(trees);
     }
 
     /**
      * 获取部门树列表
      * @return
      */
-    @ApiOperation("获取部门树列表")
+    @ApiOperation("获取部门树")
     @GetMapping("/getDeptTree")
     public R<List<Tree<Long>>> getDeptTree() {
         List<Tree<Long>> trees = sysDeptService.getDeptTree();
-        return R.ok().data(trees);
+        return R.ok(trees);
     }
 
 
@@ -72,7 +79,7 @@ public class SysDeptController {
     public R<SysDeptEntity> info(@PathVariable("deptId") Long deptId){
             SysDeptEntity sysDept = sysDeptService.getById(deptId);
 
-        return R.ok().data(sysDept);
+        return R.ok(sysDept);
     }
 
     /**
@@ -85,10 +92,10 @@ public class SysDeptController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysDeptEntity sysDept){
+    public R<Boolean> save(@RequestBody SysDeptEntity sysDept){
             sysDeptService.save(sysDept);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -101,10 +108,10 @@ public class SysDeptController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysDeptEntity sysDept){
+    public R<Boolean>  update(@RequestBody SysDeptEntity sysDept){
             sysDeptService.updateById(sysDept);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -117,10 +124,10 @@ public class SysDeptController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] deptIds){
+    public R<Boolean>  delete(@RequestBody Long[] deptIds){
             sysDeptService.removeByIds(Arrays.asList(deptIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

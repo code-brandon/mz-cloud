@@ -1,7 +1,7 @@
 package com.mz.system.provider;
 
 import com.mz.common.mybatis.annotation.EnableMzMybatisCustomizeConfig;
-import com.mz.common.swagger.annotation.EnableMzSwagger2Config;
+import com.mz.common.redis.annotation.EnableMzRedisAutoConfigure;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
@@ -20,8 +20,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableResourceServer
 @SpringBootApplication
 @EnableDiscoveryClient
+@EnableMzRedisAutoConfigure
 @EnableMzMybatisCustomizeConfig
-@EnableMzSwagger2Config
 public class MzSystemProviderApplication {
 
     public static void main(String[] args) {

@@ -40,9 +40,9 @@ public class SysLogininforController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysLogininforEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysLogininforService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysLogininforEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysLogininforEntity>  page = sysLogininforService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysLogininforController {
     public R<SysLogininforEntity> info(@PathVariable("infoId") Long infoId){
             SysLogininforEntity sysLogininfor = sysLogininforService.getById(infoId);
 
-        return R.ok().data(sysLogininfor);
+        return R.ok(sysLogininfor);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysLogininforController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysLogininforEntity sysLogininfor){
+    public R<Boolean> save(@RequestBody SysLogininforEntity sysLogininfor){
             sysLogininforService.save(sysLogininfor);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysLogininforController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysLogininforEntity sysLogininfor){
+    public R<Boolean>  update(@RequestBody SysLogininforEntity sysLogininfor){
             sysLogininforService.updateById(sysLogininfor);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysLogininforController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] infoIds){
+    public R<Boolean>  delete(@RequestBody Long[] infoIds){
             sysLogininforService.removeByIds(Arrays.asList(infoIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

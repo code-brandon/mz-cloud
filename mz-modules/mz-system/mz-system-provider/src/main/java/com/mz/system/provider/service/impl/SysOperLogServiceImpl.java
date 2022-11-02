@@ -17,12 +17,12 @@ import java.util.Map;
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogDao, SysOperLogEntity> implements SysOperLogService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysOperLogEntity> queryPage(Map<String, Object> params) {
         IPage<SysOperLogEntity> page = this.page(
                 new Query<SysOperLogEntity>().getPage(params),
                 new QueryWrapper<SysOperLogEntity>()
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

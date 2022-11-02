@@ -40,9 +40,9 @@ public class SysUserPostController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysUserPostEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysUserPostService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysUserPostEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysUserPostEntity> page = sysUserPostService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysUserPostController {
     public R<SysUserPostEntity> info(@PathVariable("userId") Long userId){
             SysUserPostEntity sysUserPost = sysUserPostService.getById(userId);
 
-        return R.ok().data(sysUserPost);
+        return R.ok(sysUserPost);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysUserPostController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysUserPostEntity sysUserPost){
+    public R<Boolean> save(@RequestBody SysUserPostEntity sysUserPost){
             sysUserPostService.save(sysUserPost);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,9 @@ public class SysUserPostController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysUserPostEntity sysUserPost){
-            sysUserPostService.updateById(sysUserPost);
-
-        return R.ok();
+    public R<Boolean>  update(@RequestBody SysUserPostEntity sysUserPost){
+        sysUserPostService.updateById(sysUserPost);
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -100,14 +99,14 @@ public class SysUserPostController {
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="sysUserPost",value="sysUserPost 实体对象",dataTypeClass = SysUserPostEntity.class, paramType = "body",example="{'userIds':[zahngsan,lisi]}")
+            @ApiImplicitParam(name="userIds",value="userIds 数组对象",dataTypeClass = Long[].class, paramType = "body",example="['1','2']")
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] userIds){
-            sysUserPostService.removeByIds(Arrays.asList(userIds));
+    public R<Boolean>  delete(@RequestBody Long[] userIds){
+        sysUserPostService.removeByIds(Arrays.asList(userIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

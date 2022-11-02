@@ -15,6 +15,6 @@ import java.util.Map;
  */
 public interface SysDictDataService extends IService<SysDictDataEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysDictDataEntity> queryPage(Map<String, Object> params);
 }
 

@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mz.system.provider.dao.SysRoleDeptDao">
+<mapper namespace = "com.mz.system.provider.dao.SysRoleDeptDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.mz.system.model.entity.SysRoleDeptEntity" id="sysRoleDeptMap">
-        <result property="roleId" column="role_id"/>
-        <result property="deptId" column="dept_id"/>
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type = "com.mz.system.model.entity.SysRoleDeptEntity" id = "sysRoleDeptMap">
+        <result property = "roleId" column = "role_id"/>
+        <result property = "deptId" column = "dept_id"/>
     </resultMap>
+    <insert id = "insertRoleDepts">
+        insert into sys_role_dept (role_id, dept_id)
+        values
+        <foreach collection = "roleDepts" separator = "," item = "item">
+            (#{item.roleId},#{item.deptId})
+        </foreach>
+    </insert>
+
+    <select id = "getDeptIdsByRoleId" resultType = "java.lang.Long">
+        select `dept_id`
+        from `sys_role_dept`
+        where `role_id` = #{roleId}
+    </select>
 
 
 </mapper>

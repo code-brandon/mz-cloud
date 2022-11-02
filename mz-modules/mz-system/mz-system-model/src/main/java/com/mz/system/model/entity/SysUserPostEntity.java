@@ -30,7 +30,7 @@ public class SysUserPostEntity implements Serializable {
 	 * 用户ID
 	 */
     @ApiModelProperty("用户ID")
-	@TableId(type = IdType.AUTO)
+	@TableId(type = IdType.INPUT)
 	private Long userId;
 	/**
 	 * 岗位ID

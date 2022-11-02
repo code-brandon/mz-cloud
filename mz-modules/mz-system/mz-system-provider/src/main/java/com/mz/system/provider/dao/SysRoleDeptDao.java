@@ -3,7 +3,11 @@ package com.mz.system.provider.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mz.system.model.entity.SysRoleDeptEntity;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * 角色和部门关联表
@@ -15,5 +19,18 @@ import org.springframework.stereotype.Repository;
 @Mapper
 @Repository
 public interface SysRoleDeptDao extends BaseMapper<SysRoleDeptEntity> {
-	
+
+    /**
+     * 根据角色ID获部门ID集合
+     * @param roleId
+     * @return
+     */
+    List<Long> getDeptIdsByRoleId(@Param("roleId") Long roleId);
+
+    /**
+     * 批量插入
+     * @param roleDepts
+     * @return
+     */
+    int insertRoleDepts(@Param("roleDepts") Set<SysRoleDeptEntity> roleDepts);
 }

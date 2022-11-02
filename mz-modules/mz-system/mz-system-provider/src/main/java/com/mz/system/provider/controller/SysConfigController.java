@@ -40,9 +40,9 @@ public class SysConfigController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysConfigEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysConfigService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysConfigEntity>> list(@RequestParam Map<String, Object> params){
+        PageUtils<SysConfigEntity> page = sysConfigService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysConfigController {
     public R<SysConfigEntity> info(@PathVariable("configId") Integer configId){
             SysConfigEntity sysConfig = sysConfigService.getById(configId);
 
-        return R.ok().data(sysConfig);
+        return R.ok(sysConfig);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysConfigController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysConfigEntity sysConfig){
+    public R<Boolean> save(@RequestBody SysConfigEntity sysConfig){
             sysConfigService.save(sysConfig);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysConfigController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysConfigEntity sysConfig){
+    public R<Boolean> update(@RequestBody SysConfigEntity sysConfig){
             sysConfigService.updateById(sysConfig);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysConfigController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Integer[] configIds){
+    public R<Boolean>  delete(@RequestBody Integer[] configIds){
             sysConfigService.removeByIds(Arrays.asList(configIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

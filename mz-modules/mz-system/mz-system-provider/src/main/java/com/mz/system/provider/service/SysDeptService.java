@@ -17,12 +17,14 @@ import java.util.Map;
  */
 public interface SysDeptService extends IService<SysDeptEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysDeptEntity> queryPage(Map<String, Object> params);
 
     /**
      * 获取部门树列表
      * @return
      */
     List<Tree<Long>> getDeptTree();
+
+    List<Tree<Long>> getDeptListTree();
 }
 

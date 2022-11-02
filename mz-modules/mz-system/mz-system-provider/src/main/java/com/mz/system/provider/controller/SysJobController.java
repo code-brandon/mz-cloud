@@ -40,9 +40,9 @@ public class SysJobController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<SysJobEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysJobService.queryPage(params);
-        return R.ok().data(page);
+    public R<PageUtils<SysJobEntity> > list(@RequestParam Map<String, Object> params){
+        PageUtils<SysJobEntity> page = sysJobService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysJobController {
     public R<SysJobEntity> info(@PathVariable("jobId") Long jobId){
             SysJobEntity sysJob = sysJobService.getById(jobId);
 
-        return R.ok().data(sysJob);
+        return R.ok(sysJob);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysJobController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysJobEntity sysJob){
+    public R<Boolean> save(@RequestBody SysJobEntity sysJob){
             sysJobService.save(sysJob);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysJobController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysJobEntity sysJob){
+    public R<Boolean>  update(@RequestBody SysJobEntity sysJob){
             sysJobService.updateById(sysJob);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysJobController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] jobIds){
+    public R<Boolean>  delete(@RequestBody Long[] jobIds){
             sysJobService.removeByIds(Arrays.asList(jobIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

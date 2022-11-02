@@ -1,5 +1,6 @@
 package com.mz.system.provider.service;
 
+import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysMenuDto;
@@ -18,13 +19,15 @@ import java.util.Map;
  */
 public interface SysMenuService extends IService<SysMenuEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysMenuEntity> queryPage(Map<String, Object> params);
 
     /**
      * 菜单树
      * @return
      */
-    List<SysMenuDto> getMenuTree();
+    List<SysMenuDto> getUserMenuTree();
+
+    List<Tree<Long>> getMenuTree();
 
     /**
      * 根据父节点的ID获取所有子节点
@@ -42,5 +45,7 @@ public interface SysMenuService extends IService<SysMenuEntity> {
      * @return 路由列表
      */
     List<MenuResVo> buildMenus(List<SysMenuDto> menus);
+
+    List<Tree<Long>> getMenuListTree();
 }
 

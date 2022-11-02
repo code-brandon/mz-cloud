@@ -5,7 +5,10 @@ import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysUserDto;
 import com.mz.system.model.entity.SysUserEntity;
 import com.mz.system.model.vo.LoginBodyVo;
+import com.mz.system.model.vo.req.SysUserIdAndPasswdReqVo;
+import com.mz.system.model.vo.res.SysUserResVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -17,7 +20,7 @@ import java.util.Map;
  */
 public interface SysUserService extends IService<SysUserEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils<SysUserResVo> queryPage(Map<String, Object> params, SysUserResVo userReqVo);
 
     /**
      * 按名称获取用户
@@ -39,5 +42,41 @@ public interface SysUserService extends IService<SysUserEntity> {
      * @return
      */
     SysUserDto loadUserByUserNameAndPassword(LoginBodyVo loginBodyVo);
+
+    /**
+     * 保存用户信息
+     *
+     * @param sysUserResVo
+     * @return
+     */
+    boolean saveUser(SysUserResVo sysUserResVo);
+
+    /**
+     * 根据用户ID查询用户信息
+     * @param userId
+     * @return
+     */
+    SysUserResVo getUserById(Long userId);
+
+    /**
+     * 根据用户ID更新用户信息
+     * @param sysUserResVo
+     * @return
+     */
+    boolean updateUserById(SysUserResVo sysUserResVo);
+
+    /**
+     * 重置密码
+     * @param userVo
+     * @return
+     */
+    boolean resetPasswd(SysUserIdAndPasswdReqVo userVo);
+
+    /**
+     * 根据ID集合删除用户
+     * @param userIds
+     * @return
+     */
+    boolean removeUserByIds(List<Long> userIds);
 }
 

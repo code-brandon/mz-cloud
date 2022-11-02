@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 
@@ -39,10 +40,17 @@ public class SysPostController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<SysPostEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysPostService.queryPage(params);
-        return R.ok().data(page);
+    @PostMapping("/page")
+    public R<PageUtils<SysPostEntity>> page(@RequestParam Map<String, Object> params){
+        PageUtils<SysPostEntity> page = sysPostService.queryPage(params);
+        return R.ok(page);
+    }
+
+    @ApiOperation("所有数据")
+    @PostMapping("/list")
+    public R<List<SysPostEntity>> list(){
+        List<SysPostEntity> posts = sysPostService.list();
+        return R.ok(posts);
     }
 
 
@@ -59,7 +67,7 @@ public class SysPostController {
     public R<SysPostEntity> info(@PathVariable("postId") Long postId){
             SysPostEntity sysPost = sysPostService.getById(postId);
 
-        return R.ok().data(sysPost);
+        return R.ok(sysPost);
     }
 
     /**
@@ -72,10 +80,10 @@ public class SysPostController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysPostEntity sysPost){
+    public R<Boolean> save(@RequestBody SysPostEntity sysPost){
             sysPostService.save(sysPost);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +96,10 @@ public class SysPostController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysPostEntity sysPost){
+    public R<Boolean>  update(@RequestBody SysPostEntity sysPost){
             sysPostService.updateById(sysPost);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -100,14 +108,14 @@ public class SysPostController {
      * @return 删除结果
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="sysPost",value="sysPost 实体对象",dataTypeClass = SysPostEntity.class, paramType = "body",example="{'postIds':[zahngsan,lisi]}")
+            @ApiImplicitParam(name="postIds",value="postIds 数组对象",dataTypeClass = SysPostEntity.class, paramType = "body",example="['1','2']")
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] postIds){
+    public R<Boolean>  delete(@RequestBody Long[] postIds){
             sysPostService.removeByIds(Arrays.asList(postIds));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }

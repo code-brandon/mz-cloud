@@ -11,18 +11,24 @@ import com.mz.system.provider.service.SysDictDataService;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.Objects;
 
 
 @Service("sysDictDataService")
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictDataEntity> implements SysDictDataService {
 
     @Override
-    public PageUtils queryPage(Map<String, Object> params) {
+    public PageUtils<SysDictDataEntity> queryPage(Map<String, Object> params) {
+
+        if (Objects.isNull(params.get("dictType"))) {
+            return null;
+        }
+
         IPage<SysDictDataEntity> page = this.page(
                 new Query<SysDictDataEntity>().getPage(params),
-                new QueryWrapper<SysDictDataEntity>()
+                new QueryWrapper<SysDictDataEntity>().lambda().eq(Objects.nonNull(params.get("dictType")),SysDictDataEntity::getDictType,params.get("dictType"))
         );
-        return new PageUtils(page);
+        return new PageUtils<>(page);
     }
 
 }

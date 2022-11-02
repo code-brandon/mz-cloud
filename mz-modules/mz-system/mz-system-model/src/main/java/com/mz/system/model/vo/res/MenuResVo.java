@@ -1,15 +1,17 @@
 package com.mz.system.model.vo.res;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-
 import java.util.List;
 
 /**
- * 路由配置信息
+ * What -- 路由配置信息
+ * <br>
+ * Describe --
+ * <br>
  *
- * @author ruoyi
+ * @author 小政同学    QQ:xiaozheng666888@qq.com
+ * @ClassName: MenuResVo
+ * @CreateTime 2022/10/18 16:20
  */
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MenuResVo {
     /**
      * 路由名字

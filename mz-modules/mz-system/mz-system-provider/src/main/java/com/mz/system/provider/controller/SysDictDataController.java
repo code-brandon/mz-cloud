@@ -39,10 +39,10 @@ public class SysDictDataController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<SysDictDataEntity> list(@RequestParam Map<String, Object> params){
-        PageUtils page = sysDictDataService.queryPage(params);
-        return R.ok().data(page);
+    @PostMapping("/page")
+    public R<PageUtils<SysDictDataEntity>> page(@RequestParam Map<String, Object> params){
+        PageUtils<SysDictDataEntity> page = sysDictDataService.queryPage(params);
+        return R.ok(page);
     }
 
 
@@ -59,7 +59,7 @@ public class SysDictDataController {
     public R<SysDictDataEntity> info(@PathVariable("dictCode") Long dictCode){
             SysDictDataEntity sysDictData = sysDictDataService.getById(dictCode);
 
-        return R.ok().data(sysDictData);
+        return R.ok(sysDictData);
     }
 
     /**
@@ -72,10 +72,10 @@ public class SysDictDataController {
     })
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R save(@RequestBody SysDictDataEntity sysDictData){
+    public R<Boolean> save(@RequestBody SysDictDataEntity sysDictData){
             sysDictDataService.save(sysDictData);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -88,10 +88,10 @@ public class SysDictDataController {
     })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    public R update(@RequestBody SysDictDataEntity sysDictData){
+    public R<Boolean>  update(@RequestBody SysDictDataEntity sysDictData){
             sysDictDataService.updateById(sysDictData);
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
     /**
@@ -104,10 +104,10 @@ public class SysDictDataController {
     })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R delete(@RequestBody Long[] dictCodes){
+    public R<Boolean>  delete(@RequestBody Long[] dictCodes){
             sysDictDataService.removeByIds(Arrays.asList(dictCodes));
 
-        return R.ok();
+        return R.ok(Boolean.TRUE);
     }
 
 }
