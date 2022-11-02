@@ -23,5 +23,6 @@
         <module>mz-common-mybatis</module>
         <module>mz-common-feign</module>
         <module>mz-common-sentinel</module>
+        <module>mz-common-encrypt</module>
     </modules>
 </project>
