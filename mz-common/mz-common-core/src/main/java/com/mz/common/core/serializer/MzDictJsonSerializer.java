@@ -10,9 +10,19 @@ import org.apache.commons.lang3.StringUtils;
 import java.io.IOException;
 import java.util.Objects;
 
+/**
+ * What -- Mz 字典 Json序列化器
+ * <br>
+ * Describe --
+ * <br>
+ *
+ * @author 小政同学    QQ:xiaozheng666888@qq.com
+ * @ClassName: MzDictJsonSerializer
+ * @CreateTime 2022/10/28 22:33
+ */
 public class MzDictJsonSerializer extends JsonSerializer<Object> {
 
-    private DictFormat dictFormat;
+    private final DictFormat dictFormat;
 
     public MzDictJsonSerializer(DictFormat dict) {
         this.dictFormat = dict;
