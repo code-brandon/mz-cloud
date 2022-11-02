@@ -1,5 +1,6 @@
 package com.mz.common.redis.annotation;
 
+import com.mz.common.redis.aspect.MzDistributedLockAspect;
 import com.mz.common.redis.config.MzCacheConfig;
 import com.mz.common.redis.config.MzRedisConfig;
 import org.springframework.context.annotation.Import;
@@ -20,7 +21,7 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 @Inherited
-@Import({MzCacheConfig.class, MzRedisConfig.class})
+@Import({MzCacheConfig.class, MzRedisConfig.class, MzDistributedLockAspect.class})
 public @interface EnableMzRedisAutoConfigure  {
 
 }

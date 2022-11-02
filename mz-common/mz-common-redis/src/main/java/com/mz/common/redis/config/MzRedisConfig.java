@@ -1,6 +1,7 @@
 package com.mz.common.redis.config;
 
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,10 +16,11 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * @author mingyifan
  * @date 2022-02-15 14:05
  */
+@Slf4j
 @Configuration
 public class MzRedisConfig {
 
-    @Bean
+    @Bean("mzRedisTemplate")
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         // 创建 RedisTemplate 对象
         RedisTemplate<String, Object> template = new RedisTemplate<>();
@@ -34,6 +36,7 @@ public class MzRedisConfig {
         template.setHashKeySerializer(new StringRedisSerializer());
         template.setHashValueSerializer(RedisSerializer.json());
         template.afterPropertiesSet();
+        log.info("MzRedisTemplate配置类完成:{}",template.getClass().toString());
         return template;
     }
 }

@@ -20,12 +20,13 @@ import java.util.concurrent.TimeUnit;
 // @Component
 public class MzRedisUtil {
 
+
     @Autowired
     @Qualifier("stringRedisTemplate")
     private StringRedisTemplate redisTemplate;
 
     @Autowired
-    @Qualifier("redisTemplate")
+    @Qualifier("mzRedisTemplate")
     private RedisTemplate oRedisTemplate;
 
     public StringRedisTemplate getRedisTemplate() {

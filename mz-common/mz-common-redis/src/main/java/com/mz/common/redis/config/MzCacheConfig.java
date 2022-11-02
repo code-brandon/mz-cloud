@@ -1,6 +1,7 @@
 package com.mz.common.redis.config;
 
 import com.mz.common.redis.utils.MzRedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.boot.autoconfigure.cache.CacheProperties;
@@ -27,9 +28,8 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 //启用配置属性 将CacheProperties.class加入Spring容器中
 @EnableConfigurationProperties(CacheProperties.class)
 @EnableCaching // 开启缓存功能
+@Slf4j
 public class MzCacheConfig {
-
-    private final Log log = LogFactory.getLog(MzCacheConfig.class);
 
     @Bean
     RedisCacheConfiguration redisCacheConfiguration(/*因为开启了配置属性功能并导入了class所以这样是可以自动导入的*/CacheProperties cacheProperties) {
@@ -53,6 +53,7 @@ public class MzCacheConfig {
         if (!redisProperties.isUseKeyPrefix()) {
             configuration = configuration.disableKeyPrefix();
         }
+        log.info("Cache配置类完成:{}",configuration.getClass().toString());
         return configuration;
     }
 
