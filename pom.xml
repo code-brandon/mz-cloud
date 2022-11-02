@@ -13,11 +13,11 @@
         <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <spring-boot.version>2.3.7.RELEASE</spring-boot.version>
-        <spring-cloud-alibaba.version>2.2.2.RELEASE</spring-cloud-alibaba.version>
-        <spring-cloud.version>Hoxton.SR9</spring-cloud.version>
-        <fastjson.version>1.2.72</fastjson.version>
-        <mybatis-plus.version>3.4.2</mybatis-plus.version>
+        <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
+        <spring-cloud-alibaba.version>2.2.9.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud.version>Hoxton.SR12</spring-cloud.version>
+        <fastjson.version>1.2.83</fastjson.version>
+        <mybatis-plus.version>3.5.0</mybatis-plus.version>
         <commons-io.version>2.10.0</commons-io.version>
         <commons-fileupload.version>1.3.3</commons-fileupload.version>
         <commons.lang.version>3.12.0</commons.lang.version>
@@ -32,12 +32,13 @@
         <servlet.version>4.0.1</servlet.version>
         <swagger-annotations.version>1.5.20</swagger-annotations.version>
         <swagger-ui.version>1.9.6</swagger-ui.version>
-        <guava.version>29.0-jre</guava.version>
-        <minio.version>7.1.0</minio.version>
+        <guava.version>31.1-jre</guava.version>
+        <minio.version>8.4.3</minio.version>
         <dynamic-datasource.version>3.5.0</dynamic-datasource.version>
         <aspectj.version>1.9.9.1</aspectj.version>
         <curator.version>4.0.1</curator.version>
         <maven.deploy.version>2.8.2</maven.deploy.version>
+        <junit.version>4.13.2</junit.version>
     </properties>
 
     <modules>
@@ -220,6 +221,13 @@
                 <version>${aspectj.version}</version>
             </dependency>
 
+            <!-- https://mvnrepository.com/artifact/junit/junit -->
+            <dependency>
+                <groupId>junit</groupId>
+                <artifactId>junit</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
 
             <dependency>
                 <groupId>org.springframework.boot</groupId>
@@ -242,6 +250,23 @@
     </dependencyManagement>
 
     <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-resources-plugin</artifactId>
+                    <version>3.3.0</version>
+                    <configuration>
+                        <!--https://maven.apache.org/plugins/maven-resources-plugin/examples/filtering-properties-files.html-->
+                        <propertiesEncoding>UTF-8</propertiesEncoding>
+                        <!--配置MAVEN过滤JKS等格式的文件-->
+                        <nonFilteredFileExtensions>
+                            <nonFilteredFileExtension>jks</nonFilteredFileExtension>
+                        </nonFilteredFileExtensions>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -260,14 +285,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
-                <version>3.2.0</version>
-                <configuration>
-                    <!--配置MAVEN过滤JKS等格式的文件-->
-                    <nonFilteredFileExtensions>
-                        <!--<nonFilteredFileExtension>p12</nonFilteredFileExtension>-->
-                        <nonFilteredFileExtension>jks</nonFilteredFileExtension>
-                    </nonFilteredFileExtensions>
-                </configuration>
             </plugin>
         </plugins>
         <resources>
