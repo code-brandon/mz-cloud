@@ -2,7 +2,6 @@ package com.mz.auth.provider;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.JacksonUtils;
-import com.alibaba.nacos.common.utils.Objects;
 import com.mz.common.core.entity.R;
 import com.mz.common.core.utils.MzWebUtils;
 import org.springframework.core.MethodParameter;
@@ -12,6 +11,7 @@ import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Objects;
 
 /**
  * What -- 格式化程序令牌
@@ -64,8 +64,7 @@ public class MzFormatterToken implements HandlerMethodReturnValueHandler {
 
         HttpServletResponse response = request.getNativeResponse(HttpServletResponse.class);
         assert response != null;
-        System.out.println("response = " + body);
-        MzWebUtils.renderJson(response, R.ok().data(JSON.parse(JacksonUtils.toJson(body))));
+        MzWebUtils.renderJson(response, R.ok(JSON.parse(JacksonUtils.toJson(body))));
     }
 
 

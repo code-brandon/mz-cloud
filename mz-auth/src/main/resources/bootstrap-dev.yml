@@ -3,6 +3,8 @@ spring:
     nacos:
       discovery:
         server-addr: ${NACOS_HOST:192.168.56.2}:8848
+        metadata:
+          env: dev
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml

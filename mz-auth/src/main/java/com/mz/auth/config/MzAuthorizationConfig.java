@@ -106,8 +106,10 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
                 .withClient("mz_cloud")
                 // 默认使用加密校验
                 .secret(passwordEncoder.encode("1911298402"))
-                // 令牌有效期
+                // 令牌有效期 5小时
                 .accessTokenValiditySeconds(60 * 60 * 5)
+                // 刷新令牌有效时间 3天
+                .refreshTokenValiditySeconds(60 * 60 * 24 * 3)
                 // 授权成功进行跳转
                 .redirectUris("https://www.baidu.com")
                 // 配置申请权限范围
