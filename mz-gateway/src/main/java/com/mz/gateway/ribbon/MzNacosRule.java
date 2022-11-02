@@ -8,7 +8,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.api.naming.NamingService;
 import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
-import com.alibaba.nacos.common.utils.MapUtils;
+import com.alibaba.nacos.common.utils.MapUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.netflix.client.config.IClientConfig;
@@ -61,7 +61,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 			String name = loadBalancer.getName();
 
 			// 根据名称获取服务
-			NamingService namingService = nacosServiceManager.getNamingService(nacosDiscoveryProperties.getNacosProperties());
+			NamingService namingService = nacosServiceManager.getNamingService();
 
 			// 根据均衡器名称，集群分组 获取实例
 			List<Instance> instances = namingService.selectInstances(name, group, true);
@@ -82,13 +82,13 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					if (!CollectionUtils.isEmpty(envs)) {
 						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> {
-							return !MapUtils.isEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get("env"));
+							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get("env"));
 						}).collect(Collectors.groupingBy(b -> {
 							return b.getMetadata().get("env");
 						}));
 						LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
-						if (MapUtils.isNotEmpty(envInstanceMap)) {
+						if (MapUtil.isNotEmpty(envInstanceMap)) {
 							instancesToChoose = envInstanceMap.get((envs).get(0));
 						} else {
 							instancesToChoose = new ArrayList<>();
@@ -96,7 +96,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 
 					} else {
 						List<Instance> envInstances = sameClusterInstances.stream().filter(f -> {
-							return !MapUtils.isEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get("env"));
+							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get("env"));
 						}).collect(Collectors.toList());
 						instancesToChoose = envInstances;
 					}
