@@ -101,7 +101,7 @@
             </if>
             and su.del_flag='0'
         </where>
-        order by su.`create_time` desc
+        order by su.`create_time`
     </select>
 
     <resultMap type="com.mz.system.model.vo.res.SysUserResVo" id="sysUserVoMap" extends="sysUserMap">

@@ -91,7 +91,7 @@
         <include refid = "fromHead"/>
         from sys_role t
         <include refid = "whereSelect"/>
-        order by `create_time` desc
+        order by `create_time`
     </select>
 
 </mapper>
