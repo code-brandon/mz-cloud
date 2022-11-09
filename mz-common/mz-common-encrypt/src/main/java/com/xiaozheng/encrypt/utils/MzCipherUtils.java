@@ -1,23 +1,16 @@
 package com.xiaozheng.encrypt.utils;
 
+import lombok.SneakyThrows;
+import org.apache.commons.codec.binary.Base64;
+
+import javax.crypto.*;
+import javax.crypto.interfaces.DHPrivateKey;
+import javax.crypto.interfaces.DHPublicKey;
+import javax.crypto.spec.*;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.KeyStore;
-import java.security.KeyStoreException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.PrivateKey;
-import java.security.PublicKey;
-import java.security.SecureRandom;
-import java.security.Signature;
-import java.security.SignatureException;
-import java.security.UnrecoverableKeyException;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -26,28 +19,7 @@ import java.security.interfaces.RSAPrivateCrtKey;
 import java.security.interfaces.RSAPrivateKey;
 import java.security.interfaces.RSAPublicKey;
 import java.security.spec.*;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.Cipher;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.KeyAgreement;
-import javax.crypto.KeyGenerator;
-import javax.crypto.Mac;
-import javax.crypto.NoSuchPaddingException;
-import javax.crypto.SecretKey;
-import javax.crypto.SecretKeyFactory;
-import javax.crypto.interfaces.DHPrivateKey;
-import javax.crypto.interfaces.DHPublicKey;
-import javax.crypto.spec.DHParameterSpec;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.PBEKeySpec;
-import javax.crypto.spec.PBEParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
+import java.util.*;
 
 /**
  * What -- 密码工具类
@@ -92,30 +64,36 @@ public class MzCipherUtils {
      */
     private static final String ALGORITHM_AES = "AES/CBC/PKCS5Padding";
 
+    public static final String ALGORITHM_ECB_AES = "AES/ECB/PKCS5Padding";
+
+    public static final String ALGORITHM_CBC_AES = "AES/CBC/PKCS5Padding";
+
+    public static final String ALGORITHM_ECB_RSA = "RSA/ECB/PKCS1Padding";
+
     /**
      * RSA算法
      */
-    private static final String KEY_ALGORITHM = "RSA";
+    public static final String KEY_ALGORITHM = "RSA";
 
     /**
      * 数字签名
      */
-    private static final String SIGNATURE_ALGORITHM = "MD5withRSA";
+    public static final String SIGNATURE_ALGORITHM = "MD5withRSA";
 
     /**
      * 公钥
      */
-    private static final String RSAPUBLIC_KEY = "RSAPublicKey";
+    public static final String RSAPUBLIC_KEY = "RSAPublicKey";
 
     /**
      * 私钥
      */
-    private static final String RSAPRIVATE_KEY = "RSAPrivateKey";
+    public static final String RSAPRIVATE_KEY = "RSAPrivateKey";
 
     /**
      * D-H算法
      */
-    private static final String ALGORITHM_DH = "DH";
+    public static final String ALGORITHM_DH = "DH";
 
     /**
      * 默认密钥字节数
@@ -809,6 +787,33 @@ public class MzCipherUtils {
         return MzTranscodeUtils.byteArrayToBase64Str(key.getEncoded());
     }
 
+
+    /**
+     * 得到公钥
+     *
+     * @param publicKey
+     *            密钥字符串（经过base64编码）
+     * @throws Exception
+     */
+    public static PublicKey getStringPublicKey(String publicKey) throws Exception {
+        X509EncodedKeySpec keySpec = new X509EncodedKeySpec(Base64.decodeBase64(publicKey));
+        KeyFactory keyFactory = KeyFactory.getInstance( KEY_ALGORITHM);
+        return keyFactory.generatePublic(keySpec);
+    }
+
+    /**
+     * 得到私钥
+     *
+     * @param privateKey
+     *            密钥字符串（经过base64编码）
+     * @throws Exception
+     */
+    public static PrivateKey getStringPrivateKey(String privateKey) throws Exception {
+        PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(Base64.decodeBase64(privateKey));
+        KeyFactory keyFactory = KeyFactory.getInstance( KEY_ALGORITHM);
+        return keyFactory.generatePrivate(keySpec);
+    }
+
     /**
      * 获取公钥
      *
@@ -860,7 +865,7 @@ public class MzCipherUtils {
         try {
             RSAPrivateCrtKey key = (RSAPrivateCrtKey) getStore(keyStorePath, password).getKey(alias, password.toCharArray());
             RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
-            PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(spec);
+            PublicKey publicKey = KeyFactory.getInstance( KEY_ALGORITHM).generatePublic(spec);
             return new KeyPair(publicKey, key);
         }
         catch (Exception e) {
@@ -1028,6 +1033,91 @@ public class MzCipherUtils {
             e.printStackTrace();
         }
         return null;
+    }
+
+
+    /**
+     * RSA公钥加密  (超长加密)
+     *
+     * @param str       加密字符串
+     * @param publicKey 公钥
+     * @return 密文
+     * @throws Exception 加密过程中的异常信息
+     */
+    public static String publicKeyEncrypt(String str, String publicKey) throws Exception {
+        //base64编码的公钥
+        byte[] decoded = Base64.decodeBase64(publicKey);
+        RSAPublicKey pubKey = (RSAPublicKey) KeyFactory.getInstance(KEY_ALGORITHM).generatePublic(new X509EncodedKeySpec(decoded));
+        //RSA加密
+        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+        cipher.init(Cipher.ENCRYPT_MODE, pubKey);
+
+        //当长度过长的时候，需要分割后加密 117个字节
+        byte[] resultBytes = getMaxResultEncrypt(str, cipher);
+
+        return Base64.encodeBase64String(resultBytes);
+    }
+
+    private static byte[] getMaxResultEncrypt(String str, Cipher cipher) {
+        byte[] inputArray = str.getBytes();
+        // 最大加密字节数，超出最大字节数需要分组加密
+        int MAX_ENCRYPT_BLOCK = 117;
+        return getRSABytes(cipher, inputArray, MAX_ENCRYPT_BLOCK);
+    }
+
+    /**
+     * RSA私钥解密  (超长解密)
+     *
+     * @param str        加密字符串
+     * @param privateKey 私钥
+     * @return 铭文
+     * @throws Exception 解密过程中的异常信息
+     */
+    public static String privateKeyDecrypt(String str, String privateKey) throws Exception {
+        //base64编码的私钥
+        byte[] decoded = Base64.decodeBase64(privateKey);
+        RSAPrivateKey priKey = (RSAPrivateKey) KeyFactory.getInstance(KEY_ALGORITHM).generatePrivate(new PKCS8EncodedKeySpec(decoded));
+        //RSA解密
+        Cipher cipher = Cipher.getInstance(KEY_ALGORITHM);
+        cipher.init(Cipher.DECRYPT_MODE, priKey);
+        //当长度过长的时候，需要分割后解密 128个字节
+        return new String(getMaxResultDecrypt(str,cipher),StandardCharsets.UTF_8);
+    }
+
+    private static byte[] getMaxResultDecrypt(String str, Cipher cipher){
+        byte[] inputArray = Base64.decodeBase64(str.getBytes(StandardCharsets.UTF_8));
+        // 最大解密字节数，超出最大字节数需要分组加密
+        int MAX_ENCRYPT_BLOCK = 128;
+        return getRSABytes(cipher, inputArray, MAX_ENCRYPT_BLOCK);
+    }
+
+
+    /**
+     *  RSA 分段加密
+     * @param cipher
+     * @param inputArray
+     * @param MAX_ENCRYPT_BLOCK
+     * @return
+     */
+    @SneakyThrows
+    public static byte[] getRSABytes(Cipher cipher, byte[] inputArray, int MAX_ENCRYPT_BLOCK){
+        int inputLength = inputArray.length;
+        // 标识
+        int offSet = 0;
+        byte[] resultBytes = {};
+        byte[] cache = {};
+        while (inputLength - offSet > 0) {
+            if (inputLength - offSet > MAX_ENCRYPT_BLOCK) {
+                cache = cipher.doFinal(inputArray, offSet, MAX_ENCRYPT_BLOCK);
+                offSet += MAX_ENCRYPT_BLOCK;
+            } else {
+                cache = cipher.doFinal(inputArray, offSet, inputLength - offSet);
+                offSet = inputLength;
+            }
+            resultBytes = Arrays.copyOf(resultBytes, resultBytes.length + cache.length);
+            System.arraycopy(cache, 0, resultBytes, resultBytes.length - cache.length, cache.length);
+        }
+        return resultBytes;
     }
 
     /**

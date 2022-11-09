@@ -5,6 +5,8 @@ import java.lang.Character.UnicodeBlock;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static java.util.regex.Pattern.compile;
+
 /**
  * What -- 该类处理字符串的转码，可以处理字符串到二进制字符、16进制字符、unicode字符、base64字符之间的转换
  * <br>
@@ -46,7 +48,7 @@ public class MzTranscodeUtils {
      * @return 返回转码后的字符串
      */
     public static String unicodeStrToStr(String unicodeStr) {
-        Pattern pattern = Pattern.compile("(\\\\u(\\p{XDigit}{4}))");
+        Pattern pattern = compile("(\\\\u(\\p{XDigit}{4}))");
         Matcher matcher = pattern.matcher(unicodeStr);
         char ch;
         while (matcher.find()) {
@@ -141,8 +143,12 @@ public class MzTranscodeUtils {
      */
     private static byte[] decode(char[] data) {
         int len = ((data.length + 3) / 4) * 3;
-        if (data.length > 0 && data[data.length - 1] == '=') --len;
-        if (data.length > 1 && data[data.length - 2] == '=') --len;
+        if (data.length > 0 && data[data.length - 1] == '=') {
+            --len;
+        }
+        if (data.length > 1 && data[data.length - 2] == '=') {
+            --len;
+        }
         byte[] out = new byte[len];
         int shift = 0;
         int accum = 0;
@@ -159,8 +165,9 @@ public class MzTranscodeUtils {
                 }
             }
         }
-        if (index != out.length)
+        if (index != out.length) {
             throw new Error("miscalculated data length!");
+        }
         return out;
     }
 
@@ -177,10 +184,18 @@ public class MzTranscodeUtils {
     static private byte[] codes = new byte[256];
 
     static {
-        for (int i = 0; i < 256; i++) codes[i] = -1;
-        for (int i = 'A'; i <= 'Z'; i++) codes[i] = (byte) (i - 'A');
-        for (int i = 'a'; i <= 'z'; i++) codes[i] = (byte) (26 + i - 'a');
-        for (int i = '0'; i <= '9'; i++) codes[i] = (byte) (52 + i - '0');
+        for (int i = 0; i < 256; i++) {
+            codes[i] = -1;
+        }
+        for (int i = 'A'; i <= 'Z'; i++) {
+            codes[i] = (byte) (i - 'A');
+        }
+        for (int i = 'a'; i <= 'z'; i++) {
+            codes[i] = (byte) (26 + i - 'a');
+        }
+        for (int i = '0'; i <= '9'; i++) {
+            codes[i] = (byte) (52 + i - '0');
+        }
         codes['+'] = 62;
         codes['/'] = 63;
     }
@@ -218,9 +233,10 @@ public class MzTranscodeUtils {
         ByteArrayOutputStream baos = new ByteArrayOutputStream(
                 hexStr.length() / 2);
         // 将每2位16进制整数组装成一个字节
-        for (int i = 0; i < hexStr.length(); i += 2)
+        for (int i = 0; i < hexStr.length(); i += 2) {
             baos.write((hexString.indexOf(hexStr.charAt(i)) << 4 | hexString
                     .indexOf(hexStr.charAt(i + 1))));
+        }
         return new String(baos.toByteArray());
     }
 
@@ -248,8 +264,9 @@ public class MzTranscodeUtils {
      * @return 返回转码后的字节数组
      */
     public static byte[] hexStrToByteArray(String hexStr) {
-        if (hexStr.length() < 1)
+        if (hexStr.length() < 1) {
             return null;
+        }
         byte[] encrypted = new byte[hexStr.length() / 2];
         for (int i = 0; i < hexStr.length() / 2; i++) {
             int high = Integer.parseInt(hexStr.substring(i * 2, i * 2 + 1), 16);//取高位字节
