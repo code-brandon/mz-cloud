@@ -68,6 +68,8 @@ public class MzCipherUtils {
 
     public static final String ALGORITHM_CBC_AES = "AES/CBC/PKCS5Padding";
 
+    public static final String ALGORITHM_CBC_DES = "DES/CBC/PKCS5Padding";
+
     public static final String ALGORITHM_ECB_RSA = "RSA/ECB/PKCS1Padding";
 
     /**
@@ -145,6 +147,62 @@ public class MzCipherUtils {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    /**
+     * 加密
+     * @param input 输入数据
+     * @param key 密码
+     * @param ivStr 偏移值
+     * @return
+     * @throws Exception
+     */
+    public static String encryptByDES(String input, String key, String ivStr) throws Exception {
+
+        // Cipher：密码，获取加密对象
+        // transformation:参数表示使用什么类型加密
+        Cipher cipher = Cipher.getInstance(ALGORITHM_CBC_DES);
+        // 指定秘钥规则
+        // 第一个参数表示：密钥，key的字节数组 长度必须是8位
+        // 第二个参数表示：算法
+        SecretKeySpec sks = new SecretKeySpec(key.getBytes(), SECRET_ALGORITHM);
+        // 初始向量值长度必须是8位
+        IvParameterSpec iv = new IvParameterSpec(ivStr.getBytes());
+        // 对加密进行初始化
+        // 第一个参数：表示模式，有加密模式和解密模式
+        // 第二个参数：表示秘钥规则
+        cipher.init(Cipher.ENCRYPT_MODE, sks, iv);
+        // 进行加密
+        byte[] bytes = cipher.doFinal(input.getBytes());
+        return MzTranscodeUtils.byteArrayToHexStr(bytes);
+    }
+
+    /**
+     * 解密
+     * @param input 输入数据
+     * @param key 密码
+     * @param ivStr 偏移值
+     * @return
+     * @throws Exception
+     */
+    public static String decryptByDES(String input,String key,String ivStr)throws Exception{
+
+        // Cipher：密码，获取加密对象
+        // transformation:参数表示使用什么类型加密
+        Cipher cipher = Cipher.getInstance(ALGORITHM_CBC_DES );
+        // 指定秘钥规则
+        // 第一个参数表示：密钥，key的字节数组 长度必须是8位
+        // 第二个参数表示：算法
+        SecretKeySpec sks = new SecretKeySpec(key.getBytes(), SECRET_ALGORITHM);
+        IvParameterSpec iv = new IvParameterSpec(ivStr.getBytes());
+        // 对加密进行初始化
+        // 第一个参数：表示模式，有加密模式和解密模式
+        // 第二个参数：表示秘钥规则
+        cipher.init(Cipher.DECRYPT_MODE,sks,iv);
+        // 进行解密
+        byte [] inputBytes = MzTranscodeUtils.hexStrToByteArray(input);
+        byte[] bytes = cipher.doFinal(inputBytes);
+        return new String(bytes);
     }
 
     /**
