@@ -1,5 +1,6 @@
 package com.mz.system.model.vo.req;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotBlank;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/10/23 19:24
  */
+@ApiModel("ID和密码请求参数")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class SysUserPostController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<PageUtils<SysUserPostEntity>> list(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysUserPostEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysUserPostEntity> page = sysUserPostService.queryPage(params);
         return R.ok(page);
     }
@@ -67,9 +68,6 @@ public class SysUserPostController {
      * @param sysUserPost 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysUserPost",value="sysUserPost 实体对象",dataTypeClass = SysUserPostEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysUserPostEntity sysUserPost){
@@ -83,9 +81,6 @@ public class SysUserPostController {
      * @param sysUserPost 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysUserPost",value="sysUserPost 实体对象",dataTypeClass = SysUserPostEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysUserPostEntity sysUserPost){
@@ -98,9 +93,6 @@ public class SysUserPostController {
      * @param userIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="userIds",value="userIds 数组对象",dataTypeClass = Long[].class, paramType = "body",example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] userIds){

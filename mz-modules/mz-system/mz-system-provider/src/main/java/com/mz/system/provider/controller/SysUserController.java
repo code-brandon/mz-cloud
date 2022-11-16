@@ -6,7 +6,6 @@ import com.mz.common.security.annotation.Ignore;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.utils.MzSecurityUtils;
 import com.mz.system.model.dto.SysUserDto;
-import com.mz.system.model.entity.SysUserEntity;
 import com.mz.system.model.vo.req.SysUserIdAndPasswdReqVo;
 import com.mz.system.model.vo.res.SysUserResVo;
 import com.mz.system.provider.service.SysUserService;
@@ -17,6 +16,7 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -51,7 +51,7 @@ public class SysUserController {
     @ApiOperation("分页查询所有数据")
     @PreAuthorize("@pms.hasPermission('system:user:query')")
     @PostMapping("/page")
-    public R<PageUtils<SysUserResVo>> page(@RequestParam Map<String, Object> params, @RequestBody SysUserResVo userReqVo) {
+    public R<PageUtils<SysUserResVo>> page(@ApiIgnore @RequestParam Map<String, Object> params, @RequestBody SysUserResVo userReqVo) {
         PageUtils<SysUserResVo> page = sysUserService.queryPage(params, userReqVo);
         return R.ok(page);
     }
@@ -61,7 +61,6 @@ public class SysUserController {
     public R<MzUserDetailsSecurity> getUser() {
         return R.ok(MzSecurityUtils.getMzSysUserSecurity());
     }
-
 
     @ApiOperation("重置用户密码")
     @PutMapping("/resetPasswd")
@@ -94,6 +93,9 @@ public class SysUserController {
      * @param userName 用户名
      * @return 单条数据
      */
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "username", value = "用户名", dataTypeClass = String.class, paramType = "path", example = "张三")
+    })
     @ApiOperation("按用户名获取用户信息")
     @PostMapping("/getUserInfoByUserName")
     @Ignore
@@ -108,9 +110,6 @@ public class SysUserController {
      * @param sysUserResVo 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysUser", value = "sysUser 实体对象", dataTypeClass = SysUserEntity.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysUserResVo sysUserResVo) {
@@ -124,9 +123,6 @@ public class SysUserController {
      * @param sysUserResVo 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysUser", value = "sysUser 实体对象", dataTypeClass = SysUserEntity.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean> update(@Valid @RequestBody SysUserResVo sysUserResVo) {
@@ -141,9 +137,6 @@ public class SysUserController {
      * @param userIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="userIds",value="userIds 数组对象", dataTypeClass = Long[].class, paramType = "body", example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean> delete(@RequestBody Long[] userIds) {

@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class SysJobController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<PageUtils<SysJobEntity> > list(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysJobEntity> > list(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysJobEntity> page = sysJobService.queryPage(params);
         return R.ok(page);
     }
@@ -67,9 +68,6 @@ public class SysJobController {
      * @param sysJob 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJob",value="sysJob 实体对象",dataTypeClass = SysJobEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysJobEntity sysJob){
@@ -83,9 +81,6 @@ public class SysJobController {
      * @param sysJob 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJob",value="sysJob 实体对象",dataTypeClass = SysJobEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysJobEntity sysJob){
@@ -99,9 +94,6 @@ public class SysJobController {
      * @param jobIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJob",value="sysJob 实体对象",dataTypeClass = SysJobEntity.class, paramType = "body",example="{'jobIds':[zahngsan,lisi]}")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] jobIds){

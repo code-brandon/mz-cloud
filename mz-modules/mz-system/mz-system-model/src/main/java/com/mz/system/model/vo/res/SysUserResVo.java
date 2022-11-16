@@ -2,6 +2,7 @@ package com.mz.system.model.vo.res;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mz.system.model.entity.SysUserEntity;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -19,6 +20,7 @@ import java.util.List;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/6/9 20:34
  */
+@ApiModel("用户信息响应数据")
 @Data
 public class SysUserResVo extends SysUserEntity implements Serializable {
     @ApiModelProperty("岗位ID集合")

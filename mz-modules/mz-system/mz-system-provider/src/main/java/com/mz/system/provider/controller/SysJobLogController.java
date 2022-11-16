@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class SysJobLogController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<PageUtils<SysJobLogEntity> > list(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysJobLogEntity> > list(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysJobLogEntity> page = sysJobLogService.queryPage(params);
         return R.ok(page);
     }
@@ -67,9 +68,6 @@ public class SysJobLogController {
      * @param sysJobLog 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJobLog",value="sysJobLog 实体对象",dataTypeClass = SysJobLogEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysJobLogEntity sysJobLog){
@@ -83,9 +81,6 @@ public class SysJobLogController {
      * @param sysJobLog 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJobLog",value="sysJobLog 实体对象",dataTypeClass = SysJobLogEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysJobLogEntity sysJobLog){
@@ -99,9 +94,6 @@ public class SysJobLogController {
      * @param jobLogIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysJobLog",value="sysJobLog 实体对象",dataTypeClass = SysJobLogEntity.class, paramType = "body",example="{'jobLogIds':[zahngsan,lisi]}")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] jobLogIds){

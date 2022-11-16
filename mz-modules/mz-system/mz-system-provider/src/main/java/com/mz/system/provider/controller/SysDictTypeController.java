@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -40,7 +41,7 @@ public class SysDictTypeController {
     })
     @ApiOperation("分页查询所有数据")
     @PostMapping("/page")
-    public R<PageUtils<SysDictTypeEntity>> page(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysDictTypeEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysDictTypeEntity> page = sysDictTypeService.queryPage(params);
         return R.ok(page);
     }
@@ -67,9 +68,6 @@ public class SysDictTypeController {
      * @param sysDictType 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDictType",value="sysDictType 实体对象",dataTypeClass = SysDictTypeEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysDictTypeEntity sysDictType){
@@ -83,9 +81,6 @@ public class SysDictTypeController {
      * @param sysDictType 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDictType",value="sysDictType 实体对象",dataTypeClass = SysDictTypeEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysDictTypeEntity sysDictType){
@@ -99,9 +94,6 @@ public class SysDictTypeController {
      * @param dictIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDictType",value="sysDictType 实体对象",dataTypeClass = SysDictTypeEntity.class, paramType = "body",example="{'dictIds':[zahngsan,lisi]}")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] dictIds){

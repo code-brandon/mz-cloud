@@ -1,6 +1,8 @@
 package com.mz.system.model.vo.res;
 
 import com.mz.common.core.utils.MzWebUtils;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 /**
  * What -- 路由显示信息
@@ -12,25 +14,30 @@ import com.mz.common.core.utils.MzWebUtils;
  * @ClassName: MetaResVo
  * @CreateTime 2022/6/23 18:40
  */
+@ApiModel("菜单路由其他元素")
 public class MetaResVo {
     /**
      * 设置该路由在侧边栏和面包屑中展示的名字
      */
+    @ApiModelProperty("标题")
     private String title;
 
     /**
      * 设置该路由的图标，对应路径src/assets/icons/svg
      */
+    @ApiModelProperty("图标")
     private String icon;
 
     /**
      * 设置为true，则会被 <keep-alive>缓存
      */
+    @ApiModelProperty("缓存")
     private boolean keepAlive;
 
     /**
      * 内链地址（http(s)://开头）
      */
+    @ApiModelProperty("内链地址（http(s)://开头）")
     private String link;
 
     public MetaResVo() {

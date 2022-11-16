@@ -2,7 +2,6 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
-import com.mz.common.redis.annotation.MzLock;
 import com.mz.system.model.entity.SysRoleEntity;
 import com.mz.system.model.vo.req.SysRoleReqVo;
 import com.mz.system.model.vo.res.SysRoleResVo;
@@ -13,6 +12,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,7 +45,7 @@ public class SysRoleController {
     })
     @ApiOperation("分页查询所有数据")
     @PostMapping("/page")
-    public R<PageUtils<SysRoleEntity>> page(@RequestParam Map<String, Object> params,@RequestBody SysRoleReqVo sysRoleReqVo) {
+    public R<PageUtils<SysRoleEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params, @RequestBody SysRoleReqVo sysRoleReqVo) {
         PageUtils<SysRoleEntity> page = sysRoleService.queryPage(params, sysRoleReqVo);
         return R.ok(page);
     }
@@ -80,9 +80,6 @@ public class SysRoleController {
      * @param sysRoleResVo 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysRole", value = "sysRole 实体对象", dataTypeClass = SysRoleResVo.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/saveRole")
     public R<Boolean> save(@RequestBody SysRoleResVo sysRoleResVo) {
@@ -97,12 +94,8 @@ public class SysRoleController {
      * @param sysRoleResVo 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysRole", value = "sysRole 实体对象", dataTypeClass = SysRoleEntity.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
-    @MzLock(lockKey = "#sysRoleResVo.roleId")
     public R<Boolean> update(@RequestBody SysRoleResVo sysRoleResVo) {
         sysRoleService.updateRoleById(sysRoleResVo);
 
@@ -115,9 +108,6 @@ public class SysRoleController {
      * @param roleIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="roleIds",value="roleIds 数组对象", dataTypeClass = Long[].class, paramType = "body", example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean> delete(@RequestBody Long[] roleIds) {

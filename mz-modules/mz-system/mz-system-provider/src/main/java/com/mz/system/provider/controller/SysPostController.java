@@ -10,6 +10,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -41,7 +42,7 @@ public class SysPostController {
     })
     @ApiOperation("分页查询所有数据")
     @PostMapping("/page")
-    public R<PageUtils<SysPostEntity>> page(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysPostEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysPostEntity> page = sysPostService.queryPage(params);
         return R.ok(page);
     }
@@ -75,9 +76,6 @@ public class SysPostController {
      * @param sysPost 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysPost",value="sysPost 实体对象",dataTypeClass = SysPostEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysPostEntity sysPost){
@@ -91,9 +89,6 @@ public class SysPostController {
      * @param sysPost 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysPost",value="sysPost 实体对象",dataTypeClass = SysPostEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysPostEntity sysPost){
@@ -107,9 +102,6 @@ public class SysPostController {
      * @param postIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="postIds",value="postIds 数组对象",dataTypeClass = SysPostEntity.class, paramType = "body",example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] postIds){

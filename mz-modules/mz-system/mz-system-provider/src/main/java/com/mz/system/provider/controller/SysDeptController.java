@@ -11,6 +11,7 @@ import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Arrays;
 import java.util.List;
@@ -42,7 +43,7 @@ public class SysDeptController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/page")
-    public R<PageUtils<SysDeptEntity>> page(@RequestParam Map<String, Object> params){
+    public R<PageUtils<SysDeptEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysDeptEntity> page = sysDeptService.queryPage(params);
         return R.ok(page);
     }
@@ -71,9 +72,6 @@ public class SysDeptController {
      * @param deptId 主键
      * @return 单条数据
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="deptId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
-    })
     @ApiOperation("通过主键查询单条数据")
     @GetMapping("/info/{deptId}")
     public R<SysDeptEntity> info(@PathVariable("deptId") Long deptId){
@@ -87,9 +85,6 @@ public class SysDeptController {
      * @param sysDept 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDept",value="sysDept 实体对象",dataTypeClass = SysDeptEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysDeptEntity sysDept){
@@ -103,9 +98,6 @@ public class SysDeptController {
      * @param sysDept 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDept",value="sysDept 实体对象",dataTypeClass = SysDeptEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysDeptEntity sysDept){
@@ -119,9 +111,6 @@ public class SysDeptController {
      * @param deptIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysDept",value="sysDept 实体对象",dataTypeClass = SysDeptEntity.class, paramType = "body",example="{'deptIds':[zahngsan,lisi]}")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] deptIds){

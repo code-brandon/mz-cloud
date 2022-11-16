@@ -53,14 +53,14 @@ public class SysMenuController {
      * 获取菜单树
      * @return
      */
-    @ApiOperation("获取菜单树")
+    @ApiOperation(value = "获取用户菜单树",notes = "根据用户查询用户具有的菜单")
     @GetMapping("/getUserMenuTree")
     public R<List<MenuResVo>> getUserMenuTree(){
         List<SysMenuDto> menuTree = sysMenuService.getUserMenuTree();
         return R.ok(sysMenuService.buildMenus(menuTree));
     }
 
-    @ApiOperation("获取菜单树")
+    @ApiOperation(value = "获取菜单树",notes = "下拉框中选择")
     @GetMapping("/getMenuTree")
     public R<List<Tree<Long>>> getMenuTree(){
         List<Tree<Long>> menuTree = sysMenuService.getMenuTree();
@@ -69,7 +69,7 @@ public class SysMenuController {
 
 
 
-    @ApiOperation("获取菜单列表树")
+    @ApiOperation(value = "获取菜单列表树",notes = "菜单列表")
     @GetMapping("/getMenuListTree")
     public R<List<Tree<Long>>> getMenuListTree(){
         List<Tree<Long>> menuTree = sysMenuService.getMenuListTree();
@@ -98,9 +98,6 @@ public class SysMenuController {
      * @param sysMenu 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysMenu",value="sysMenu 实体对象",dataTypeClass = SysMenuEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysMenuEntity sysMenu){
@@ -114,9 +111,6 @@ public class SysMenuController {
      * @param sysMenu 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysMenu",value="sysMenu 实体对象",dataTypeClass = SysMenuEntity.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/update")
     public R<Boolean>  update(@RequestBody SysMenuEntity sysMenu){
@@ -130,9 +124,6 @@ public class SysMenuController {
      * @param menuIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysMenu",value="sysMenu 实体对象",dataTypeClass = SysMenuEntity.class, paramType = "body",example="{'menuIds':[zahngsan,lisi]}")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] menuIds){

@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.apache.http.util.Asserts;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
 import java.util.Arrays;
@@ -44,7 +45,7 @@ public class SysRoleMenuController {
     })
     @ApiOperation("分页查询所有数据")
     @GetMapping("/list")
-    public R<PageUtils<SysRoleMenuEntity>> list(@RequestParam Map<String, Object> params) {
+    public R<PageUtils<SysRoleMenuEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageUtils<SysRoleMenuEntity> page = sysRoleMenuService.queryPage(params);
         return R.ok(page);
     }
@@ -55,9 +56,6 @@ public class SysRoleMenuController {
      * @param sysRoleMenuReqVo 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysRole", value = "sysRole 实体对象", dataTypeClass = SysRoleMenuReqVo.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/saveRoleMenu")
     public R<Boolean> save(@Valid @RequestBody SysRoleMenuReqVo sysRoleMenuReqVo) {
@@ -71,9 +69,6 @@ public class SysRoleMenuController {
      * @param sysRoleMenuReqVo 实体对象
      * @return 修改结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "sysRoleMenu", value = "sysRoleMenu 实体对象", dataTypeClass = SysRoleMenuReqVo.class, paramType = "body", example = "{'name':'zahngsan'}")
-    })
     @ApiOperation("修改数据")
     @PutMapping("/updateRoleMenu")
     public R<Boolean> update(@Valid @RequestBody SysRoleMenuReqVo sysRoleMenuReqVo) {
@@ -88,9 +83,6 @@ public class SysRoleMenuController {
      * @param roleIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="roleIds",value="roleIds 数组对象", dataTypeClass = Long[].class, paramType = "body", example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean> delete(@RequestBody Long[] roleIds) {

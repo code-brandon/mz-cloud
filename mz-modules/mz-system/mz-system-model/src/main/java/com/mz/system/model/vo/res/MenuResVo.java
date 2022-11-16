@@ -1,5 +1,8 @@
 package com.mz.system.model.vo.res;
 
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
+
 import java.util.List;
 
 /**
@@ -12,51 +15,65 @@ import java.util.List;
  * @ClassName: MenuResVo
  * @CreateTime 2022/10/18 16:20
  */
+@ApiModel("菜单路由响应数据")
 public class MenuResVo {
     /**
      * 路由名字
      */
+    @ApiModelProperty("路由名字")
     private String name;
 
     /**
      * 路由地址
      */
+    @ApiModelProperty("路由地址")
     private String path;
 
     /**
      * 是否隐藏路由，当设置 true 的时候该路由不会再侧边栏出现
      */
+    @ApiModelProperty(value = "是否隐藏路由",notes = "当设置 true 的时候该路由不会再侧边栏出现")
     private boolean hidden;
 
     /**
      * 重定向地址，当设置 noRedirect 的时候该路由在面包屑导航中不可被点击
      */
+    @ApiModelProperty("重定向地址")
     private String redirect;
 
     /**
      * 组件地址
      */
+    @ApiModelProperty("组件地址")
     private String component;
 
     /**
      * 路由参数：如 {"id": 1, "name": "ry"}
      */
+    @ApiModelProperty(value = "路由参数",notes = "如{\"id\": 1, \"name\": \"ry\"}")
     private String query;
 
     /**
      * 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
      */
+    @ApiModelProperty(value = "是否嵌套模式",notes = "当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面")
     private Boolean alwaysShow;
 
     /**
      * 其他元素
      */
+    @ApiModelProperty("其他元素")
     private MetaResVo meta;
 
+    /**
+     * 是否内嵌窗体
+     */
+    @ApiModelProperty("是否内嵌页面")
     private Integer isFrame;
     /**
      * 子路由
      */
+    @ApiModelProperty("子路由")
     private List<MenuResVo> children;
 
     public String getName() {

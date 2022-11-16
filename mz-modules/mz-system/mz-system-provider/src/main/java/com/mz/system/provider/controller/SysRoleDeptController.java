@@ -38,9 +38,9 @@ public class SysRoleDeptController {
      * @return 所有数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "roleId", value = "当前页码", dataTypeClass = Long.class, paramType = "path", example = "1")
+            @ApiImplicitParam(name = "roleId", value = "角色ID", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("根据角色ID查询部门ID")
     @GetMapping("/list/{roleId}")
     public R<List<SysRoleDeptEntity>> list(@PathVariable("roleId") Long roleId) {
 
@@ -53,9 +53,6 @@ public class SysRoleDeptController {
      * @param sysRoleDeptReqVo 实体对象
      * @return 新增结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="sysRoleDept",value="sysRoleDept 实体对象",dataTypeClass = SysRoleDeptReqVo.class, paramType = "body",example="{'name':'zahngsan'}")
-    })
     @ApiOperation("保存数据")
     @PostMapping("/saveRoleDept")
     public R<Boolean> save(@Valid @RequestBody SysRoleDeptReqVo sysRoleDeptReqVo){
@@ -68,9 +65,6 @@ public class SysRoleDeptController {
      * @param roleIds 集合/数组
      * @return 删除结果
      */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name="roleIds",value="roleIds 数组对象",dataTypeClass = Long[].class, paramType = "body",example="['1','2']")
-    })
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody Long[] roleIds){

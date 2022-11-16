@@ -28,14 +28,14 @@ import java.util.Date;
 @Slf4j
 @RestController
 @RequestMapping("/test")
-@Api("资源服务器测试")
+@Api(tags = "资源服务器测试")
 public class TestController {
 
     private Integer count = 4000;
     private Integer initNum = 4000;
 
     @Ignore
-    @ApiOperation( value = "测试Api忽略",tags = {"不进行授权"})
+    @ApiOperation( value = "测试Api忽略",notes ="不进行授权")
     @GetMapping("/getIsIgnore")
     @MzLock(lockKey = "getIsIgnore",waitTime = 15)
     public String getIsIgnore() {
@@ -45,7 +45,7 @@ public class TestController {
     }
 
     @Ignore
-    @ApiOperation( value = "测试Api重置计数",tags = {"不进行授权"})
+    @ApiOperation( value = "测试Api重置计数",notes ="不进行授权")
     @GetMapping("/resetIgnoreCount")
     public String resetIgnoreCount() {
         count = initNum;
@@ -54,7 +54,7 @@ public class TestController {
     }
 
     @Ignore
-    @ApiOperation(value = "测试Api初始计数", tags = {"不进行授权"})
+    @ApiOperation(value = "测试Api初始计数", notes ="不进行授权")
     @GetMapping("/setIgnoreCount/{initNum}")
     public String setIgnoreCount(@PathVariable("initNum") Integer initNum) {
         this.initNum = initNum;

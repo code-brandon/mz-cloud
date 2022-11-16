@@ -1,6 +1,7 @@
 package com.mz.system.model.vo.res;
 
 import com.mz.system.model.entity.SysRoleEntity;
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.List;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/10/23 21:40
  */
+@ApiModel("角色信息响应数据")
 @Data
 @RequiredArgsConstructor
 public class SysRoleResVo extends SysRoleEntity implements Serializable {

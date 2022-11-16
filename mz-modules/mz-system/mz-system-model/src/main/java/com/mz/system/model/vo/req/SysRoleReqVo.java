@@ -1,5 +1,6 @@
 package com.mz.system.model.vo.req;
 
+import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import java.io.Serializable;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/10/23 21:40
  */
+@ApiModel("角色请求参数")
 @Data
 @RequiredArgsConstructor
 public class SysRoleReqVo implements Serializable {
