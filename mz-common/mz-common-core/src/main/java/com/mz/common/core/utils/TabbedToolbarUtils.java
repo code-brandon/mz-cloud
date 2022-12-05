@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * What --
+ * What -- 自定义分页TabbedToolbar
  * <br>
- * Describe --
+ * Describe -- 主要用与 JSP这种页面的使用
  * <br>
  *
  * @author 小政同学    QQ:xiaozheng666888@qq.com

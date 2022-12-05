@@ -47,7 +47,7 @@ public class MzWebUtils extends org.springframework.web.util.WebUtils {
      * @return 是否ajax请求
      */
     public boolean isBody(HandlerMethod handlerMethod) {
-        ResponseBody responseBody = ClassUtils.getAnnotation(handlerMethod, ResponseBody.class);
+        ResponseBody responseBody = MzClassUtils.getAnnotation(handlerMethod, ResponseBody.class);
         return responseBody != null;
     }
 
