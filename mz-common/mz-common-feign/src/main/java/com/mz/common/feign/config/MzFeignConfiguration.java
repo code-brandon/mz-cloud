@@ -1,5 +1,6 @@
 package com.mz.common.feign.config;
 
+import com.mz.common.feign.exception.MzFeignExceptionHandler;
 import feign.Contract;
 import feign.Logger;
 import feign.RequestInterceptor;
@@ -61,5 +62,10 @@ public class MzFeignConfiguration {
     // @Bean
     public Contract feignContract() {
         return new Contract.Default();
+    }
+
+    @Bean
+    public MzFeignExceptionHandler mzFeignExceptionHandler(){
+        return new MzFeignExceptionHandler();
     }
 }
