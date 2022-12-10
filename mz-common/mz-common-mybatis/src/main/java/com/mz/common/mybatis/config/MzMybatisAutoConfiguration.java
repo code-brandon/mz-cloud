@@ -3,11 +3,9 @@ package com.mz.common.mybatis.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
-import com.baomidou.mybatisplus.extension.plugins.pagination.optimize.JsqlParserCountOptimize;
-import com.mz.common.mybatis.exception.MzMybatisExceptionHandler;
 import com.mz.common.mybatis.plugin.MzObjectWrapperFactoryConverter;
+import com.mz.common.mybatis.plugin.MzParameterInterceptor;
 import com.mz.common.mybatis.plugin.MzSqlFilterArgumentResolver;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -31,7 +29,6 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 
 	/**
 	 * SQL 过滤器避免SQL 注入
-	 * @param argumentResolvers
 	 */
 	@Override
 	public void addArgumentResolvers(List<HandlerMethodArgumentResolver> argumentResolvers) {
@@ -63,6 +60,14 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 		paginationInterceptor.setOptimizeJoin(true);
 		interceptor.addInnerInterceptor(paginationInterceptor);
 		return interceptor;
+	}
+
+	/**
+	 * 自定义Mybatis 插件 进行耗时计算，SQL美化
+	 */
+	@Bean
+	public MzParameterInterceptor mzMybatisLogInterceptor(){
+		return new MzParameterInterceptor();
 	}
 
 	@Bean
