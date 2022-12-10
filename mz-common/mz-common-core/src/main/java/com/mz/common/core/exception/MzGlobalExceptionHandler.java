@@ -4,8 +4,8 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException;
 import com.mz.common.core.entity.R;
 import com.mz.common.core.utils.CharsetKitUtils;
 import com.mz.common.core.utils.ConvertUtils;
-import feign.FeignException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
@@ -31,6 +31,7 @@ import java.util.Optional;
  */
 @Slf4j
 @RestControllerAdvice
+@Order(1)
 public class MzGlobalExceptionHandler {
 
     /**
@@ -54,17 +55,6 @@ public class MzGlobalExceptionHandler {
     public R baseException(MzBaseException e) {
         log.error("基础异常:{}",e.getMessage());
         return R.error(e.getMessage());
-    }
-
-    /**
-     * feign 异常捕获
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(FeignException.class)
-    public R<String> feignException(FeignException e) {
-        log.error("Feign异常:{}",e.getMessage());
-        return R.error(e.status(),e.getMessage(),"Feign异常");
     }
 
     @ExceptionHandler(MismatchedInputException.class)

@@ -47,6 +47,7 @@ public class R<T> {
 
     public static <T> R<T>  error() {
         R<T> r = new R<>();
+        r.setData((T) Boolean.FALSE);
         r.setCode(Constant.ERROR);
         r.setMessage("未知异常，请联系管理员");
         return r;
@@ -103,10 +104,8 @@ public class R<T> {
     }
 
     public static <T> R<T> ok(T data) {
-        R<T> r = new R<>();
+        R<T> r = ok();
         r.setData(data);
-        r.setCode(Constant.SUCCESS);
-        r.setMessage("操作成功！");
         return r;
     }
 
@@ -147,6 +146,7 @@ public class R<T> {
 
     public static <T> R<T> fail() {
         R<T> r = new R<>();
+        r.setData((T) Boolean.FALSE);
         r.setCode(Constant.FAIL);
         r.setMessage("操作失败");
         return r;
