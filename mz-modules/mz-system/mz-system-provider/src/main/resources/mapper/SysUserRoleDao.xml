@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.mz.system.provider.dao.SysUserRoleDao">
+<mapper namespace = "com.mz.system.provider.dao.SysUserRoleDao">
 
-	<!-- 可根据自己的需求，是否要使用 -->
-    <resultMap type="com.mz.system.model.entity.SysUserRoleEntity" id="sysUserRoleMap">
-        <result property="userId" column="user_id"/>
-        <result property="roleId" column="role_id"/>
+    <!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type = "com.mz.system.model.entity.SysUserRoleEntity" id = "sysUserRoleMap">
+        <result property = "userId" column = "user_id"/>
+        <result property = "roleId" column = "role_id"/>
     </resultMap>
     <insert id = "insertUserRoles">
         insert into `sys_user_role` (`user_id`,`role_id`)
@@ -15,8 +15,96 @@
             (#{item.userId},#{item.roleId})
         </foreach>
     </insert>
+
+    <delete id = "deleteByRoleIdAndUserIds">
+        delete from sys_user_role where `role_id` = #{userByRole.roleId} and `user_id` in
+        <foreach collection = "userByRole.userIds" open = "(" close = ")" separator = "," item = "item">
+            #{item}
+        </foreach>
+    </delete>
+
     <select id = "getRoleIdsByUserId" resultType = "java.lang.Long">
-        select `role_id` from `sys_user_role` where `user_id` = #{userId}
+        select `role_id`
+        from `sys_user_role`
+        where `user_id` = #{userId}
+    </select>
+
+    <!--
+    SQL执行计划
+    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
+    | id | select_type | table   | partitions | type   | possible_keys          | key     | key_len | ref                      | rows | filtered | Extra                                                     |
+    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
+    |  1 | SIMPLE      | tmp_sur | NULL       | index  | NULL                   | PRIMARY | 16      | NULL                     |    3 |    33.33 | Using where; Using index; Using temporary; Using filesort |
+    |  1 | SIMPLE      | tmp_su  | NULL       | eq_ref | PRIMARY,del_flag_index | PRIMARY | 8       | xz_admin.tmp_sur.user_id |    1 |   100.00 | Using where                                               |
+    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
+    2 rows in set, 3 warnings (0.00 sec)
+    -->
+    <select id = "getUserPageByRoleId" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+        select
+        <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
+        from (
+        select
+        tmp_su.*
+        from ( SELECT tmp_sur.`user_id` FROM sys_user_role tmp_sur WHERE tmp_sur.`role_id` = #{userByRole.roleId} ) as sur
+        left join sys_user tmp_su
+        <trim prefix = "on" prefixOverrides = "and">
+            sur.user_id = tmp_su.user_id and tmp_su.`del_flag` = 0
+            <if test = "userByRole.username != null and userByRole.username != ''">
+                and tmp_su.`username` = #{userByRole.username}
+            </if>
+            <if test = "userByRole.nickName != null and userByRole.nickName != ''">
+                and tmp_su.`nick_name` = #{userByRole.nickName}
+            </if>
+            <if test = "userByRole.phonenumber != null and userByRole.phonenumber != ''">
+                and tmp_su.`phonenumber` = #{userByRole.phonenumber}
+            </if>
+            <if test = "userByRole.status != null and userByRole.status.toString() != ''">
+                and tmp_su.`status` = #{userByRole.status}
+            </if>
+        </trim>
+        ) as su
+        order by su.`create_time`
+    </select>
+
+    <!--
+    SQL执行计划
+    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
+    | id | select_type | table   | partitions | type   | possible_keys  | key     | key_len | ref                       | rows | filtered | Extra                                |
+    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
+    |  1 | SIMPLE      | su      | NULL       | ALL    | del_flag_index | NULL    | NULL    | NULL                      |    3 |    33.33 | Using where                          |
+    |  1 | SIMPLE      | tmp_sur | NULL       | eq_ref | PRIMARY        | PRIMARY | 16      | xz_admin.su.user_id,const |    1 |   100.00 | Using where; Not exists; Using index |
+    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
+    2 rows in set, 4 warnings (0.00 sec)
+    -->
+    <select id = "getNotThisRoleUserPage" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+        select
+        <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
+        from sys_user su
+        <where>
+            su.`del_flag` = 0
+            <if test = "userByRole.username != null and userByRole.username != ''">
+                and su.`username` = #{userByRole.username}
+            </if>
+            <if test = "userByRole.nickName != null and userByRole.nickName != ''">
+                and su.`nick_name` = #{userByRole.nickName}
+            </if>
+            <if test = "userByRole.phonenumber != null and userByRole.phonenumber != ''">
+                and su.`phonenumber` = #{userByRole.phonenumber}
+            </if>
+            <if test = "userByRole.status != null and userByRole.status.toString() != ''">
+                and su.`status` = #{userByRole.status}
+            </if>
+            and not exists (
+            select
+            tmp_sur.`user_id`
+            from
+            sys_user_role tmp_sur
+            where
+            tmp_sur.`role_id` = #{userByRole.roleId}
+            and tmp_sur.user_id = su.user_id
+            )
+        </where>
+        order by su.`create_time`
     </select>
 
 

@@ -3,6 +3,9 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysUserRoleEntity;
+import com.mz.system.model.vo.req.SysRoleBindUserReqVo;
+import com.mz.system.model.vo.req.SysUserByRoleIdReqVo;
+import com.mz.system.model.vo.res.SysUserResVo;
 
 import java.util.Map;
 
@@ -16,5 +19,14 @@ import java.util.Map;
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
 
     PageUtils<SysUserRoleEntity> queryPage(Map<String, Object> params);
+
+    PageUtils<SysUserResVo> getUserPageByRoleId(Map<String, Object> params, SysUserByRoleIdReqVo roleIdResVo);
+
+    PageUtils<SysUserResVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserByRoleIdReqVo userByRoleIdResVo);
+
+    boolean saveRoleBindUser(SysRoleBindUserReqVo roleBindUserReqVo);
+
+    boolean deleteByRoleIdAndUserIds(SysRoleBindUserReqVo roleBindUserReqVo);
+
 }
 
