@@ -1,6 +1,6 @@
 package com.mz.common.security.config;
 
-import com.mz.common.core.constants.Constant;
+import com.mz.common.constant.Constant;
 import com.mz.common.security.serializer.MzJackson2JsonSerializationStrategy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

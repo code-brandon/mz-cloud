@@ -1,7 +1,7 @@
 package com.mz.common.security.aspect;
 
 import cn.hutool.core.util.StrUtil;
-import com.mz.common.core.constants.SecurityConstants;
+import com.mz.common.constant.SecurityConstants;
 import com.mz.common.security.annotation.Ignore;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;

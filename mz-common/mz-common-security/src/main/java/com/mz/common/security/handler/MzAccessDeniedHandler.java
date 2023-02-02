@@ -1,17 +1,14 @@
 package com.mz.common.security.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.exception.MzCodeEnum;
-import com.mz.common.core.utils.MzWebUtils;
+import com.mz.common.utils.MzWebUtils;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * What -- Mz 访问被拒绝处理程序 （资源服务器）
@@ -27,7 +24,7 @@ import java.io.IOException;
 @Component
 public class MzAccessDeniedHandler implements AccessDeniedHandler {
     @Override
-    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException, ServletException {
-        MzWebUtils.renderJson(response, JSON.toJSONString(R.error(MzCodeEnum.OAUTH_ACCESS_EXCEPTION.getCode(), MzCodeEnum.OAUTH_ACCESS_EXCEPTION.getMsg() + accessDeniedException.getMessage())));
+    public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) {
+        MzWebUtils.renderJson(response, R.error(MzErrorCodeEnum.OAUTH_ACCESS_EXCEPTION.getCode(), MzErrorCodeEnum.OAUTH_ACCESS_EXCEPTION.getMsg() + accessDeniedException.getMessage()));
     }
 }

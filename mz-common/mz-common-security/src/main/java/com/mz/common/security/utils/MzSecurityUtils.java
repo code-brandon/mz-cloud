@@ -2,7 +2,7 @@ package com.mz.common.security.utils;
 
 
 import cn.hutool.core.util.StrUtil;
-import com.mz.common.core.constants.SecurityConstants;
+import com.mz.common.constant.SecurityConstants;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;

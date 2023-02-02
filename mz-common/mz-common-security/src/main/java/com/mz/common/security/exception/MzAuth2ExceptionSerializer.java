@@ -3,7 +3,7 @@ package com.mz.common.security.exception;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.mz.common.core.constants.Constant;
+import com.mz.common.constant.Constant;
 import lombok.SneakyThrows;
 
 /**

@@ -132,14 +132,16 @@ public String getUsername2() {
 
 ```java
 @PreAuthorize("hasRole('ROLE_VIEWER')")
+// {@link https://blog.csdn.net/qq_43437874/article/details/121552989}
+@PreAuthorize("#oauth2.hasScope('admin:user')") // 对scope作用域的访问控制
 public String getUsernameInUpperCase() {
     return getUsername().toUpperCase();
 }
 ```
 
-@PreAuthorize("hasRole('ROLE\_VIEWER')") 相当于@Secured(“ROLE\_VIEWER”)。
+@PreAuthorize("hasRole('ROLE_VIEWER')") 相当于@Secured("ROLE_VIEWER")。
 
-同样的 `@Secured({“ROLE_VIEWER”,”ROLE_EDITOR”})` 也可以替换为：`@PreAuthorize(“hasRole(‘ROLE_VIEWER') or hasRole(‘ROLE_EDITOR')”)`。
+同样的 `@Secured({"ROLE_VIEWER","ROLE_EDITOR"})` 也可以替换为：`@PreAuthorize("hasRole('ROLE_VIEWER') or hasRole('ROLE_EDITOR')")`。
 
 > 除此以外，我们还可以在方法的参数上使用表达式：
 
