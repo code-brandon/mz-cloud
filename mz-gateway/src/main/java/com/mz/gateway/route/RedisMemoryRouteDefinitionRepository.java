@@ -2,7 +2,7 @@ package com.mz.gateway.route;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
-import com.mz.common.core.constants.Constant;
+import com.mz.common.constant.Constant;
 import com.mz.common.redis.utils.MzRedisUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -63,7 +63,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
         }
         definitionList = mzRedisUtil.getoRedisTemplate().opsForHash().values(Constant.ROUTE_KEY);
         gatewayProperties.setRoutes(definitionList);
-        log.info("redis 中路由定义条数： {}， definitionList={}", definitionList.size(), JSON.toJSONString(definitionList));
+        log.debug("redis 中路由定义条数： {}， definitionList={}", definitionList.size(), JSON.toJSONString(definitionList));
         return Flux.fromIterable(definitionList);
     }
 
@@ -71,7 +71,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
      * 刷新路由
      */
     private void refreshRoutes() {
-        log.info("刷新路由信息{}", DateUtil.formatBetween(System.currentTimeMillis()));
+        log.debug("刷新路由信息{}", DateUtil.formatBetween(System.currentTimeMillis()));
         this.publisher.publishEvent(new RefreshRoutesEvent(this));
     }
 
@@ -84,7 +84,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     @Override
     public Mono<Void> save(Mono<RouteDefinition> route) {
         return route.flatMap(r -> {
-            log.info("保存路由信息{}", r);
+            log.debug("保存路由信息{}", r);
             mzRedisUtil.getoRedisTemplate().opsForHash().put(Constant.ROUTE_KEY,r.getId(),r);
             refreshRoutes();
             return Mono.empty();
@@ -99,7 +99,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     @Override
     public Mono<Void> delete(Mono<String> routeId) {
         routeId.subscribe(id -> {
-            log.info("删除路由信息={}", id);
+            log.debug("删除路由信息={}", id);
             mzRedisUtil.getoRedisTemplate().opsForHash().delete(Constant.ROUTE_KEY,id);
             refreshRoutes();
         });

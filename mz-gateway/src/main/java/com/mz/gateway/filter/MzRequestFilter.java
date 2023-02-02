@@ -1,13 +1,17 @@
 package com.mz.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
-import com.mz.common.core.constants.SecurityConstants;
+import com.alibaba.fastjson.JSONObject;
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.SecurityConstants;
 import com.mz.common.core.context.MzDefaultContextHolder;
+import com.mz.common.utils.IPSearcherUtils;
+import com.mz.common.utils.MzWebUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
-import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.stereotype.Component;
@@ -29,6 +33,7 @@ import java.net.URI;
  */
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MzRequestFilter implements GlobalFilter, Ordered {
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -43,9 +48,20 @@ public class MzRequestFilter implements GlobalFilter, Ordered {
 
         // 2.获取Headers参数
         HttpHeaders headers = request.getHeaders();
-        log.info("网关拦截到请求，headers：{}", JSON.toJSONString(headers.toSingleValueMap()));
+        // 3.获取有用的Headers参数
+        JSONObject jsonHeaders = new JSONObject();
+        jsonHeaders.put("host", headers.getHost().toString());
+        jsonHeaders.put("sec-ch-ua", headers.getFirst("sec-ch-ua"));
+        jsonHeaders.put("user-agent", headers.getFirst("User-Agent"));
+        jsonHeaders.put("ip", MzWebUtils.getRemoteAddr(request));
+        jsonHeaders.put("ip-address", IPSearcherUtils.searcher(jsonHeaders.getString("ip")));
+        jsonHeaders.put("accept-language", headers.getFirst("Accept-Language"));
+        log.info("网关拦截到请求，headers：{}", jsonHeaders.toJSONString());
 
-        MzDefaultContextHolder.CONTEXT_HOLDER.get().put("env", headers.get("env"));
+        boolean isEnv = headers.containsKey(Constant.GATEWAY_ENV);
+        if (isEnv) {
+            MzDefaultContextHolder.CONTEXT_HOLDER.get().put(Constant.GATEWAY_ENV, headers.get(Constant.GATEWAY_ENV));
+        }
         // 放行
         return chain.filter(exchange.mutate().request(request.mutate().build()).build());
     }

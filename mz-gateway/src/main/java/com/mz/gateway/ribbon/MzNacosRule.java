@@ -10,6 +10,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.MapUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
+import com.mz.common.constant.Constant;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractLoadBalancerRule;
@@ -17,8 +18,8 @@ import com.netflix.loadbalancer.DynamicServerListLoadBalancer;
 import com.netflix.loadbalancer.Server;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,10 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(MzNacosRule.class);
 
-	@Autowired
+	@Resource
 	private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Autowired
+	@Resource
 	private NacosServiceManager nacosServiceManager;
 
 	@Override
@@ -71,21 +72,16 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 			}
 
 			// 从线程变量中获取请求头携带的环境信息
-			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get("env");
+			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get(Constant.GATEWAY_ENV);
 			List<Instance> instancesToChoose = instances;
 
 			if (StringUtils.isNotBlank(clusterName)) {
 				List<Instance> sameClusterInstances = instances.stream()
-						.filter(instance -> Objects.equals(clusterName,
-								instance.getClusterName()))
+						.filter(instance -> Objects.equals(clusterName, instance.getClusterName()))
 						.collect(Collectors.toList());
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					if (!CollectionUtils.isEmpty(envs)) {
-						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> {
-							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get("env"));
-						}).collect(Collectors.groupingBy(b -> {
-							return b.getMetadata().get("env");
-						}));
+						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(Constant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(Constant.GATEWAY_ENV)));
 						LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
 						if (MapUtil.isNotEmpty(envInstanceMap)) {
@@ -96,7 +92,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 
 					} else {
 						List<Instance> envInstances = sameClusterInstances.stream().filter(f -> {
-							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get("env"));
+							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get(Constant.GATEWAY_ENV));
 						}).collect(Collectors.toList());
 						instancesToChoose = envInstances;
 					}

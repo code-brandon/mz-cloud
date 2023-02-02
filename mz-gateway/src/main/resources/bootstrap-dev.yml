@@ -21,8 +21,6 @@ spring:
       actuator:
         verbose:
           enabled: false
-#  security:
-#    oauth2:
-#      resource-server:
-#        jwt:
-#          jwk-set-uri: 'http://localhost:9000/rsa/publicKey' #配置RSA的公钥访问地址
+ribbon:
+  # 仅仅修改nacos的配置，还是不能保证能及时的进行服务上下线，需要设置ribbon.ServerListRefreshInterval，增加拉取nacos中最新服务实例的频率
+  ServerListRefreshInterval: 1000

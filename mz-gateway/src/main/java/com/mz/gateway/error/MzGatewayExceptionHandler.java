@@ -13,7 +13,10 @@ import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.server.ServerWebExchange;
+import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 import reactor.core.publisher.Mono;
+
+import java.util.Objects;
 
 /**
  * What -- 网关异常通用处理器，只作用在webflux 环境下 , 优先级低于 {@link ResponseStatusExceptionHandler} 执行
@@ -49,8 +52,9 @@ public class MzGatewayExceptionHandler implements ErrorWebExceptionHandler, Orde
 		return response.writeWith(Mono.fromSupplier(() -> {
 			DataBufferFactory bufferFactory = response.bufferFactory();
 			try {
-				log.warn("Error Spring Cloud Gateway : {} {}", exchange.getRequest().getPath(), ex.getMessage());
-				return bufferFactory.wrap(objectMapper.writeValueAsBytes(R.fail(ex.getMessage(),Boolean.FALSE)));
+				String message = Objects.nonNull(ex.getCause()) ? ex.getCause().getMessage() : ex.getMessage();
+				log.warn("Error Spring Cloud Gateway : {} {}", exchange.getRequest().getPath(), message);
+				return bufferFactory.wrap(objectMapper.writeValueAsBytes(R.fail(message,Boolean.FALSE)));
 			}
 			catch (JsonProcessingException e) {
 				log.error("Error writing response", ex);

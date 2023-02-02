@@ -23,6 +23,6 @@ public class RefreshRoutesResultListener implements
 
     @Override
     public void onApplicationEvent(RefreshRoutesResultEvent event) {
-        log.info("event = {} , 接收刷新路由结果事件" , event);
+        log.debug("接收刷新路由结果事件:{}",System.currentTimeMillis());
     }
 }
