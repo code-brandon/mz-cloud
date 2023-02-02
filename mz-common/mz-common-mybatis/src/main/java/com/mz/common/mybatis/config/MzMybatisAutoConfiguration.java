@@ -9,6 +9,7 @@ import com.mz.common.mybatis.plugin.MzSqlFilterArgumentResolver;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -63,9 +64,10 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 	}
 
 	/**
-	 * 自定义Mybatis 插件 进行耗时计算，SQL美化
+	 * 自定义Mybatis 插件 SQL美化
 	 */
 	@Bean
+	@Profile(value = {"dev","test"})
 	public MzParameterInterceptor mzMybatisLogInterceptor(){
 		return new MzParameterInterceptor();
 	}

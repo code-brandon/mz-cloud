@@ -1,7 +1,7 @@
 package com.mz.common.mybatis.plugin;
 
 import com.baomidou.mybatisplus.core.MybatisParameterHandler;
-import com.mz.common.core.utils.SqlFormatterUtils;
+import com.mz.common.utils.SqlFormatterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.logging.Log;
@@ -22,6 +22,8 @@ import java.sql.PreparedStatement;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+
+import static com.mz.common.utils.MzUtils.getFormatLogString;
 
 /**
  * What -- 美化SQL语句
@@ -59,7 +61,7 @@ public class MzParameterInterceptor implements Interceptor {
         String showSql = showSql(configuration, boundSql);
 
         Log thisLog = mappedStatement.getStatementLog();
-        thisLog.debug(SqlFormatterUtils.getPrettySql(showSql));
+        thisLog.debug(getFormatLogString(SqlFormatterUtils.getPrettySql(showSql), 33, 0));
         //直接返回结果
         return invocation.proceed();
     }
@@ -67,7 +69,7 @@ public class MzParameterInterceptor implements Interceptor {
     private static String getParameterValue(Object obj) {
         String value;
         if (obj instanceof String) {
-            value = "'" + obj.toString() + "'";
+            value = "'" + obj + "'";
         } else if (obj instanceof Date) {
             value = "'" + SIMPLE_DATE_FORMAT.format(obj) + "'";
         } else if (obj != null) {

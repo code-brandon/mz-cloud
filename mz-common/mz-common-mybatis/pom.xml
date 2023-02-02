@@ -16,6 +16,11 @@
     </parent>
 
     <dependencies>
+        <dependency>
+            <groupId>com.mz.common.utils</groupId>
+            <artifactId>mz-common-utils</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
         <!--mybatis-->
         <dependency>
             <groupId>com.baomidou</groupId>
@@ -58,13 +63,6 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>com.mz.common.core</groupId>
-            <artifactId>mz-common-core</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
-            <scope>compile</scope>
         </dependency>
     </dependencies>
 
