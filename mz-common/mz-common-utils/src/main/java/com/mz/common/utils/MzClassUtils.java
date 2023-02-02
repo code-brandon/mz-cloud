@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 import lombok.experimental.UtilityClass;
 import org.springframework.core.BridgeMethodResolver;

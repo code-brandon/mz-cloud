@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 
 import cn.hutool.core.date.DateUtil;
@@ -94,7 +94,7 @@ public class DateUtils extends DateUtil
     public static String datePath()
     {
         Date now = new Date();
-        return format(now, "yyyy/MM/dd");
+        return DateUtil.format(now, "yyyy/MM/dd");
     }
 
     /**
@@ -103,7 +103,7 @@ public class DateUtils extends DateUtil
     public static String dateTime()
     {
         Date now = new Date();
-        return format(now, "yyyyMMdd");
+        return DateUtil.format(now, "yyyyMMdd");
     }
 
     /**

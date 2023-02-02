@@ -6,7 +6,7 @@
  * 2021-9-16 0:34:10 - 小政同学i丷 - 创建.
  */
 
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

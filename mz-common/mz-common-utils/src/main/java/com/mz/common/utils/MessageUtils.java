@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 
 import cn.hutool.extra.spring.SpringUtil;

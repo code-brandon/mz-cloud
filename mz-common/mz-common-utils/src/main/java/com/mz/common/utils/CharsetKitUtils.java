@@ -1,7 +1,8 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 
-import com.mz.common.core.constants.Constant;
+
+import com.mz.common.constant.Constant;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.Charset;

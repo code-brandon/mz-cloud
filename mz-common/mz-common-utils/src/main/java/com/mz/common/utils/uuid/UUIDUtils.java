@@ -1,4 +1,4 @@
-package com.mz.common.core.utils.uuid;
+package com.mz.common.utils.uuid;
 
 import cn.hutool.core.exceptions.UtilException;
 

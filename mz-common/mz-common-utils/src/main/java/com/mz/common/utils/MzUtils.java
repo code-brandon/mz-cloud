@@ -1,8 +1,12 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
+
+
+import com.mz.common.constant.Constant;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import javax.validation.Validation;
-import javax.validation.ValidationException;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 import java.util.Set;
@@ -39,16 +43,30 @@ public class MzUtils {
      * @date: 2022/12/6/006 16:08
      */
     public static void validate(Object obj) {
-        try (ValidatorFactory  validatorFactory = Validation.buildDefaultValidatorFactory()){
-            //先进行参数校验
-            StringBuilder returnSb = new StringBuilder();
+        try (ValidatorFactory validatorFactory = Validation.buildDefaultValidatorFactory()){
             Set<ConstraintViolation<Object>> validateResult = validatorFactory.getValidator().validate(obj, Default.class);
             if (!validateResult.isEmpty()) {
-                for (ConstraintViolation<Object> cv : validateResult) {
-                    returnSb.append(cv.getPropertyPath()).append(":").append(cv.getMessage()).append(";");
-                }
-                throw new ValidationException(returnSb.toString());
+                throw new ConstraintViolationException(validateResult);
             }
         }
+    }
+
+    public static void validate(Object obj,Class<?>... groups) {
+        try (ValidatorFactory  validatorFactory = Validation.buildDefaultValidatorFactory()){
+            Set<ConstraintViolation<Object>> validateResult = validatorFactory.getValidator().validate(obj, groups);
+            if (!validateResult.isEmpty()) {
+                throw new ConstraintViolationException(validateResult);
+            }
+        }
+    }
+
+    /**
+     * 是否为http(s)://开头
+     *
+     * @param link 链接
+     * @return 结果
+     */
+    public static boolean ishttp(String link) {
+        return StringUtils.startsWithAny(link, Constant.HTTP, Constant.HTTPS);
     }
 }

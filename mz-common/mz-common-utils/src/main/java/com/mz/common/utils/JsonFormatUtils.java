@@ -1,4 +1,4 @@
-package com.mz.common.core.utils;
+package com.mz.common.utils;
 
 /**
  * What --  该类提供格式化JSON字符串的方法。
