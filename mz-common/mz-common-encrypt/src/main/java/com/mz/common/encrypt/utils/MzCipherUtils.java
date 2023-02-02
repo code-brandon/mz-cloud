@@ -1,4 +1,4 @@
-package com.xiaozheng.encrypt.utils;
+package com.mz.common.encrypt.utils;
 
 import lombok.SneakyThrows;
 import org.apache.commons.codec.binary.Base64;
@@ -9,6 +9,8 @@ import javax.crypto.interfaces.DHPublicKey;
 import javax.crypto.spec.*;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -1005,6 +1007,24 @@ public class MzCipherUtils {
     }
 
     /**
+     * 加载KeyStore文件
+     *
+     * @param keyStorePath keystore文件地址
+     * @param password     keystore密码
+     * @return 返回KeyStore
+     */
+    public static KeyStore getKeyStore(URL keyStorePath, String password) {
+        try(InputStream is = keyStorePath.openStream()) {
+            KeyStore ks = KeyStore.getInstance(KEY_STORE);
+            ks.load(is, password.toCharArray());
+            return ks;
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    /**
      * 加密数据
      *
      * @param data         要加密的数据
@@ -1318,4 +1338,19 @@ public class MzCipherUtils {
         return verifyCertificate(new Date(), keyStorePath, alias, password);
     }
 
+    public static KeyPair getKeyPair(URL keyStorePath, String alias, String password) {
+        try {
+            RSAPrivateCrtKey key = (RSAPrivateCrtKey) getStore(keyStorePath, password).getKey(alias, password.toCharArray());
+            RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
+            PublicKey publicKey = KeyFactory.getInstance( KEY_ALGORITHM).generatePublic(spec);
+            return new KeyPair(publicKey, key);
+        }
+        catch (Exception e) {
+            throw new IllegalStateException("Cannot load keys from store: ", e);
+        }
+    }
+
+    private static KeyStore getStore(URL keyStorePath, String password) {
+        return getKeyStore(keyStorePath, password);
+    }
 }

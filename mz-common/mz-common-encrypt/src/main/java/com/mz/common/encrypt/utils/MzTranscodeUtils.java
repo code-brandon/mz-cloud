@@ -1,4 +1,4 @@
-package com.xiaozheng.encrypt.utils;
+package com.mz.common.encrypt.utils;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.Character.UnicodeBlock;
