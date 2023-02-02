@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mz.common.redis.annotation.MzLock;
 import com.mz.common.redis.constants.RedisConstant;
 import com.mz.common.redis.exception.MzRedisLockException;
-import io.lettuce.core.RedisException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -14,19 +13,18 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
-import org.springframework.cglib.proxy.UndeclaredThrowableException;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
-import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 /**
@@ -101,30 +99,30 @@ public class MzDistributedLockAspect {
                 lock.unlock();
             }
             long finallyTime = System.currentTimeMillis() - startTime;
-            log.info(String.format("\033[%dm%s\033[0m", 33, "释放redis锁，处理耗时：{}毫秒，{}秒，{}分钟"), finallyTime, finallyTime / 1000.0, String.format("%.3f",finallyTime / 1000.0 / 60.0));
+            log.info(String.format("\033[%dm%s\033[0m", 33, "释放redis锁，处理耗时：{}毫秒，{}秒，{}分钟"), finallyTime, finallyTime / 1000.0, String.format("%.3f", finallyTime / 1000.0 / 60.0));
         }
     }
 
 
     private RLock lock(String lockName, MzLock distributedLock) throws Exception {
+        long leaseTime = distributedLock.leaseTime();
+        TimeUnit timeUnit = distributedLock.timeUnit();
+        long waitTime = distributedLock.waitTime();
+        String message = distributedLock.message();
         RLock lock = redisson.getLock(lockName);
         // 上锁
         if (distributedLock.tryLock()) {
-            boolean success = lock.tryLock(distributedLock.waitTime(), distributedLock.leaseTime(), distributedLock.timeUnit());
-            if (!success) {
-                log.error("获取redis锁定失败");
-                throw new MzRedisLockException(distributedLock.message());
+            if (!lock.tryLock(waitTime, leaseTime, timeUnit)) {
+                // 获取锁失败
+                throw new MzRedisLockException(message);
             }
         } else {
-            long leaseTime = distributedLock.leaseTime();
             if (leaseTime > 0) {
-                lock.lock(distributedLock.leaseTime(), distributedLock.timeUnit());
+                lock.lock(leaseTime, timeUnit);
             } else {
                 lock.lock();
             }
         }
         return lock;
     }
- 
- 
 }

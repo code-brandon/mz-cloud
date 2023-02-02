@@ -1,7 +1,5 @@
 package com.mz.common.redis.annotation;
 
-import com.mz.common.redis.constants.RedisConstant;
-
 import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
