@@ -1,4 +1,4 @@
-package com.mz.common.core.constants;
+package com.mz.common.constant;
 
 /**
  * What -- 常量
@@ -38,7 +38,7 @@ public class Constant {
          */
         BUTTON(2);
 
-        private int value;
+        private final int value;
 
         MenuType(int value) {
             this.value = value;
@@ -69,7 +69,7 @@ public class Constant {
          */
     	PAUSE(1);
 
-        private int value;
+        private final int value;
 
         ScheduleStatus(int value) {
             this.value = value;
@@ -109,7 +109,7 @@ public class Constant {
          */
         MINIO(4);
 
-        private int value;
+        private final int value;
 
         CloudService(int value) {
             this.value = value;
@@ -264,5 +264,15 @@ public class Constant {
      * 认证中心 cache key
      */
     public static final String OAUTH_KEY = "mz_cloud_oauth:";
+
+    /**
+     * 网关环境Key
+     */
+    public static final String GATEWAY_ENV = "env";
+
+    /**
+     * 默认项目包前缀
+     */
+    public static final String PACKAGE_PRE_FIX = "com.mz";
 
 }

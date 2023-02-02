@@ -1,4 +1,4 @@
-package com.mz.common.core.constants;
+package com.mz.common.constant;
 
 public class UserConstants {
     /**

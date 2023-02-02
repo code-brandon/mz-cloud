@@ -1,8 +1,4 @@
-package com.mz.common.core.exception;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+package com.mz.common.constant.enums;
 
 /**
  * What -- 错误码和错误信息定义类
@@ -20,14 +16,16 @@ import lombok.NoArgsConstructor;
  * @ClassName: MzCodeEnum
  * @CreateTime 2022/5/20 21:51
  */
-@Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public enum MzCodeEnum {
+public enum MzErrorCodeEnum {
+
+    /**
+     * 参数错误
+     */
+    PARAM_ERROR(405, "参数错误"),
     /**
      * 系统未知异常
      */
-    UNKNOW_EXCEPTION(10000,"系统未知异常"),
+    UNKNOW_EXCEPTION(10000,"系统未知异常",""),
     /**
      * 参数格式校验失败
      */
@@ -38,20 +36,55 @@ public enum MzCodeEnum {
     PHONE_EXIST_EXCEPTION(15002,"手机号存在!"),
     LOGINACCT_PASSWORD_INVAILD_EXCEPTION(15003,"账号或密码错误!"),
     OAUTH_AUTH_EXCEPTION(15004,"身份验证失败!"),
-    OAUTH_ACCESS_EXCEPTION(15006,"OAuth_Access异常!"),
+    OAUTH_ACCESS_EXCEPTION(15006,"访问异常!"),
     OAUTH_TOKEN_EXCEPTION(15007,"Token无效或过期!"),
     OAUTH_GRANTTYPE_EXCEPTION(15008,"不支持的授予类型!"),
     OAUTH_CLIENT_EXCEPTION(15009,"远程客户端出现异常!" ),
 
-    FEIGN_EXCEPTION(20000,"Feign远程调用异常！！");
+    FEIGN_EXCEPTION(20000,"Feign远程调用异常!"),
+    REMOTE_EXCEPTION(20001,"远程调用异常!"),
+
+    /**
+     * SQL异常
+     */
+    SQL_TOO_MANY_RESULTS_EXCEPTION(12001,"结果过多异常!"),
+    SQL_BINDING_EXCEPTION(12002,"参数绑定异常!"),
+    SQL_EXCEPTION(12003,"SQL语句异常!"),
+    SQL_GRAMMAR_EXCEPTION(12004,"SQL语法错误!"),
+
+    ;
 
     /**
      * 状态码
      */
-    private int code;
+    private final int code;
     /**
      * 信息
      */
-    private String msg;
+    private final String msg;
 
+    private String i18Key;
+
+    MzErrorCodeEnum(int code, String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
+    MzErrorCodeEnum(int code, String msg,String i18Key) {
+        this.code = code;
+        this.msg = msg;
+        this.i18Key = i18Key;
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public String getMsg() {
+        return msg;
+    }
+
+    public String getI18Key() {
+        return i18Key;
+    }
 }

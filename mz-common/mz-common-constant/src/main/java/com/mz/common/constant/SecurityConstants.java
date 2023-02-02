@@ -1,4 +1,4 @@
-package com.mz.common.core.constants;
+package com.mz.common.constant;
 
 /**
  * What --
@@ -6,7 +6,7 @@ package com.mz.common.core.constants;
  * Describe --
  * <br>
  *
- * @Package: com.mz.common.core.constants
+ * @Package: com.mz.common.constant
  * @ClassName: SecurityConstants
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/6/1 21:34
