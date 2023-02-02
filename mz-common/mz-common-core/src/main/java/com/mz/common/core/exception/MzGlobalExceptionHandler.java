@@ -1,20 +1,25 @@
 package com.mz.common.core.exception;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.utils.CharsetKitUtils;
-import com.mz.common.core.utils.ConvertUtils;
+import com.mz.common.utils.CharsetKitUtils;
+import com.mz.common.utils.ConvertUtils;
+import com.mz.common.utils.ThrowableUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
+import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.validation.ConstraintViolationException;
 import javax.validation.UnexpectedTypeException;
+import javax.validation.ValidationException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -49,12 +54,27 @@ public class MzGlobalExceptionHandler {
     }
 
     /**
-     * 基础异常
+     * 自定义异常
+     * @param e
+     * @return
      */
-    @ExceptionHandler(MzBaseException.class)
-    public R baseException(MzBaseException e) {
-        log.error("基础异常:{}",e.getMessage());
-        return R.error(e.getMessage());
+    @ExceptionHandler(MzException.class)
+    public R<String> mzException(MzException e) {
+        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX);
+        log.error("业务异常:{}",stackTraceByPn);
+        return R.error(MzErrorCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
+    }
+
+    /**
+     * 自定义异常
+     * @param e
+     * @return
+     */
+    @ExceptionHandler(MzRemoteException.class)
+    public R<String> remoteException(MzRemoteException e) {
+        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX);
+        log.error("远程调用异常:{}",stackTraceByPn);
+        return R.error(MzErrorCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
     }
 
     @ExceptionHandler(MismatchedInputException.class)
@@ -86,30 +106,44 @@ public class MzGlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(MethodArgumentNotValidException.class)
-    public R<Map<String,String>> methodException(MethodArgumentNotValidException e) {
-        BindingResult bindingResult = e.getBindingResult();
-        Map<String,String> map = new HashMap<>();
-        bindingResult.getFieldErrors().stream().forEach(fieldError -> {
-            // 返回对象的受影响字段
-            String field = fieldError.getField();
-            // 返回用于解析此消息的默认消息。
-            String message = fieldError.getDefaultMessage();
-            // 将错误信息放到MAP中
-            map.put(field, message);
-        });
-        return R.fail(MzCodeEnum.VAILD_EXCEPTION.getCode(),MzCodeEnum.VAILD_EXCEPTION.getMsg(),map);
-    }
-
-    /**
-     * 自定义异常
-     * @param e
-     * @return
-     */
-    @ExceptionHandler(MzException.class)
-    public R baseException(MzException e) {
-        log.error("自定义异常:{}",e.getMessage());
-        return R.error(MzCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
+    @ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class})
+    public R<Map<String,String>> methodException(Exception e) {
+        Map<String, String> map = new HashMap<>(5);
+        if (e instanceof MethodArgumentNotValidException) {
+            MethodArgumentNotValidException methodValidException = (MethodArgumentNotValidException) e;
+            methodValidException.getBindingResult().getFieldErrors().forEach(fieldError -> {
+                // 返回对象的受影响字段
+                String field = fieldError.getField();
+                // 返回用于解析此消息的默认消息。
+                String message = fieldError.getDefaultMessage();
+                // 将错误信息放到MAP中
+                map.put(field, message);
+            });
+        }else if (e instanceof ConstraintViolationException) {
+            // BeanValidation GET simple param
+            ConstraintViolationException validator = (ConstraintViolationException) e;
+            validator.getConstraintViolations().forEach(fieldError->{
+                // 返回对象的受影响字段
+                String field = fieldError.getPropertyPath().toString();
+                // 返回用于解析此消息的默认消息。
+                String message = fieldError.getMessage();
+                // 将错误信息放到MAP中
+                map.put(field, message);
+            });
+        } else if (e instanceof BindException) {
+            // BeanValidation GET object param
+            BindException bindException = (BindException) e;
+            bindException.getFieldErrors().forEach(fieldError -> {
+                // 返回对象的受影响字段
+                String field = fieldError.getField();
+                // 返回用于解析此消息的默认消息。
+                String message = fieldError.getDefaultMessage();
+                // 将错误信息放到MAP中
+                map.put(field, message);
+            });
+        }
+        log.error("字段校验异常：{}",e.getMessage());
+        return R.fail(MzErrorCodeEnum.VAILD_EXCEPTION.getCode(), MzErrorCodeEnum.VAILD_EXCEPTION.getMsg(),map);
     }
 
 

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.mz.common.core.annotation.DictFormat;
-import com.mz.common.core.utils.cach.DictCacheUtils;
+import com.mz.common.core.dict.DictCache;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public class MzDictJsonSerializer extends JsonSerializer<Object> {
             // 类型为空表示没走缓存 原值输出
             gen.writeObject(value);
         } else {
-            String cacheValue = DictCacheUtils.getCache(type, StringUtils.isBlank(key) ? String.valueOf(value) : key);
+            String cacheValue = DictCache.getCache(type, StringUtils.isBlank(key) ? String.valueOf(value) : key);
             if (StringUtils.isBlank(newField)) {
                 gen.writeObject(StringUtils.isNotBlank(cacheValue) ? cacheValue : StringUtils.isNotBlank(defaultValue) ? defaultValue : value);
             } else {

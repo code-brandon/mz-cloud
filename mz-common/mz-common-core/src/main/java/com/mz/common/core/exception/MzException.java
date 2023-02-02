@@ -1,5 +1,11 @@
 package com.mz.common.core.exception;
 
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
+import com.mz.common.utils.MessageUtils;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
+
 /**
  * What -- 自定义异常
  * <br>
@@ -14,7 +20,14 @@ public class MzException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 	
     private String msg;
-    private int code = 500;
+
+	/**
+	 * 错误码对应的参数
+	 */
+	private Object[] args;
+
+	private MzErrorCodeEnum codeEnum;
+    private int code = Constant.ERROR;
     
     public MzException(String msg) {
 		super(msg);
@@ -31,11 +44,18 @@ public class MzException extends RuntimeException {
 		this.msg = msg;
 		this.code = code;
 	}
-	
+
+
+
 	public MzException(String msg, int code, Throwable e) {
 		super(msg, e);
 		this.msg = msg;
 		this.code = code;
+	}
+
+	public MzException(MzErrorCodeEnum codeEnum, Object[] args) {
+		this.codeEnum = codeEnum;
+		this.args = args;
 	}
 
 	public String getMsg() {
@@ -52,6 +72,29 @@ public class MzException extends RuntimeException {
 
 	public void setCode(int code) {
 		this.code = code;
+	}
+
+	public Object[] getArgs() {
+		return args;
+	}
+
+	public MzErrorCodeEnum getI18Enum() {
+		return codeEnum;
+	}
+
+	@Override
+	public String getMessage() {
+		String message = null;
+		if (!ObjectUtils.isEmpty(codeEnum)) {
+			if (!StringUtils.isEmpty(codeEnum.getI18Key())) {
+				message = MessageUtils.message(codeEnum.getI18Key(), args);
+			}else {
+				message = codeEnum.getMsg();
+			}
+		}else {
+			message = msg;
+		}
+		return message;
 	}
 
 }

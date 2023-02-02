@@ -1,7 +1,8 @@
 package com.mz.common.core.entity;
 
-import com.mz.common.core.constants.Constant;
-import com.mz.common.core.exception.MzCodeEnum;
+
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -89,10 +90,10 @@ public class R<T> {
         return r;
     }
 
-    public static <T> R<T>  error(MzCodeEnum mzCodeEnum) {
+    public static <T> R<T>  error(MzErrorCodeEnum mzErrorCodeEnum) {
         R<T> r = error();
-        r.setCode(mzCodeEnum.getCode());
-        r.setMessage(mzCodeEnum.getMsg());
+        r.setCode(mzErrorCodeEnum.getCode());
+        r.setMessage(mzErrorCodeEnum.getMsg());
         return r;
     }
 
@@ -137,10 +138,10 @@ public class R<T> {
         return r;
     }
 
-    public static <T> R<T>  ok(MzCodeEnum mzCodeEnum) {
+    public static <T> R<T>  ok(MzErrorCodeEnum mzErrorCodeEnum) {
         R<T> r = ok();
-        r.setCode(mzCodeEnum.getCode());
-        r.setMessage(mzCodeEnum.getMsg());
+        r.setCode(mzErrorCodeEnum.getCode());
+        r.setMessage(mzErrorCodeEnum.getMsg());
         return r;
     }
 
@@ -188,10 +189,10 @@ public class R<T> {
         return r;
     }
 
-    public static <T> R<T> fail(MzCodeEnum mzCodeEnum) {
+    public static <T> R<T> fail(MzErrorCodeEnum mzErrorCodeEnum) {
         R<T> r = fail();
-        r.setCode(mzCodeEnum.getCode());
-        r.setMessage(mzCodeEnum.getMsg());
+        r.setCode(mzErrorCodeEnum.getCode());
+        r.setMessage(mzErrorCodeEnum.getMsg());
         return r;
     }
 }

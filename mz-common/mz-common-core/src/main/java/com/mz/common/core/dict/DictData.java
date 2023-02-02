@@ -1,4 +1,4 @@
-package com.mz.common.core.entity.dict;
+package com.mz.common.core.dict;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

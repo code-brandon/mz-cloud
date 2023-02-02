@@ -1,7 +1,5 @@
-package com.mz.common.core.utils.cach;
+package com.mz.common.core.dict;
 
-import com.mz.common.core.entity.dict.DictData;
-import com.mz.common.core.entity.dict.DictEntity;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @UtilityClass
 @Slf4j
-public class DictCacheUtils {
+public class DictCache {
 
     private  ConcurrentHashMap<String, DictEntity> cache = new ConcurrentHashMap<>(256);
 
@@ -32,7 +30,7 @@ public class DictCacheUtils {
     }
 
     public  void putAllCache(Map<String, DictEntity> cache) {
-        DictCacheUtils.cache.putAll(cache);
+        DictCache.cache.putAll(cache);
     }
 
     public  void putCache(String k, DictEntity v) {
