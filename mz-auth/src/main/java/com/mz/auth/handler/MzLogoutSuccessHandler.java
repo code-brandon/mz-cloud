@@ -1,8 +1,8 @@
 package com.mz.auth.handler;
 
-import com.mz.common.core.constants.Constant;
+import com.mz.common.constant.Constant;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.utils.MzWebUtils;
+import com.mz.common.utils.MzWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
@@ -12,11 +12,9 @@ import org.springframework.security.web.authentication.AbstractAuthenticationTar
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Objects;
 
 /**
@@ -36,7 +34,7 @@ public class MzLogoutSuccessHandler extends AbstractAuthenticationTargetUrlReque
     private TokenStore tokenStore;
 
     @Override
-    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+    public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) {
         // 将子系统的cookie删掉
         Cookie[] cookies = request.getCookies();
         if (cookies != null && cookies.length > 0) {

@@ -1,18 +1,15 @@
 package com.mz.auth.handler;
 
-import com.alibaba.fastjson.JSON;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.exception.MzCodeEnum;
-import com.mz.common.core.utils.MzWebUtils;
+import com.mz.common.utils.MzWebUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 /**
  * What -- Mz 身份验证失败处理程序
@@ -29,7 +26,7 @@ import java.io.IOException;
 public class MzAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
 	@Override
-	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException, ServletException {
-		MzWebUtils.renderJson(response, JSON.toJSONString(R.error(MzCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(), MzCodeEnum.OAUTH_AUTH_EXCEPTION.getMsg() + exception.getMessage())));
+	public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) {
+		MzWebUtils.renderJson(response, R.error(MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(), MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getMsg() + exception.getMessage()));
 	}
 }

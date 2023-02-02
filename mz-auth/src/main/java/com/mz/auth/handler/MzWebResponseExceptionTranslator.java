@@ -1,7 +1,8 @@
 package com.mz.auth.handler;
 
+import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.exception.MzCodeEnum;
+import com.mz.common.core.exception.MzException;
 import com.netflix.client.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +14,8 @@ import org.springframework.security.oauth2.common.exceptions.UnsupportedGrantTyp
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 
 import javax.security.auth.message.AuthException;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * What -- Mz Web 响应异常翻译器
@@ -29,24 +32,26 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
 
     @Override
     public ResponseEntity translate(Exception e) {
-        log.warn("登录失败: ", e.getLocalizedMessage());
-        MzCodeEnum oauthAuthException = MzCodeEnum.UNKNOW_EXCEPTION;
+        MzErrorCodeEnum oauthAuthException = MzErrorCodeEnum.UNKNOW_EXCEPTION;
         if (e instanceof AuthException || e.getCause() instanceof AuthException) {
-            oauthAuthException = MzCodeEnum.OAUTH_EXCEPTION;
+            oauthAuthException = MzErrorCodeEnum.OAUTH_EXCEPTION;
         } else if (e instanceof InternalAuthenticationServiceException) {
             if (e.getCause().getCause() instanceof ClientException) {
-                oauthAuthException = MzCodeEnum.OAUTH_CLIENT_EXCEPTION;
-            } else {
-                oauthAuthException = MzCodeEnum.OAUTH_AUTH_EXCEPTION;
+                oauthAuthException = MzErrorCodeEnum.OAUTH_CLIENT_EXCEPTION;
+            }else if(Objects.nonNull(e.getCause()) && e.getCause() instanceof MzException){
+                oauthAuthException = null;
+            }  else {
+                oauthAuthException = MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION;
             }
         } else if (e instanceof InvalidGrantException) {
-            oauthAuthException = MzCodeEnum.LOGINACCT_PASSWORD_INVAILD_EXCEPTION;
+            oauthAuthException = MzErrorCodeEnum.LOGINACCT_PASSWORD_INVAILD_EXCEPTION;
         } else if (e instanceof InvalidTokenException) {
-            oauthAuthException = MzCodeEnum.OAUTH_TOKEN_EXCEPTION;
+            oauthAuthException = MzErrorCodeEnum.OAUTH_TOKEN_EXCEPTION;
         } else if (e instanceof UnsupportedGrantTypeException) {
-            oauthAuthException = MzCodeEnum.OAUTH_GRANTTYPE_EXCEPTION;
+            oauthAuthException = MzErrorCodeEnum.OAUTH_GRANTTYPE_EXCEPTION;
         }
-        return ResponseEntity.ok(R.fail(oauthAuthException));
+        log.warn("登录失败: {}", Optional.ofNullable(e.getLocalizedMessage()).orElse(Optional.ofNullable(oauthAuthException).orElse(MzErrorCodeEnum.UNKNOW_EXCEPTION).getMsg()));
+        return ResponseEntity.ok(Objects.nonNull(oauthAuthException) ? R.fail(oauthAuthException) : R.fail(MzErrorCodeEnum.OAUTH_EXCEPTION.getCode(), e.getLocalizedMessage()));
     }
 
 }

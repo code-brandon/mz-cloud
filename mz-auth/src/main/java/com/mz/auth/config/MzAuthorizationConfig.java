@@ -87,7 +87,7 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         // 允许客户端的表单身份验证
-        AuthorizationServerSecurityConfigurer securityConfigurer = oauthServer.allowFormAuthenticationForClients()
+        oauthServer.allowFormAuthenticationForClients()
                 .checkTokenAccess("isAuthenticated()")
                 .tokenKeyAccess("isAuthenticated()");
 
@@ -122,10 +122,9 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
      * 授权服务器端点配置器（密码模式）
      *
      * @param endpoints
-     * @throws Exception
      */
     @Override
-    public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
+    public void configure(AuthorizationServerEndpointsConfigurer endpoints) {
 
         TokenEnhancerChain enhancerChain = new TokenEnhancerChain();
         List<TokenEnhancer> delegates = new ArrayList<>();

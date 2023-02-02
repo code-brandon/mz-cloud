@@ -3,7 +3,7 @@ package com.mz.auth.provider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.JacksonUtils;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.utils.MzWebUtils;
+import com.mz.common.utils.MzWebUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -56,14 +56,23 @@ public class MzFormatterToken implements HandlerMethodReturnValueHandler {
         return POST_ACCESS_TOKEN.equals(Objects.requireNonNull(returnType.getMethod()).getName());
     }
 
-    // 获取到返回值然后使用 R对象统一包装
+    /**
+     * 获取到返回值然后使用 R对象统一包装
+     * @param returnValue the value returned from the handler method
+     * @param returnType the type of the return value. This type must have
+     * previously been passed to {@link #supportsReturnType} which must
+     * have returned {@code true}.
+     * @param container the ModelAndViewContainer for the current request
+     * @param request the current request
+     */
     @Override
-    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer container, NativeWebRequest request) throws Exception {
+    public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer container, NativeWebRequest request) {
         ResponseEntity responseEntity = (ResponseEntity) returnValue;
         Object body = responseEntity.getBody();
 
         HttpServletResponse response = request.getNativeResponse(HttpServletResponse.class);
         assert response != null;
+        // TODO JSON.parse(JacksonUtils.toJson(body))) 原因：使其转换为JSON时符合原有格式，否则格式与包装前data中的格式不能对应
         MzWebUtils.renderJson(response, R.ok(JSON.parse(JacksonUtils.toJson(body))));
     }
 

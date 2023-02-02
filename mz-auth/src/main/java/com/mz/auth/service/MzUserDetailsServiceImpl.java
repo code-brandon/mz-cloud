@@ -1,11 +1,12 @@
 package com.mz.auth.service;
 
-import com.mz.common.core.constants.Constant;
-import com.mz.common.core.constants.SecurityConstants;
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.SecurityConstants;
+import com.mz.common.constant.enums.MzErrorCodeEnum;
+import com.mz.common.constant.enums.UserStatus;
 import com.mz.common.core.entity.R;
-import com.mz.common.core.enums.UserStatus;
-import com.mz.common.core.exception.MzBaseException;
-import com.mz.common.core.exception.MzCodeEnum;
+import com.mz.common.core.exception.MzException;
+import com.mz.common.core.exception.MzRemoteException;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.service.MzUserDetailsService;
 import com.mz.system.api.MzSysUcerApi;
@@ -57,20 +58,17 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
         R<SysUserDto> sysUserDtoR = mzSysUcerApi.loadUserByUserName(username);
         if (Constant.SUCCESS.equals(sysUserDtoR.getCode())) {
             if (Objects.isNull(sysUserDtoR.getData())) {
-                log.info("登录用户：{} 不存在.", username);
                 throw new UsernameNotFoundException("用户名不存在");
             }
             SysUserDto sysUserDto = sysUserDtoR.getData();
             if (UserStatus.DELETED.getCode().equals(sysUserDto.getDelFlag())) {
-                log.info("登录用户：{} 已被删除.", username);
-                throw new UsernameNotFoundException("对不起，您的账号：" + username + " 已被删除");
+                throw new MzException("对不起，您的账号：" + username + " 已被删除");
             } else if (UserStatus.DISABLE.getCode().equals(sysUserDto.getStatus())) {
-                log.info("登录用户：{} 已被停用.", username);
-                throw new UsernameNotFoundException("对不起，您的账号：" + username + " 已停用");
+                throw new MzException("对不起，您的账号：" + username + " 已停用");
             }
             return createLoginUser(sysUserDto);
         }
-        throw new MzBaseException("nz-auth", String.valueOf(MzCodeEnum.FEIGN_EXCEPTION.getCode()), null, MzCodeEnum.FEIGN_EXCEPTION.getMsg());
+        throw new MzRemoteException(MzErrorCodeEnum.REMOTE_EXCEPTION.getMsg(), MzErrorCodeEnum.REMOTE_EXCEPTION.getCode());
     }
 
     /**

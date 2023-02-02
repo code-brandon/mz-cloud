@@ -2,11 +2,14 @@ package com.mz.auth.provider;
 
 import com.mz.common.core.exception.MzException;
 import com.mz.common.security.service.MzUserDetailsService;
+import org.springframework.security.authentication.AccountStatusException;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
 import org.springframework.security.oauth2.provider.*;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 
@@ -31,7 +34,7 @@ public class WxUserPasswdTokenGranter extends MzAbstractTokenGranter {
     
     private final AuthenticationManager authenticationManager;
     
-    private MzUserDetailsService userDetailsService;
+    private final MzUserDetailsService userDetailsService;
 
     public WxUserPasswdTokenGranter(AuthenticationManager authenticationManager,
                                     AuthorizationServerTokenServices tokenServices, ClientDetailsService clientDetailsService,
@@ -51,19 +54,33 @@ public class WxUserPasswdTokenGranter extends MzAbstractTokenGranter {
     protected OAuth2Authentication getOAuth2Authentication(ClientDetails client, TokenRequest tokenRequest) {
         Map<String, String> parameters = new LinkedHashMap<>(tokenRequest.getRequestParameters());
         UserDetails details = getUserDetails(parameters);
+        String username = details.getUsername();
         if(!details.isEnabled()){
-            throw new MzException("");
+            throw new MzException("对不起，您的账号：" + username + " 已停用");
         }
         parameters.remove("password");
         Authentication userAuth = new UsernamePasswordAuthenticationToken(details, details.getPassword(), details.getAuthorities());
-
+        try {
+            userAuth = authenticationManager.authenticate(userAuth);
+        }
+        catch (AccountStatusException ase) {
+            //covers expired, locked, disabled cases (mentioned in section 5.2, draft 31)
+            throw new InvalidGrantException(ase.getMessage());
+        }
+        catch (BadCredentialsException e) {
+            // If the username/password are wrong the spec says we should send 400/invalid grant
+            throw new InvalidGrantException(e.getMessage());
+        }
+        if (userAuth == null || !userAuth.isAuthenticated()) {
+            throw new InvalidGrantException("Could not authenticate user: " + username);
+        }
         // 反射去掉 携带的密码
         try {
             Field credentials = userAuth.getClass().getDeclaredField("credentials");
             credentials.setAccessible(true);
             credentials.set(userAuth, "");
         } catch (NoSuchFieldException | IllegalAccessException e) {
-            throw new RuntimeException(e);
+            throw new MzException("字段处理异常",e);
         }
         OAuth2Request storedOAuth2Request = getRequestFactory().createOAuth2Request(client, tokenRequest);
         return new OAuth2Authentication(storedOAuth2Request, userAuth);
@@ -71,7 +88,6 @@ public class WxUserPasswdTokenGranter extends MzAbstractTokenGranter {
     
     @Override
     protected UserDetails getUserDetails(Map<String, String> parameters) {
-        String username = parameters.get("username");
         String password = parameters.get("password");
         UserDetails userDetails = userDetailsService.loadUserByUsername(parameters);
         // 进行密码校验

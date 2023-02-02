@@ -1,13 +1,13 @@
 package com.mz.auth.config;
 
-import com.xiaozheng.encrypt.utils.MzCipherUtils;
+import com.mz.common.encrypt.utils.MzCipherUtils;
 import lombok.SneakyThrows;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.KeyStoreKeyFactory;
 
+import java.net.URL;
 import java.security.KeyPair;
 
 /**
@@ -37,7 +37,7 @@ public class MzKeyPairConfig {
     public KeyPair keyPair() {
         //从classpath下的证书中获取秘钥对
         // 秘钥位置
-        String jksPath = new ClassPathResource("key/jwt.jks").getURL().getPath();
+        URL jksPath = new ClassPathResource("key/jwt.jks").getURL();
 
         // 基于工厂拿到私钥
         return MzCipherUtils.getKeyPair(jksPath, "jwt", "mz_cloud");
