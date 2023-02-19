@@ -3,6 +3,8 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysNoticeEntity;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
+import com.mz.system.model.vo.req.SysNoticeReqVo;
 
 import java.util.Map;
 
@@ -16,5 +18,11 @@ import java.util.Map;
 public interface SysNoticeService extends IService<SysNoticeEntity> {
 
     PageUtils<SysNoticeEntity> queryPage(Map<String, Object> params);
+
+    boolean saveNotice(SysNoticeReqVo sysNoticeVo);
+
+    boolean updateNoticeById(SysNoticeReqVo sysNoticeVo);
+
+    boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 }
 

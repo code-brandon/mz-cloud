@@ -2,6 +2,7 @@ package com.mz.system.provider.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.system.model.dto.SysOperLogDto;
 import com.mz.system.model.entity.SysOperLogEntity;
 
 import java.util.Map;
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface SysOperLogService extends IService<SysOperLogEntity> {
 
     PageUtils<SysOperLogEntity> queryPage(Map<String, Object> params);
+
+    boolean  saveOperLog(SysOperLogDto sysOperLog);
 }
 

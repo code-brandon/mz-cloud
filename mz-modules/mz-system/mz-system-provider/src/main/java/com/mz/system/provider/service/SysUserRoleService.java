@@ -3,11 +3,12 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysUserRoleEntity;
+import com.mz.system.model.vo.SysUserVo;
 import com.mz.system.model.vo.req.SysRoleBindUserReqVo;
-import com.mz.system.model.vo.req.SysUserByRoleIdReqVo;
-import com.mz.system.model.vo.res.SysUserResVo;
+import com.mz.system.model.vo.search.SysUserSearchVo;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 用户和角色关联表
@@ -18,15 +19,28 @@ import java.util.Map;
  */
 public interface SysUserRoleService extends IService<SysUserRoleEntity> {
 
-    PageUtils<SysUserRoleEntity> queryPage(Map<String, Object> params);
+    PageUtils<SysUserVo> getUserPageByRoleId(Map<String, Object> params, SysUserSearchVo roleIdResVo);
 
-    PageUtils<SysUserResVo> getUserPageByRoleId(Map<String, Object> params, SysUserByRoleIdReqVo roleIdResVo);
-
-    PageUtils<SysUserResVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserByRoleIdReqVo userByRoleIdResVo);
+    PageUtils<SysUserVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserSearchVo userByRoleIdResVo);
 
     boolean saveRoleBindUser(SysRoleBindUserReqVo roleBindUserReqVo);
 
     boolean deleteByRoleIdAndUserIds(SysRoleBindUserReqVo roleBindUserReqVo);
 
+    /**
+     * 按用户 ID 获取角色 ID
+     * @param userId
+     * @return
+     */
+    Set<Long> getRoleIdsByUserId(Long userId);
+
+    /**
+     * 保存用户角色
+     * @param userId
+     * @param roleIds
+     * @return
+     */
+
+    boolean saveUserRoles(Long userId, Set<Long> roleIds);
 }
 

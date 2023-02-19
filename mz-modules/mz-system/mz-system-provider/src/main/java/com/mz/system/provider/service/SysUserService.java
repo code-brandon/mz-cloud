@@ -3,10 +3,12 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysUserDto;
+import com.mz.system.model.dto.SysUserLoginLogDto;
 import com.mz.system.model.entity.SysUserEntity;
 import com.mz.system.model.vo.LoginBodyVo;
+import com.mz.system.model.vo.SysUserVo;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
 import com.mz.system.model.vo.req.SysUserIdAndPasswdReqVo;
-import com.mz.system.model.vo.res.SysUserResVo;
 
 import java.util.List;
 import java.util.Map;
@@ -20,7 +22,7 @@ import java.util.Map;
  */
 public interface SysUserService extends IService<SysUserEntity> {
 
-    PageUtils<SysUserResVo> queryPage(Map<String, Object> params, SysUserResVo userReqVo);
+    PageUtils<SysUserVo> queryPage(Map<String, Object> params, SysUserVo userReqVo);
 
     /**
      * 按名称获取用户
@@ -46,24 +48,24 @@ public interface SysUserService extends IService<SysUserEntity> {
     /**
      * 保存用户信息
      *
-     * @param sysUserResVo
+     * @param sysUserVo
      * @return
      */
-    boolean saveUser(SysUserResVo sysUserResVo);
+    boolean saveUser(SysUserVo sysUserVo);
 
     /**
      * 根据用户ID查询用户信息
      * @param userId
      * @return
      */
-    SysUserResVo getUserById(Long userId);
+    SysUserVo getUserById(Long userId);
 
     /**
      * 根据用户ID更新用户信息
-     * @param sysUserResVo
+     * @param sysUserVo
      * @return
      */
-    boolean updateUserById(SysUserResVo sysUserResVo);
+    boolean updateUserById(SysUserVo sysUserVo);
 
     /**
      * 重置密码
@@ -78,5 +80,20 @@ public interface SysUserService extends IService<SysUserEntity> {
      * @return
      */
     boolean removeUserByIds(List<Long> userIds);
+
+    /**
+     * 修改状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return 修改结果
+     */
+    boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
+
+    /**
+     * 修改登录记录
+     * @param sysUserLoginLogDto
+     * @return
+     */
+    boolean updateLoginLog(SysUserLoginLogDto sysUserLoginLogDto);
 }
 

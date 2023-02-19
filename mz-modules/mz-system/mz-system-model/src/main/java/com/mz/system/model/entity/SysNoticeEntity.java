@@ -3,6 +3,7 @@ package com.mz.system.model.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.mz.common.mybatis.entity.BaseEntity;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -10,7 +11,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
 
 /**
  * 通知公告表
@@ -24,7 +24,7 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @TableName("sys_notice")
-public class SysNoticeEntity implements Serializable {
+public class SysNoticeEntity extends BaseEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	/**
@@ -32,7 +32,7 @@ public class SysNoticeEntity implements Serializable {
 	 */
     @ApiModelProperty("公告ID")
 	@TableId(type = IdType.AUTO)
-	private Integer noticeId;
+	private Long noticeId;
 	/**
 	 * 公告标题
 	 */
@@ -53,26 +53,6 @@ public class SysNoticeEntity implements Serializable {
 	 */
     @ApiModelProperty("公告状态（0正常 1关闭）")
 	private String status;
-	/**
-	 * 创建者
-	 */
-    @ApiModelProperty("创建者")
-	private String createBy;
-	/**
-	 * 创建时间
-	 */
-    @ApiModelProperty("创建时间")
-	private Date createTime;
-	/**
-	 * 更新者
-	 */
-    @ApiModelProperty("更新者")
-	private String updateBy;
-	/**
-	 * 更新时间
-	 */
-    @ApiModelProperty("更新时间")
-	private Date updateTime;
 	/**
 	 * 备注
 	 */

@@ -2,11 +2,12 @@ package com.mz.system.provider.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysDeptEntity;
+import com.mz.system.model.vo.SysDeptTree;
+import com.mz.system.model.vo.req.SysDeptReqVo;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 部门表
@@ -17,7 +18,7 @@ import java.util.Map;
  */
 public interface SysDeptService extends IService<SysDeptEntity> {
 
-    PageUtils<SysDeptEntity> queryPage(Map<String, Object> params);
+    List<SysDeptEntity> queryList(SysDeptReqVo sysDeptReqVo);
 
     /**
      * 获取部门树列表
@@ -25,6 +26,35 @@ public interface SysDeptService extends IService<SysDeptEntity> {
      */
     List<Tree<Long>> getDeptTree();
 
-    List<Tree<Long>> getDeptListTree();
+    /**
+     * 获取机构列表树
+     *
+     * @return
+     */
+    List<SysDeptTree> getDeptListTree(SysDeptReqVo sysDeptReqVo);
+
+    /**
+     * 保存部门信息
+     *
+     * @param sysDeptReqVo
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    boolean saveDept(SysDeptReqVo sysDeptReqVo);
+
+    /**
+     * 根据DeptId获取祖级列表
+     * @param deptId
+     * @return
+     */
+    String getAncestorsByDeptId(Long deptId);
+
+    /**
+     * 根据DeptId修改数据
+     * @param sysDeptReqVo
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    boolean updateDeptById(SysDeptReqVo sysDeptReqVo);
 }
 

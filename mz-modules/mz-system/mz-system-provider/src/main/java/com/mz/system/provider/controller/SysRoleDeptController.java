@@ -8,10 +8,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -27,9 +29,9 @@ import java.util.List;
 @Api(tags = "角色和部门关联表")
 @RestController
 @RequestMapping("admin/sysroledept")
+@RequiredArgsConstructor
 public class SysRoleDeptController {
-    @Autowired
-    private SysRoleDeptService sysRoleDeptService;
+    private final SysRoleDeptService sysRoleDeptService;
 
     /**
      * 分页查询所有数据
@@ -41,7 +43,7 @@ public class SysRoleDeptController {
             @ApiImplicitParam(name = "roleId", value = "角色ID", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
     @ApiOperation("根据角色ID查询部门ID")
-    @GetMapping("/list/{roleId}")
+    @GetMapping("/list/{roleId:\\d+}")
     public R<List<SysRoleDeptEntity>> list(@PathVariable("roleId") Long roleId) {
 
         List<SysRoleDeptEntity> roleDepts = sysRoleDeptService.listByIds(Collections.singletonList(roleId));
@@ -54,10 +56,10 @@ public class SysRoleDeptController {
      * @return 新增结果
      */
     @ApiOperation("保存数据")
-    @PostMapping("/saveRoleDept")
+    @PostMapping("/save")
     public R<Boolean> save(@Valid @RequestBody SysRoleDeptReqVo sysRoleDeptReqVo){
-        sysRoleDeptService.saveRoleDept(sysRoleDeptReqVo);
-        return R.ok(Boolean.TRUE);
+        boolean save = sysRoleDeptService.saveRoleDept(sysRoleDeptReqVo);
+        return R.okOrFail(save, "保存");
     }
 
     /**
@@ -67,9 +69,9 @@ public class SysRoleDeptController {
      */
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Long[] roleIds){
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] roleIds){
         boolean remove = sysRoleDeptService.removeByIds(Arrays.asList(roleIds));
-        return remove ? R.ok(Boolean.TRUE) : R.fail(Boolean.FALSE);
+        return R.okOrFail(remove, "删除");
     }
 
 }

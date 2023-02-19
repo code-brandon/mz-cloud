@@ -2,16 +2,20 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.security.annotation.Ignore;
+import com.mz.system.model.dto.SysOperLogDto;
 import com.mz.system.model.entity.SysOperLogEntity;
 import com.mz.system.provider.service.SysOperLogService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,9 +30,9 @@ import java.util.Map;
 @Api(tags = "操作日志记录")
 @RestController
 @RequestMapping("admin/sysoperlog")
+@RequiredArgsConstructor
 public class SysOperLogController {
-    @Autowired
-    private SysOperLogService sysOperLogService;
+    private final SysOperLogService sysOperLogService;
 
     /**
      * 分页查询所有数据
@@ -40,7 +44,7 @@ public class SysOperLogController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
+    @GetMapping("/page")
     public R<PageUtils<SysOperLogEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysOperLogEntity> page = sysOperLogService.queryPage(params);
         return R.ok(page);
@@ -56,7 +60,7 @@ public class SysOperLogController {
             @ApiImplicitParam(name="operId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{operId}")
+    @GetMapping("/info/{operId:\\d+}")
     public R<SysOperLogEntity> info(@PathVariable("operId") Long operId){
             SysOperLogEntity sysOperLog = sysOperLogService.getById(operId);
 
@@ -70,23 +74,10 @@ public class SysOperLogController {
      */
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R<Boolean> save(@RequestBody SysOperLogEntity sysOperLog){
-            sysOperLogService.save(sysOperLog);
-
-        return R.ok(Boolean.TRUE);
-    }
-
-    /**
-     * 修改数据
-     * @param sysOperLog 实体对象
-     * @return 修改结果
-     */
-    @ApiOperation("修改数据")
-    @PutMapping("/update")
-    public R<Boolean>  update(@RequestBody SysOperLogEntity sysOperLog){
-            sysOperLogService.updateById(sysOperLog);
-
-        return R.ok(Boolean.TRUE);
+    @Ignore
+    public R<Boolean> save(@RequestBody SysOperLogDto sysOperLog){
+        boolean save =  sysOperLogService.saveOperLog(sysOperLog);
+        return R.okOrFail(save, "保存");
     }
 
     /**
@@ -96,8 +87,8 @@ public class SysOperLogController {
      */
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Long[] operIds){
-            sysOperLogService.removeByIds(Arrays.asList(operIds));
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] operIds){
+        boolean remove = sysOperLogService.removeByIds(Arrays.asList(operIds));
 
         return R.ok(Boolean.TRUE);
     }

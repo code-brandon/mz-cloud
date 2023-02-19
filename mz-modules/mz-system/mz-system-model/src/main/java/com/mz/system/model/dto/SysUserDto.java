@@ -39,4 +39,9 @@ public class SysUserDto extends SysUserEntity implements  Serializable {
      */
     private boolean ifAdmin;
 
+    /**
+     * 部门名称
+     */
+    private String deptName;
+
 }

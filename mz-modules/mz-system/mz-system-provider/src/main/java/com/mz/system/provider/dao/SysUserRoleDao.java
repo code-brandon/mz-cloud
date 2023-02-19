@@ -3,14 +3,13 @@ package com.mz.system.provider.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.mz.system.model.entity.SysUserRoleEntity;
+import com.mz.system.model.vo.SysUserVo;
 import com.mz.system.model.vo.req.SysRoleBindUserReqVo;
-import com.mz.system.model.vo.req.SysUserByRoleIdReqVo;
-import com.mz.system.model.vo.res.SysUserResVo;
+import com.mz.system.model.vo.search.SysUserSearchVo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -38,25 +37,25 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
      * @param userId
      * @return
      */
-    List<Long> getRoleIdsByUserId(@Param("userId") Long userId);
+    Set<Long> selectRoleIdsByUserId(@Param("userId") Long userId);
 
     /**
      * 根据角色ID查询用户分页数据
      *
      * @param page
-     * @param userByRoleIdResVo
+     * @param userSearchVo
      * @return
      */
-    IPage<SysUserResVo> getUserPageByRoleId(@Param("page") IPage<SysUserResVo> page, @Param("userByRole") SysUserByRoleIdReqVo userByRoleIdResVo);
+    IPage<SysUserVo> selectUserPageByRoleId(@Param("page") IPage<SysUserVo> page, @Param("userByRole") SysUserSearchVo userSearchVo);
 
     /**
      * 根据角色ID查询不是此角色用户分页数据
      *
      * @param page
-     * @param userByRoleIdResVo
+     * @param userSearchVo
      * @return
      */
-    IPage<SysUserResVo> getNotThisRoleUserPage(@Param("page") IPage<SysUserResVo> page, @Param("userByRole") SysUserByRoleIdReqVo userByRoleIdResVo);
+    IPage<SysUserVo> selectNotThisRoleUserPage(@Param("page") IPage<SysUserVo> page, @Param("userByRole") SysUserSearchVo userSearchVo);
 
     /**
      * 按角色ID和用户ID删除

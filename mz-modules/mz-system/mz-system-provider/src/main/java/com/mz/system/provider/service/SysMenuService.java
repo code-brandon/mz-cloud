@@ -5,6 +5,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.MenuMenuVo;
+import com.mz.system.model.vo.SysMenuTree;
+import com.mz.system.model.vo.req.SysMenuReqVo;
 import com.mz.system.model.vo.res.MenuResVo;
 
 import java.util.List;
@@ -19,7 +22,7 @@ import java.util.Map;
  */
 public interface SysMenuService extends IService<SysMenuEntity> {
 
-    PageUtils<SysMenuEntity> queryPage(Map<String, Object> params);
+    PageUtils<SysMenuEntity> queryPage(Map<String, Object> params, SysMenuReqVo sysMenuVo);
 
     /**
      * 菜单树
@@ -46,6 +49,20 @@ public interface SysMenuService extends IService<SysMenuEntity> {
      */
     List<MenuResVo> buildMenus(List<SysMenuDto> menus);
 
-    List<Tree<Long>> getMenuListTree();
+    List<SysMenuTree> getMenuListTree(SysMenuReqVo sysMenuVo);
+
+    /**
+     * 保存菜单信息
+     * @param menuMenuVo
+     * @return
+     */
+    boolean saveMenu(MenuMenuVo menuMenuVo);
+
+    /**
+     * 修改菜单信息
+     * @param menuMenuVo
+     * @return
+     */
+    boolean updateMenuById(MenuMenuVo menuMenuVo);
 }
 

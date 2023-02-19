@@ -1,6 +1,7 @@
 package com.mz.system.model.vo.res;
 
-import com.mz.common.core.utils.MzWebUtils;
+
+import com.mz.common.utils.MzUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -64,7 +65,7 @@ public class MetaResVo {
         this.title = title;
         this.icon = icon;
         this.keepAlive = noCache;
-        if (MzWebUtils.ishttp(link)) {
+        if (MzUtils.ishttp(link)) {
             this.link = link;
         }
     }

@@ -11,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 用户信息表
@@ -98,7 +98,7 @@ public class SysUserEntity extends BaseEntity implements Serializable {
 	 * 最后登录时间
 	 */
     @ApiModelProperty("最后登录时间")
-	private Date loginDate;
+	private LocalDateTime loginDate;
 	/**
 	 * 备注
 	 */

@@ -2,6 +2,7 @@ package com.mz.system.provider.controller;
 
 
 import cn.hutool.core.date.DateUtil;
+import com.mz.common.core.entity.R;
 import com.mz.common.redis.annotation.MzLock;
 import com.mz.common.security.annotation.Ignore;
 import io.swagger.annotations.Api;
@@ -13,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * What -- 资源服务器测试 控制器
@@ -34,32 +37,46 @@ public class TestController {
     private Integer count = 4000;
     private Integer initNum = 4000;
 
-    @Ignore
+    @Ignore(false)
     @ApiOperation( value = "测试Api忽略",notes ="不进行授权")
-    @GetMapping("/getIsIgnore")
+    @RequestMapping("/getIsIgnore")
     @MzLock(lockKey = "getIsIgnore",waitTime = 15)
-    public String getIsIgnore() {
-        log.warn("count 剩余：" + count);
+    public R<Map<String, Object>> getIsIgnore() {
         count--;
-        return DateUtil.formatDateTime(new Date());
+        log.warn("count 剩余：" + count);
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("time", DateUtil.formatDateTime(new Date()));
+        mp.put("count", count);
+        return R.ok(mp);
+    }
+
+    @Ignore
+    @ApiOperation( value = "测试Api剩余数量",notes ="不进行授权")
+    @GetMapping("/getCount")
+    public R<Map<String, Object>> getCount() {
+        log.warn("count 剩余：" + count);
+        Map<String, Object> mp = new HashMap<>();
+        mp.put("time", DateUtil.formatDateTime(new Date()));
+        mp.put("count", count);
+        return R.ok(mp);
     }
 
     @Ignore
     @ApiOperation( value = "测试Api重置计数",notes ="不进行授权")
     @GetMapping("/resetIgnoreCount")
-    public String resetIgnoreCount() {
+    public R<String> resetIgnoreCount() {
         count = initNum;
         log.warn("count 重置：" + count);
-        return "成功！";
+        return R.ok("成功！");
     }
 
     @Ignore
     @ApiOperation(value = "测试Api初始计数", notes ="不进行授权")
     @GetMapping("/setIgnoreCount/{initNum}")
-    public String setIgnoreCount(@PathVariable("initNum") Integer initNum) {
+    public R<String> setIgnoreCount(@PathVariable("initNum") Integer initNum) {
         this.initNum = initNum;
         this.count = initNum;
         log.warn("count 初始：" + count);
-        return "成功！";
+        return R.ok("成功！");
     }
 }

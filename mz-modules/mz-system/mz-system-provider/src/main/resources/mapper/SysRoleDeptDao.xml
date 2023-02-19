@@ -16,7 +16,7 @@
         </foreach>
     </insert>
 
-    <select id = "getDeptIdsByRoleId" resultType = "java.lang.Long">
+    <select id = "selectDeptIdsByRoleId" resultType = "java.lang.Long">
         select `dept_id`
         from `sys_role_dept`
         where `role_id` = #{roleId}

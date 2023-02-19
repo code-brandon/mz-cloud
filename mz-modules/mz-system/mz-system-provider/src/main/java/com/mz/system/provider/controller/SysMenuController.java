@@ -3,17 +3,24 @@ package com.mz.system.provider.controller;
 import cn.hutool.core.lang.tree.Tree;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.validated.groups.UpdateField;
 import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.MenuMenuVo;
+import com.mz.system.model.vo.SysMenuTree;
+import com.mz.system.model.vo.req.SysMenuReqVo;
 import com.mz.system.model.vo.res.MenuResVo;
 import com.mz.system.provider.service.SysMenuService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -29,9 +36,9 @@ import java.util.Map;
 @Api(tags = "菜单权限表")
 @RestController
 @RequestMapping("admin/sysmenu")
+@RequiredArgsConstructor
 public class SysMenuController {
-    @Autowired
-    private SysMenuService sysMenuService;
+    private final SysMenuService sysMenuService;
 
     /**
      * 分页查询所有数据
@@ -43,9 +50,10 @@ public class SysMenuController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
+    @PreAuthorize("@pms.hasPermission('system:menu:query')")
     @GetMapping("/list")
-    public R<PageUtils<SysMenuEntity>> list(@RequestParam Map<String, Object> params){
-        PageUtils<SysMenuEntity> page = sysMenuService.queryPage(params);
+    public R<PageUtils<SysMenuEntity>> list(SysMenuReqVo sysMenuVo, @RequestParam Map<String, Object> params){
+        PageUtils<SysMenuEntity> page = sysMenuService.queryPage(params,sysMenuVo);
         return R.ok(page);
     }
 
@@ -70,9 +78,10 @@ public class SysMenuController {
 
 
     @ApiOperation(value = "获取菜单列表树",notes = "菜单列表")
+    @PreAuthorize("@pms.hasPermission('system:menu:query')")
     @GetMapping("/getMenuListTree")
-    public R<List<Tree<Long>>> getMenuListTree(){
-        List<Tree<Long>> menuTree = sysMenuService.getMenuListTree();
+    public R<List<SysMenuTree>> getMenuListTree(SysMenuReqVo sysMenuVo){
+        List<SysMenuTree> menuTree = sysMenuService.getMenuListTree(sysMenuVo);
         return R.ok(menuTree);
     }
 
@@ -86,37 +95,37 @@ public class SysMenuController {
             @ApiImplicitParam(name="menuId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{menuId}")
+    @PreAuthorize("@pms.hasPermission('system:menu:query')")
+    @GetMapping("/info/{menuId:\\d+}")
     public R<SysMenuEntity> info(@PathVariable("menuId") Long menuId){
-            SysMenuEntity sysMenu = sysMenuService.getById(menuId);
-
+        SysMenuEntity sysMenu = sysMenuService.getById(menuId);
         return R.ok(sysMenu);
     }
 
     /**
      * 保存数据
-     * @param sysMenu 实体对象
+     * @param sysMenuVo 实体对象
      * @return 新增结果
      */
     @ApiOperation("保存数据")
+    @PreAuthorize("@pms.hasPermission('system:menu:save')")
     @PostMapping("/save")
-    public R<Boolean> save(@RequestBody SysMenuEntity sysMenu){
-            sysMenuService.save(sysMenu);
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean> save(@Validated @RequestBody MenuMenuVo sysMenuVo){
+        boolean save = sysMenuService.saveMenu(sysMenuVo);
+        return R.okOrFail(save, "保存");
     }
 
     /**
      * 修改数据
-     * @param sysMenu 实体对象
+     * @param sysMenuVo 实体对象
      * @return 修改结果
      */
     @ApiOperation("修改数据")
+    @PreAuthorize("@pms.hasPermission('system:menu:update')")
     @PutMapping("/update")
-    public R<Boolean>  update(@RequestBody SysMenuEntity sysMenu){
-            sysMenuService.updateById(sysMenu);
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean>  update(@Validated(UpdateField.class) @RequestBody MenuMenuVo sysMenuVo){
+        boolean update = sysMenuService.updateMenuById(sysMenuVo);
+        return R.okOrFail(update, "更新");
     }
 
     /**
@@ -125,11 +134,11 @@ public class SysMenuController {
      * @return 删除结果
      */
     @ApiOperation("删除数据")
+    @PreAuthorize("@pms.hasPermission('system:menu:delete')")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Long[] menuIds){
-            sysMenuService.removeByIds(Arrays.asList(menuIds));
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] menuIds){
+        boolean remove = sysMenuService.removeByIds(Arrays.asList(menuIds));
+        return R.okOrFail(remove, "删除");
     }
 
 }

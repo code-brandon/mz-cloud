@@ -1,11 +1,14 @@
 package com.mz.system.model.vo.req;
 
+import com.mz.common.validated.groups.IdField;
+import com.mz.common.validated.groups.UpdateField;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Set;
@@ -23,25 +26,27 @@ import java.util.Set;
  */
 @ApiModel("角色菜单请求参数")
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysRoleMenuReqVo implements Serializable {
 
     /**
      * 角色ID
      */
     @ApiModelProperty("角色ID")
+    @NotNull(groups = {IdField.class, UpdateField.class})
     private Long roleId;
     /**
      * 角色名称
      */
     @ApiModelProperty("角色名称")
-    @NotEmpty(message = "roleName不能为空")
+    @NotBlank
     private String roleName;
     /**
      * 角色权限字符串
      */
     @ApiModelProperty("角色权限字符串")
-    @NotEmpty
+    @NotBlank
     private String roleKey;
     /**
      * 显示顺序
@@ -59,7 +64,7 @@ public class SysRoleMenuReqVo implements Serializable {
      * 角色状态（0正常 1停用）
      */
     @ApiModelProperty("角色状态（0正常 1停用）")
-    @NotEmpty
+    @NotBlank
     private String status;
     /**
      * 备注
@@ -67,6 +72,7 @@ public class SysRoleMenuReqVo implements Serializable {
     @ApiModelProperty("备注")
     private String remark;
 
+    @ApiModelProperty("菜单ID集合")
     private Set<Long> menuIds;
 
 }

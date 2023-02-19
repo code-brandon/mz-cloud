@@ -10,7 +10,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 系统访问记录
@@ -72,6 +72,6 @@ public class SysLogininforEntity implements Serializable {
 	 * 访问时间
 	 */
     @ApiModelProperty("访问时间")
-	private Date loginTime;
+	private LocalDateTime loginTime;
 
 }

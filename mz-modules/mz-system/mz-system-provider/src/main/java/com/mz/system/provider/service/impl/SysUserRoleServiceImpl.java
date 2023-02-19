@@ -1,14 +1,15 @@
 package com.mz.system.provider.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
+import com.mz.common.utils.MzUtils;
 import com.mz.system.model.entity.SysUserRoleEntity;
+import com.mz.system.model.vo.SysUserVo;
 import com.mz.system.model.vo.req.SysRoleBindUserReqVo;
-import com.mz.system.model.vo.req.SysUserByRoleIdReqVo;
-import com.mz.system.model.vo.res.SysUserResVo;
+import com.mz.system.model.vo.search.SysUserSearchVo;
 import com.mz.system.provider.dao.SysUserRoleDao;
 import com.mz.system.provider.service.SysUserRoleService;
 import org.springframework.stereotype.Service;
@@ -22,27 +23,18 @@ import java.util.stream.Collectors;
 @Service("sysUserRoleService")
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserRoleEntity> implements SysUserRoleService {
 
-    @Override
-    public PageUtils<SysUserRoleEntity> queryPage(Map<String, Object> params) {
-        IPage<SysUserRoleEntity> page = this.page(
-                new Query<SysUserRoleEntity>().getPage(params),
-                new QueryWrapper<SysUserRoleEntity>()
-        );
-        return new PageUtils<>(page);
-    }
-
     /**
      * 根据角色ID查询用户分页数据
      *
      * @param params            分页数据
-     * @param userByRoleIdResVo 分页条件
+     * @param userSearchVo 分页条件
      * @return
      */
     @Override
-    public PageUtils<SysUserResVo> getUserPageByRoleId(Map<String, Object> params, SysUserByRoleIdReqVo userByRoleIdResVo) {
-        IPage<SysUserResVo> page = baseMapper.getUserPageByRoleId(
-                new Query<SysUserResVo>().getPage(params),
-                userByRoleIdResVo
+    public PageUtils<SysUserVo> getUserPageByRoleId(Map<String, Object> params, SysUserSearchVo userSearchVo) {
+        IPage<SysUserVo> page = baseMapper.selectUserPageByRoleId(
+                new Query<SysUserVo>().getPage(params),
+                userSearchVo
         );
         return new PageUtils<>(page);
     }
@@ -51,14 +43,14 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
      * 根据角色ID查询不是此角色用户分页数据
      *
      * @param params            分页数据
-     * @param userByRoleIdResVo 分页条件
+     * @param userSearchVo 分页条件
      * @return
      */
     @Override
-    public PageUtils<SysUserResVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserByRoleIdReqVo userByRoleIdResVo) {
-        IPage<SysUserResVo> page = baseMapper.getNotThisRoleUserPage(
-                new Query<SysUserResVo>().getPage(params),
-                userByRoleIdResVo
+    public PageUtils<SysUserVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserSearchVo userSearchVo) {
+        IPage<SysUserVo> page = baseMapper.selectNotThisRoleUserPage(
+                new Query<SysUserVo>().getPage(params),
+                userSearchVo
         );
         return new PageUtils<>(page);
     }
@@ -75,7 +67,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
         Long roleId = roleBindUserReqVo.getRoleId();
         Set<Long> userIds = roleBindUserReqVo.getUserIds();
         Set<SysUserRoleEntity> userRoles = userIds.parallelStream().map(userId -> new SysUserRoleEntity(userId, roleId)).collect(Collectors.toSet());
-        return baseMapper.insertUserRoles(userRoles) > 0;
+        return SqlHelper.retBool(baseMapper.insertUserRoles(userRoles));
     }
 
     /**
@@ -87,7 +79,28 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByRoleIdAndUserIds(SysRoleBindUserReqVo roleBindUserReqVo) {
-        return baseMapper.deleteByRoleIdAndUserIds(roleBindUserReqVo) > 0;
+        return  SqlHelper.retBool(baseMapper.deleteByRoleIdAndUserIds(roleBindUserReqVo));
+    }
+
+    @Override
+    public Set<Long> getRoleIdsByUserId(Long userId) {
+        return baseMapper.selectRoleIdsByUserId(userId);
+    }
+
+    /**
+     * 保存用户角色
+     *
+     * @param userId
+     * @param roleIds
+     * @return
+     */
+    @Override
+    public boolean saveUserRoles(Long userId, Set<Long> roleIds) {
+        if (MzUtils.notEmpty(roleIds)) {
+            Set<SysUserRoleEntity> userRoles = roleIds.stream().map(roleId -> new SysUserRoleEntity(userId, roleId)).collect(Collectors.toSet());
+            return SqlHelper.retBool(baseMapper.insertUserRoles(userRoles));
+        }
+        return false;
     }
 
 }

@@ -1,36 +1,36 @@
 package com.mz.system.provider.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mz.common.core.exception.MzBaseException;
+import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
+import com.mz.common.core.exception.MzException;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
 import com.mz.system.model.dto.SysUserDto;
+import com.mz.system.model.dto.SysUserLoginLogDto;
 import com.mz.system.model.entity.SysUserEntity;
 import com.mz.system.model.entity.SysUserPostEntity;
 import com.mz.system.model.entity.SysUserRoleEntity;
 import com.mz.system.model.vo.LoginBodyVo;
+import com.mz.system.model.vo.SysUserVo;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
 import com.mz.system.model.vo.req.SysUserIdAndPasswdReqVo;
-import com.mz.system.model.vo.res.SysUserResVo;
 import com.mz.system.provider.dao.SysUserDao;
-import com.mz.system.provider.dao.SysUserPostDao;
-import com.mz.system.provider.dao.SysUserRoleDao;
+import com.mz.system.provider.service.SysUserPostService;
+import com.mz.system.provider.service.SysUserRoleService;
 import com.mz.system.provider.service.SysUserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service("sysUserService")
@@ -39,14 +39,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
     private final PasswordEncoder passwordEncoder;
 
-    private final SysUserRoleDao sysUserRoleDao;
+    private final SysUserRoleService sysUserRoleService;
 
-    private final SysUserPostDao sysUserPostDao;
+    private final SysUserPostService sysUserPostService;
 
     @Override
-    public PageUtils<SysUserResVo> queryPage(Map<String, Object> params, SysUserResVo userReqVo) {
-        IPage<SysUserResVo> page = baseMapper.getUserPage(
-                new Query<SysUserResVo>().getPage(params),
+    public PageUtils<SysUserVo> queryPage(Map<String, Object> params, SysUserVo userReqVo) {
+        IPage<SysUserVo> page = baseMapper.selectPageUser(
+                new Query<SysUserVo>().getPage(params),
                 userReqVo
         );
         return new PageUtils<>(page);
@@ -60,7 +60,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
      */
     @Override
     public SysUserEntity getUserByName(String userName) {
-        return baseMapper.selectOne(new QueryWrapper<SysUserEntity>().eq("user_name", userName));
+        return super.getOne(new QueryWrapper<SysUserEntity>().eq("username", userName));
     }
 
     @Override
@@ -74,7 +74,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         if (Objects.nonNull(sysUserDto)) {
             boolean matches = passwordEncoder.matches(loginBodyVo.getPassword(), sysUserDto.getPassword());
             if (!matches) {
-                throw new MzBaseException("密码校验失败！");
+                throw new MzException("密码校验失败！");
             }
         }
         return sysUserDto;
@@ -82,16 +82,14 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveUser(SysUserResVo sysUserResVo) {
-        SysUserEntity sysUserEntity = new SysUserEntity();
-        BeanUtils.copyProperties(sysUserResVo, sysUserEntity);
-
+    public boolean saveUser(SysUserVo sysUserVo) {
+        SysUserEntity sysUserEntity = BeanUtil.copyProperties(sysUserVo, SysUserEntity.class);
         String encodePassword = passwordEncoder.encode(sysUserEntity.getPassword());
         sysUserEntity.setPassword(encodePassword);
 
         if (save(sysUserEntity)) {
             Long userId = sysUserEntity.getUserId();
-            insertUserRolesOrUserPosts(sysUserResVo, userId);
+            insertUserRolesOrUserPosts(sysUserVo, userId);
             return true;
         }
         return false;
@@ -104,95 +102,100 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
      * @return
      */
     @Override
-    public SysUserResVo getUserById(Long userId) {
+    public SysUserVo getUserById(Long userId) {
 
         SysUserEntity sysUserEntity = getById(userId);
-        SysUserResVo sysUserResVo = new SysUserResVo();
-        BeanUtils.copyProperties(sysUserEntity, sysUserResVo);
+        SysUserVo sysUserVo = BeanUtil.copyProperties(sysUserEntity, SysUserVo.class);
+        Set<Long> postIds = sysUserPostService.getPostIdsByUserId(userId);
+        Set<Long> roleIds = sysUserRoleService.getRoleIdsByUserId(userId);
 
-        List<Long> postIds = sysUserPostDao.getPostIdsByUserId(userId);
-        List<Long> roleIds = sysUserRoleDao.getRoleIdsByUserId(userId);
+        sysUserVo.setPostIds(postIds);
+        sysUserVo.setRoleIds(roleIds);
 
-        sysUserResVo.setPostIds(postIds);
-        sysUserResVo.setRoleIds(roleIds);
-
-        return sysUserResVo;
+        return sysUserVo;
     }
 
     /**
      * 根据ID更新用户信息
      *
-     * @param sysUserResVo
+     * @param sysUserVo
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateUserById(SysUserResVo sysUserResVo) {
-        SysUserEntity sysUserEntity = new SysUserEntity();
-        BeanUtils.copyProperties(sysUserResVo, sysUserEntity);
-
-        sysUserEntity.setPassword(null);
-
+    public boolean updateUserById(SysUserVo sysUserVo) {
+        SysUserEntity sysUserEntity = BeanUtil.copyProperties(sysUserVo, SysUserEntity.class, "password","loginIp","loginDate");
         if (updateById(sysUserEntity)) {
 
             Long userId = sysUserEntity.getUserId();
             // 删除用户的绑定关系
-            sysUserPostDao.delete(Wrappers.<SysUserPostEntity>lambdaQuery().eq(SysUserPostEntity::getUserId, userId));
-            sysUserRoleDao.delete(Wrappers.<SysUserRoleEntity>lambdaQuery().eq(SysUserRoleEntity::getUserId, userId));
+            sysUserPostService.remove(Wrappers.<SysUserPostEntity>lambdaQuery().eq(SysUserPostEntity::getUserId, userId));
+            sysUserRoleService.remove(Wrappers.<SysUserRoleEntity>lambdaQuery().eq(SysUserRoleEntity::getUserId, userId));
 
             // 重新添加绑定关系
-            insertUserRolesOrUserPosts(sysUserResVo, userId);
+            insertUserRolesOrUserPosts(sysUserVo, userId);
 
             return true;
         }
         return false;
     }
 
+    /**
+     * 重置用户密码
+     * @param userVo
+     * @return boolean
+     */
     @Override
     public boolean resetPasswd(SysUserIdAndPasswdReqVo userVo) {
         SysUserEntity sysUserEntity = new SysUserEntity();
         String encodePassword = passwordEncoder.encode(userVo.getPassword());
         sysUserEntity.setUserId(userVo.getUserId());
         sysUserEntity.setPassword(encodePassword);
-        return baseMapper.updateById(sysUserEntity) > 0;
+        return super.updateById(sysUserEntity);
     }
 
     /**
      * 根据ID集合删除用户
      *
      * @param userIds
-     * @return
+     * @return boolean
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeUserByIds(List<Long> userIds) {
-        if (removeByIds(userIds)) {
+        return removeByIds(userIds);
+    }
 
-            sysUserPostDao.delete(Wrappers.<SysUserPostEntity>lambdaQuery().in(SysUserPostEntity::getUserId, userIds));
-            sysUserRoleDao.delete(Wrappers.<SysUserRoleEntity>lambdaQuery().in(SysUserRoleEntity::getUserId, userIds));
-            return true;
-        }
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        return false;
+    /**
+     * 修改状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return 修改结果
+     */
+    @Override
+    public boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo) {
+        SysUserEntity sysUserEntity = new SysUserEntity();
+        sysUserEntity .setUserId(idAndStatusReqVo.getSysId());
+        sysUserEntity.setStatus(idAndStatusReqVo.getStatus());
+        return super.updateById(sysUserEntity);
+    }
+
+    @Override
+    public boolean updateLoginLog(SysUserLoginLogDto sysUserLoginLogDto) {
+        return SqlHelper.retBool(baseMapper.updateLoginLog(sysUserLoginLogDto));
     }
 
     /**
      * 添加用户绑定关系
      *
-     * @param sysUserResVo
+     * @param sysUserVo
      * @param userId
      */
-    private void insertUserRolesOrUserPosts(SysUserResVo sysUserResVo, Long userId) {
-        List<Long> roleIds = sysUserResVo.getRoleIds();
-        if (!CollectionUtils.isEmpty(roleIds)) {
-            Set<SysUserRoleEntity> userRoles = roleIds.stream().map(roleId -> new SysUserRoleEntity(userId, roleId)).collect(Collectors.toSet());
-            sysUserRoleDao.insertUserRoles(userRoles);
-        }
-        List<Long> postIds = sysUserResVo.getPostIds();
-        if (!CollectionUtils.isEmpty(postIds)) {
-            Set<SysUserPostEntity> userPosts = postIds.stream().map(postId -> new SysUserPostEntity(userId, postId)).collect(Collectors.toSet());
-            sysUserPostDao.insertUserPosts(userPosts);
-        }
+    private void insertUserRolesOrUserPosts(SysUserVo sysUserVo, Long userId) {
+        Set<Long> roleIds = sysUserVo.getRoleIds();
+        sysUserRoleService.saveUserRoles(userId,roleIds);
+        Set<Long> postIds = sysUserVo.getPostIds();
+        sysUserPostService.saveUserPosts(userId,postIds);
     }
 
 }

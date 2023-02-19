@@ -3,8 +3,9 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysRoleEntity;
-import com.mz.system.model.vo.req.SysRoleReqVo;
-import com.mz.system.model.vo.res.SysRoleResVo;
+import com.mz.system.model.vo.SysRoleVo;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
+import com.mz.system.model.vo.search.SysRoleSearchVo;
 
 import java.util.List;
 import java.util.Map;
@@ -18,21 +19,21 @@ import java.util.Map;
  */
 public interface SysRoleService extends IService<SysRoleEntity> {
 
-    PageUtils<SysRoleEntity> queryPage(Map<String, Object> params, SysRoleReqVo sysRoleReqVo);
+    PageUtils<SysRoleEntity> queryPage(Map<String, Object> params, SysRoleSearchVo roleSearchVo);
 
     /**
      * 根据ID获取角色信息
      * @param roleId
      * @return
      */
-    SysRoleResVo getRoleById(Long roleId);
+    SysRoleVo getRoleById(Long roleId);
 
     /**
      * 根据ID更新角色信息
-     * @param sysRoleResVo
+     * @param sysRoleVo
      * @return
      */
-    boolean updateRoleById(SysRoleResVo sysRoleResVo);
+    boolean updateRoleById(SysRoleVo sysRoleVo);
 
     /**
      * 批量删除 角色相关信息
@@ -43,9 +44,17 @@ public interface SysRoleService extends IService<SysRoleEntity> {
 
     /**
      * 保存角色信息
-     * @param sysRoleResVo
+     * @param sysRoleVo
      * @return
      */
-    boolean saveRole(SysRoleResVo sysRoleResVo);
+    boolean saveRole(SysRoleVo sysRoleVo);
+
+    /**
+     * 修改状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return 修改结果
+     */
+    boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 }
 

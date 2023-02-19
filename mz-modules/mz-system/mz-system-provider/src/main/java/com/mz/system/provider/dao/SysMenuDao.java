@@ -3,6 +3,7 @@ package com.mz.system.provider.dao;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.SysMenuTree;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
@@ -36,4 +37,5 @@ public interface SysMenuDao extends BaseMapper<SysMenuEntity> {
      */
     List<SysMenuDto> getMenuByUserId(@Param("userId") Long userId, @Param("ifAdmin") Boolean ifAdmin);
 
+    List<SysMenuTree> getAllByMenuNameAndStatus(@Param("menuName") String menuName, @Param("status") String status);
 }

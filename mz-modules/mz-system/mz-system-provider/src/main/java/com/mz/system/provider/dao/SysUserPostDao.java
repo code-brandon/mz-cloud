@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -32,6 +31,6 @@ public interface SysUserPostDao extends BaseMapper<SysUserPostEntity> {
      * @param userId
      * @return
      */
-    List<Long> getPostIdsByUserId(@Param("userId") Long userId);
+    Set<Long> selectPostIdsByUserId(@Param("userId") Long userId);
 
 }

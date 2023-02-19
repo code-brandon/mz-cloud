@@ -2,16 +2,21 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.validated.groups.UpdateField;
 import com.mz.system.model.entity.SysConfigEntity;
+import com.mz.system.model.vo.req.SysConfigReqVo;
 import com.mz.system.provider.service.SysConfigService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,9 +31,9 @@ import java.util.Map;
 @Api(tags = "参数配置表")
 @RestController
 @RequestMapping("admin/sysconfig")
+@RequiredArgsConstructor
 public class SysConfigController {
-    @Autowired
-    private SysConfigService sysConfigService;
+    private final SysConfigService sysConfigService;
 
     /**
      * 分页查询所有数据
@@ -40,9 +45,10 @@ public class SysConfigController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<PageUtils<SysConfigEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params){
-        PageUtils<SysConfigEntity> page = sysConfigService.queryPage(params);
+    @PreAuthorize("@pms.hasPermission('system:config:query')")
+    @PostMapping("/page")
+    public R<PageUtils<SysConfigEntity>> page(@RequestBody SysConfigReqVo sysConfigReqVo, @ApiIgnore @RequestParam Map<String, Object> params){
+        PageUtils<SysConfigEntity> page = sysConfigService.queryPage(params,sysConfigReqVo);
         return R.ok(page);
     }
 
@@ -56,37 +62,37 @@ public class SysConfigController {
             @ApiImplicitParam(name="configId",value="主键",dataTypeClass = Integer.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{configId}")
+    @PreAuthorize("@pms.hasPermission('system:config:query')")
+    @GetMapping("/info/{configId:\\d+}")
     public R<SysConfigEntity> info(@PathVariable("configId") Integer configId){
-            SysConfigEntity sysConfig = sysConfigService.getById(configId);
-
+        SysConfigEntity sysConfig = sysConfigService.getById(configId);
         return R.ok(sysConfig);
     }
 
     /**
      * 保存数据
-     * @param sysConfig 实体对象
+     * @param sysConfigReqVo 实体对象
      * @return 新增结果
      */
     @ApiOperation("保存数据")
+    @PreAuthorize("@pms.hasPermission('system:config:save')")
     @PostMapping("/save")
-    public R<Boolean> save(@RequestBody SysConfigEntity sysConfig){
-            sysConfigService.save(sysConfig);
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean> save(@Validated @RequestBody SysConfigReqVo sysConfigReqVo){
+        boolean save = sysConfigService.saveConfig(sysConfigReqVo);
+        return R.okOrFail(save, "保存");
     }
 
     /**
      * 修改数据
-     * @param sysConfig 实体对象
+     * @param sysConfigReqVo 实体对象
      * @return 修改结果
      */
     @ApiOperation("修改数据")
+    @PreAuthorize("@pms.hasPermission('system:config:update')")
     @PutMapping("/update")
-    public R<Boolean> update(@RequestBody SysConfigEntity sysConfig){
-            sysConfigService.updateById(sysConfig);
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean> update(@Validated(UpdateField.class) @RequestBody SysConfigReqVo sysConfigReqVo){
+        boolean update = sysConfigService.updateConfigById(sysConfigReqVo);
+        return R.okOrFail(update, "更新");
     }
 
     /**
@@ -95,11 +101,11 @@ public class SysConfigController {
      * @return 删除结果
      */
     @ApiOperation("删除数据")
+    @PreAuthorize("@pms.hasPermission('system:config:delete')")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Integer[] configIds){
-            sysConfigService.removeByIds(Arrays.asList(configIds));
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] configIds){
+        boolean remove = sysConfigService.removeByIds(Arrays.asList(configIds));
+        return R.okOrFail(remove, "删除");
     }
 
 }

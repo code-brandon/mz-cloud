@@ -2,16 +2,20 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.security.annotation.Ignore;
+import com.mz.system.model.dto.SysLogininforDto;
 import com.mz.system.model.entity.SysLogininforEntity;
 import com.mz.system.provider.service.SysLogininforService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,9 +30,9 @@ import java.util.Map;
 @Api(tags = "系统访问记录")
 @RestController
 @RequestMapping("admin/syslogininfor")
+@RequiredArgsConstructor
 public class SysLogininforController {
-    @Autowired
-    private SysLogininforService sysLogininforService;
+    private final SysLogininforService sysLogininforService;
 
     /**
      * 分页查询所有数据
@@ -56,10 +60,9 @@ public class SysLogininforController {
             @ApiImplicitParam(name="infoId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{infoId}")
+    @GetMapping("/info/{infoId:\\d+}")
     public R<SysLogininforEntity> info(@PathVariable("infoId") Long infoId){
-            SysLogininforEntity sysLogininfor = sysLogininforService.getById(infoId);
-
+        SysLogininforEntity sysLogininfor = sysLogininforService.getById(infoId);
         return R.ok(sysLogininfor);
     }
 
@@ -70,23 +73,10 @@ public class SysLogininforController {
      */
     @ApiOperation("保存数据")
     @PostMapping("/save")
-    public R<Boolean> save(@RequestBody SysLogininforEntity sysLogininfor){
-            sysLogininforService.save(sysLogininfor);
-
-        return R.ok(Boolean.TRUE);
-    }
-
-    /**
-     * 修改数据
-     * @param sysLogininfor 实体对象
-     * @return 修改结果
-     */
-    @ApiOperation("修改数据")
-    @PutMapping("/update")
-    public R<Boolean>  update(@RequestBody SysLogininforEntity sysLogininfor){
-            sysLogininforService.updateById(sysLogininfor);
-
-        return R.ok(Boolean.TRUE);
+    @Ignore
+    public R<Boolean> save(@RequestBody SysLogininforDto sysLogininfor){
+        boolean save = sysLogininforService.saveLogininfor(sysLogininfor);
+        return R.okOrFail(save, "保存");
     }
 
     /**
@@ -96,10 +86,9 @@ public class SysLogininforController {
      */
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Long[] infoIds){
-            sysLogininforService.removeByIds(Arrays.asList(infoIds));
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] infoIds){
+        boolean remove = sysLogininforService.removeByIds(Arrays.asList(infoIds));
+        return R.okOrFail(remove, "删除");
     }
 
 }

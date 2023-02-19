@@ -1,10 +1,12 @@
 package com.mz.system.provider.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
+import com.mz.system.model.dto.SysLogininforDto;
 import com.mz.system.model.entity.SysLogininforEntity;
 import com.mz.system.provider.dao.SysLogininforDao;
 import com.mz.system.provider.service.SysLogininforService;
@@ -23,6 +25,12 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforDao, SysL
                 new QueryWrapper<SysLogininforEntity>()
         );
         return new PageUtils<>(page);
+    }
+
+    @Override
+    public boolean saveLogininfor(SysLogininforDto sysLogininfor) {
+        SysLogininforEntity sysOperLogEntity = BeanUtil.copyProperties(sysLogininfor, SysLogininforEntity.class);
+        return save(sysOperLogEntity);
     }
 
 }

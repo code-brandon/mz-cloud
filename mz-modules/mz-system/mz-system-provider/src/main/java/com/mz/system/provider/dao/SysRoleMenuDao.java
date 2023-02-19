@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -25,7 +24,7 @@ public interface SysRoleMenuDao extends BaseMapper<SysRoleMenuEntity> {
      * @param roleId
      * @return
      */
-    List<Long> getMenuIdsByRoleId(@Param("roleId") Long roleId);
+    Set<Long> selectMenuIdsByRoleId(@Param("roleId") Long roleId);
 
     /**
      * 批量插入 角色和菜单关联

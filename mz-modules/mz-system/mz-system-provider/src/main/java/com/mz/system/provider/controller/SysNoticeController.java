@@ -3,15 +3,20 @@ package com.mz.system.provider.controller;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysNoticeEntity;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
+import com.mz.system.model.vo.req.SysNoticeReqVo;
 import com.mz.system.provider.service.SysNoticeService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,9 +31,9 @@ import java.util.Map;
 @Api(tags = "通知公告表")
 @RestController
 @RequestMapping("admin/sysnotice")
+@RequiredArgsConstructor
 public class SysNoticeController {
-    @Autowired
-    private SysNoticeService sysNoticeService;
+    private final SysNoticeService sysNoticeService;
 
     /**
      * 分页查询所有数据
@@ -40,6 +45,7 @@ public class SysNoticeController {
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
     @ApiOperation("分页查询所有数据")
+    @PreAuthorize("@pms.hasPermission('system:notice:query')")
     @PostMapping("/page")
     public R<PageUtils<SysNoticeEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params){
         PageUtils<SysNoticeEntity> page = sysNoticeService.queryPage(params);
@@ -56,37 +62,51 @@ public class SysNoticeController {
             @ApiImplicitParam(name="noticeId",value="主键",dataTypeClass = Integer.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{noticeId}")
+    @PreAuthorize("@pms.hasPermission('system:notice:query')")
+    @GetMapping("/info/{noticeId:\\d+}")
     public R<SysNoticeEntity> info(@PathVariable("noticeId") Integer noticeId){
-            SysNoticeEntity sysNotice = sysNoticeService.getById(noticeId);
-
+        SysNoticeEntity sysNotice = sysNoticeService.getById(noticeId);
         return R.ok(sysNotice);
     }
 
     /**
      * 保存数据
-     * @param sysNotice 实体对象
+     * @param sysNoticeVo 实体对象
      * @return 新增结果
      */
     @ApiOperation("保存数据")
+    @PreAuthorize("@pms.hasPermission('system:notice:save')")
     @PostMapping("/save")
-    public R<Boolean> save(@RequestBody SysNoticeEntity sysNotice){
-            sysNoticeService.save(sysNotice);
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean> save(@RequestBody SysNoticeReqVo sysNoticeVo){
+        boolean save = sysNoticeService.saveNotice(sysNoticeVo);
+        return R.okOrFail(save, "保存");
     }
 
     /**
      * 修改数据
-     * @param sysNotice 实体对象
+     * @param sysNoticeVo 实体对象
      * @return 修改结果
      */
     @ApiOperation("修改数据")
+    @PreAuthorize("@pms.hasPermission('system:notice:update')")
     @PutMapping("/update")
-    public R<Boolean>  update(@RequestBody SysNoticeEntity sysNotice){
-            sysNoticeService.updateById(sysNotice);
+    public R<Boolean>  update(@RequestBody SysNoticeReqVo sysNoticeVo){
+        boolean update = sysNoticeService.updateNoticeById(sysNoticeVo);
+        return R.okOrFail(update, "更新");
+    }
 
-        return R.ok(Boolean.TRUE);
+    /**
+     * 修改状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return 修改结果
+     */
+    @ApiOperation("修改状态")
+    @PreAuthorize("@pms.hasPermission('system:notice:update')")
+    @PutMapping("/update/status")
+    public R<Boolean> updateStatus(@Validated @RequestBody SysIdAndStatusReqVo idAndStatusReqVo) {
+        boolean updateStatus = sysNoticeService.updateStatus(idAndStatusReqVo);
+        return R.okOrFail(updateStatus, "修改");
     }
 
     /**
@@ -95,11 +115,11 @@ public class SysNoticeController {
      * @return 删除结果
      */
     @ApiOperation("删除数据")
+    @PreAuthorize("@pms.hasPermission('system:notice:delete')")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Integer[] noticeIds){
-            sysNoticeService.removeByIds(Arrays.asList(noticeIds));
-
-        return R.ok(Boolean.TRUE);
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Integer[] noticeIds){
+        boolean remove = sysNoticeService.removeByIds(Arrays.asList(noticeIds));
+        return R.okOrFail(remove, "删除");
     }
 
 }

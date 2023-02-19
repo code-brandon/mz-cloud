@@ -1,6 +1,7 @@
 package com.mz.system.model.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import io.swagger.annotations.ApiModel;
@@ -10,7 +11,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * 操作日志记录
@@ -93,6 +94,15 @@ public class SysOperLogEntity implements Serializable {
 	 */
     @ApiModelProperty("返回参数")
 	private String jsonResult;
+
+
+	/**
+	 * 操作耗时 单位毫秒
+	 */
+	@ApiModelProperty("操作耗时")
+	@TableField("`time`")
+	private Long time;
+
 	/**
 	 * 操作状态（0正常 1异常）
 	 */
@@ -107,6 +117,6 @@ public class SysOperLogEntity implements Serializable {
 	 * 操作时间
 	 */
     @ApiModelProperty("操作时间")
-	private Date operTime;
+	private LocalDateTime operTime;
 
 }

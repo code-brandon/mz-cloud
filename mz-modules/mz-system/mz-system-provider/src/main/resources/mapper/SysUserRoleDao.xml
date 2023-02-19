@@ -23,7 +23,7 @@
         </foreach>
     </delete>
 
-    <select id = "getRoleIdsByUserId" resultType = "java.lang.Long">
+    <select id = "selectRoleIdsByUserId" resultType = "java.lang.Long">
         select `role_id`
         from `sys_user_role`
         where `user_id` = #{userId}
@@ -39,30 +39,29 @@
     +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
     2 rows in set, 3 warnings (0.00 sec)
     -->
-    <select id = "getUserPageByRoleId" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+    <select id = "selectUserPageByRoleId" resultType = "com.mz.system.model.vo.SysUserVo">
         select
         <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
         from (
-        select
-        tmp_su.*
-        from ( SELECT tmp_sur.`user_id` FROM sys_user_role tmp_sur WHERE tmp_sur.`role_id` = #{userByRole.roleId} ) as sur
-        left join sys_user tmp_su
-        <trim prefix = "on" prefixOverrides = "and">
-            sur.user_id = tmp_su.user_id and tmp_su.`del_flag` = 0
+            select
+            tmp_su.*
+            from ( SELECT tmp_sur.`user_id` FROM sys_user_role tmp_sur WHERE tmp_sur.`role_id` = #{userByRole.roleId} ) as sur
+            left join sys_user tmp_su on sur.user_id = tmp_su.user_id and tmp_su.`del_flag` = 0
+        ) as su
+        <where>
             <if test = "userByRole.username != null and userByRole.username != ''">
-                and tmp_su.`username` = #{userByRole.username}
+                and su.`username` = #{userByRole.username}
             </if>
             <if test = "userByRole.nickName != null and userByRole.nickName != ''">
-                and tmp_su.`nick_name` = #{userByRole.nickName}
+                and su.`nick_name` = #{userByRole.nickName}
             </if>
             <if test = "userByRole.phonenumber != null and userByRole.phonenumber != ''">
-                and tmp_su.`phonenumber` = #{userByRole.phonenumber}
+                and su.`phonenumber` = #{userByRole.phonenumber}
             </if>
             <if test = "userByRole.status != null and userByRole.status.toString() != ''">
-                and tmp_su.`status` = #{userByRole.status}
+                and su.`status` = #{userByRole.status}
             </if>
-        </trim>
-        ) as su
+        </where>
         order by su.`create_time`
     </select>
 
@@ -76,7 +75,7 @@
     +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
     2 rows in set, 4 warnings (0.00 sec)
     -->
-    <select id = "getNotThisRoleUserPage" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+    <select id = "selectNotThisRoleUserPage" resultType = "com.mz.system.model.vo.SysUserVo">
         select
         <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
         from sys_user su
@@ -95,13 +94,10 @@
                 and su.`status` = #{userByRole.status}
             </if>
             and not exists (
-            select
-            tmp_sur.`user_id`
-            from
-            sys_user_role tmp_sur
-            where
-            tmp_sur.`role_id` = #{userByRole.roleId}
-            and tmp_sur.user_id = su.user_id
+                select
+                    tmp_sur.`user_id`
+                from sys_user_role tmp_sur
+                where tmp_sur.`role_id` = #{userByRole.roleId} and tmp_sur.user_id = su.user_id
             )
         </where>
         order by su.`create_time`

@@ -1,11 +1,11 @@
 package com.mz.system.provider.runner;
 
-import com.mz.common.core.entity.dict.DictData;
-import com.mz.common.core.entity.dict.DictEntity;
-import com.mz.common.core.utils.cach.DictCacheUtils;
+import com.mz.common.core.dict.DictCache;
+import com.mz.common.core.dict.DictData;
+import com.mz.common.core.dict.DictEntity;
 import com.mz.system.model.entity.SysDictDataEntity;
 import com.mz.system.provider.service.SysDictDataService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -26,15 +26,11 @@ import java.util.stream.Collectors;
  * @CreateTime: 2022/10/15 18:39
  */
 @Component
+@RequiredArgsConstructor
 public class MzDictTaskRunner implements ApplicationRunner {
 
 
-    private SysDictDataService sysDictDataService;
-
-    @Autowired
-    public void setSysDictDataService(SysDictDataService sysDictDataService) {
-        this.sysDictDataService = sysDictDataService;
-    }
+    private final SysDictDataService sysDictDataService;
 
     @Override
     public void run(ApplicationArguments args) {
@@ -45,6 +41,6 @@ public class MzDictTaskRunner implements ApplicationRunner {
             List<DictData> collect = value.stream().map(to -> new DictData(to.getDictLabel(), to.getDictValue())).collect(Collectors.toList());
             return new DictEntity(item.getKey(), collect);
         }).collect(Collectors.toMap(DictEntity::getDictType, k -> k));
-        DictCacheUtils.putAllCache(dictEntityMap);
+        DictCache.putAllCache(dictEntityMap);
     }
 }

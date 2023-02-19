@@ -3,6 +3,7 @@ package com.mz.system.provider.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysConfigEntity;
+import com.mz.system.model.vo.req.SysConfigReqVo;
 
 import java.util.Map;
 
@@ -15,6 +16,10 @@ import java.util.Map;
  */
 public interface SysConfigService extends IService<SysConfigEntity> {
 
-    PageUtils queryPage(Map<String, Object> params);
+    PageUtils queryPage(Map<String, Object> params, SysConfigReqVo sysConfigReqVo);
+
+    boolean saveConfig(SysConfigReqVo sysConfigReqVo);
+
+    boolean updateConfigById(SysConfigReqVo sysConfigReqVo);
 }
 

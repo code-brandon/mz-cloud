@@ -1,22 +1,18 @@
 package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
-import com.mz.common.mybatis.utils.PageUtils;
-import com.mz.system.model.entity.SysRoleMenuEntity;
+import com.mz.common.validated.groups.UpdateField;
 import com.mz.system.model.vo.req.SysRoleMenuReqVo;
 import com.mz.system.provider.service.SysRoleMenuService;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiImplicitParam;
-import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.http.util.Asserts;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Size;
 import java.util.Arrays;
-import java.util.Map;
 
 
 /**
@@ -29,26 +25,10 @@ import java.util.Map;
 @Api(tags = "角色和菜单关联表")
 @RestController
 @RequestMapping("admin/sysrolemenu")
+@RequiredArgsConstructor
 public class SysRoleMenuController {
-    @Autowired
-    private SysRoleMenuService sysRoleMenuService;
+    private final SysRoleMenuService sysRoleMenuService;
 
-    /**
-     * 分页查询所有数据
-     *
-     * @param params 请求集合
-     * @return 所有数据
-     */
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
-            @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
-    })
-    @ApiOperation("分页查询所有数据")
-    @GetMapping("/list")
-    public R<PageUtils<SysRoleMenuEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params) {
-        PageUtils<SysRoleMenuEntity> page = sysRoleMenuService.queryPage(params);
-        return R.ok(page);
-    }
 
     /**
      * 保存数据
@@ -59,8 +39,8 @@ public class SysRoleMenuController {
     @ApiOperation("保存数据")
     @PostMapping("/saveRoleMenu")
     public R<Boolean> save(@Valid @RequestBody SysRoleMenuReqVo sysRoleMenuReqVo) {
-        sysRoleMenuService.saveRoleMenu(sysRoleMenuReqVo);
-        return R.ok(Boolean.TRUE);
+        boolean save = sysRoleMenuService.saveRoleMenu(sysRoleMenuReqVo);
+        return R.okOrFail(save, "保存");
     }
 
     /**
@@ -71,10 +51,9 @@ public class SysRoleMenuController {
      */
     @ApiOperation("修改数据")
     @PutMapping("/updateRoleMenu")
-    public R<Boolean> update(@Valid @RequestBody SysRoleMenuReqVo sysRoleMenuReqVo) {
-        Asserts.notNull(sysRoleMenuReqVo.getRoleId(),"roleId不能为空");
-        sysRoleMenuService.updateRoleMenuById(sysRoleMenuReqVo);
-        return R.ok(Boolean.TRUE);
+    public R<Boolean> update(@Validated(UpdateField.class) @RequestBody SysRoleMenuReqVo sysRoleMenuReqVo) {
+        boolean update = sysRoleMenuService.updateRoleMenuById(sysRoleMenuReqVo);
+        return R.okOrFail(update, "更新");
     }
 
     /**
@@ -85,9 +64,9 @@ public class SysRoleMenuController {
      */
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R<Boolean> delete(@RequestBody Long[] roleIds) {
+    public R<Boolean> delete(@RequestBody @Validated @Size(min = 1) Long[] roleIds) {
         boolean remove = sysRoleMenuService.removeByIds(Arrays.asList(roleIds));
-        return remove ? R.ok(Boolean.TRUE) : R.fail(Boolean.FALSE);
+        return R.okOrFail(remove, "删除");
     }
 
 }

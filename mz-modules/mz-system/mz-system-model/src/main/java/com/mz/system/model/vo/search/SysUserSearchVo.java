@@ -1,4 +1,4 @@
-package com.mz.system.model.vo.req;
+package com.mz.system.model.vo.search;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -10,21 +10,21 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 
 /**
- * What -- 系统用户按角色ID请求实体
+ * What -- 系统用户按角色ID搜索请求实体
  * <br>
  * Describe --
  * <br>
  *
  * @Package: com.mz.system.model.vo.res
- * @ClassName: SysUserByRoleIdReqVo
+ * @ClassName: SysUserSearchVo
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/12/9 21:01
  */
-@ApiModel("系统用户按角色ID请求参数")
+@ApiModel("系统用户搜索请求参数")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SysUserByRoleIdReqVo implements Serializable {
+public class SysUserSearchVo implements Serializable {
     /**
      * 角色ID
      */

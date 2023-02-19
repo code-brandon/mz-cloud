@@ -20,6 +20,9 @@
     <!-- 彩色日志格式 -->
     <property name = "CONSOLE_LOG_PATTERN"
               value = "${CONSOLE_LOG_PATTERN:-%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}}"/>
+    <property name = "CUSTOM_CONSOLE_LOG_PATTERN"
+              value =
+                      "${CUSTOM_CONSOLE_LOG_PATTERN:-%black(控制台-) %red(%d{yyyy-MM-dd HH:mm:ss}) %highlight(%-5level) %clr(${PID:- }){magenta} %clr(---){faint} %green([%thread]){faint} %boldMagenta(%logger){cyan} %clr(:){faint} %cyan(%msg%n)}"/>
     <!-- 彩色日志依赖的渲染类 -->
     <conversionRule conversionWord = "clr" converterClass = "org.springframework.boot.logging.logback.ColorConverter"/>
     <conversionRule conversionWord = "wex"
@@ -29,7 +32,9 @@
     <!-- Console log output -->
     <appender name = "console" class = "ch.qos.logback.core.ConsoleAppender">
         <encoder>
-            <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+            <!--<pattern>${CONSOLE_LOG_PATTERN}</pattern>-->
+            <pattern>${CUSTOM_CONSOLE_LOG_PATTERN}</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class = "ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
@@ -46,6 +51,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class = "ch.qos.logback.classic.filter.ThresholdFilter">
             <level>DEBUG</level>
@@ -62,6 +68,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class = "ch.qos.logback.classic.filter.ThresholdFilter">
             <level>ERROR</level>
@@ -78,10 +85,21 @@
         </rollingPolicy>
         <encoder>
             <pattern>%date [%thread] %-5level [%logger{50}] %file:%line - %msg%n</pattern>
+            <charset>UTF-8</charset>
         </encoder>
         <filter class = "ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
         </filter>
+    </appender>
+
+    <!-- 异步输出 -->
+    <appender name="async_file" class="ch.qos.logback.classic.AsyncAppender">
+        <!-- 不丢失日志.默认的,如果队列的80%已满,则会丢弃TRACT、DEBUG、INFO级别的日志 -->
+        <discardingThreshold>20</discardingThreshold>
+        <!-- 更改默认的队列的深度,该值会影响性能.默认值为256 -->
+        <queueSize>512</queueSize>
+        <!-- 添加附加的appender,最多只能添加一个 -->
+        <appender-ref ref="info"/>
     </appender>
 
     <!--输出到logstash的appender-->
@@ -140,7 +158,7 @@
         <appender-ref ref = "debug"/>
     </logger>
 
-    <logger name = "com.xiaozheng" level = "info"/>
+    <logger name = "com.mz" level = "info"/>
 
     <!--nacos 心跳 INFO 屏蔽-->
     <logger name = "com.alibaba.nacos" level = "OFF">
@@ -154,4 +172,40 @@
         <appender-ref ref = "info"/>
         <!--<appender-ref ref="logstash" />-->
     </root>
+
+    <springProfile name="default">
+        <root>
+            <appender-ref ref="console"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="dev">
+        <root>
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_file"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="test">
+        <root>
+            <appender-ref ref="console"/>
+            <appender-ref ref="async_file"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="pre">
+        <root>
+            <appender-ref ref="async_file"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
+
+    <springProfile name="prod">
+        <root>
+            <appender-ref ref="async_file"/>
+            <appender-ref ref="error"/>
+        </root>
+    </springProfile>
 </configuration>

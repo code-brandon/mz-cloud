@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * What -- 用户Id和密码的Vo
@@ -28,7 +29,7 @@ public class SysUserIdAndPasswdReqVo {
      * 用户ID
      */
     @ApiModelProperty("用户ID")
-    @NotBlank
+    @NotNull
     private Long userId;
 
     /**

@@ -1,11 +1,10 @@
 package com.mz.system.provider.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysRoleMenuEntity;
 import com.mz.system.model.vo.req.SysRoleMenuReqVo;
 
-import java.util.Map;
+import java.util.Set;
 
 /**
  * 角色和菜单关联表
@@ -16,10 +15,23 @@ import java.util.Map;
  */
 public interface SysRoleMenuService extends IService<SysRoleMenuEntity> {
 
-    PageUtils<SysRoleMenuEntity> queryPage(Map<String, Object> params);
-
     boolean saveRoleMenu(SysRoleMenuReqVo sysRoleMenuReqVo);
 
     boolean updateRoleMenuById(SysRoleMenuReqVo sysRoleMenuReqVo);
+
+    /**
+     * 按角色 ID 获取菜单 ID
+     * @param roleId 角色ID
+     * @return
+     */
+    Set<Long> getMenuIdsByRoleId(Long roleId);
+
+    /**
+     * 保存角色菜单
+     * @param roleId 角色ID
+     * @param menuIds 菜单ID
+     * @return
+     */
+    boolean saveRoleMenus(Long roleId, Set<Long> menuIds);
 }
 

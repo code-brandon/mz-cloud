@@ -18,7 +18,7 @@
         </foreach>
     </insert>
 
-    <select id = "getPostIdsByUserId" resultType = "java.lang.Long">
+    <select id = "selectPostIdsByUserId" resultType = "java.lang.Long">
         select `post_id` from `sys_user_post` where user_id = #{userId}
     </select>
 

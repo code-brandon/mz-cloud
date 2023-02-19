@@ -1,5 +1,6 @@
 package com.mz.system.provider.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -8,97 +9,106 @@ import com.mz.common.mybatis.utils.Query;
 import com.mz.system.model.entity.SysRoleDeptEntity;
 import com.mz.system.model.entity.SysRoleEntity;
 import com.mz.system.model.entity.SysRoleMenuEntity;
-import com.mz.system.model.vo.req.SysRoleReqVo;
-import com.mz.system.model.vo.res.SysRoleResVo;
+import com.mz.system.model.vo.SysRoleVo;
+import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
+import com.mz.system.model.vo.search.SysRoleSearchVo;
 import com.mz.system.provider.dao.SysRoleDao;
-import com.mz.system.provider.dao.SysRoleDeptDao;
-import com.mz.system.provider.dao.SysRoleMenuDao;
+import com.mz.system.provider.service.SysRoleDeptService;
+import com.mz.system.provider.service.SysRoleMenuService;
 import com.mz.system.provider.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.BeanUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Service("sysRoleService")
 @RequiredArgsConstructor
 public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> implements SysRoleService {
 
-    private final SysRoleMenuDao sysRoleMenuDao;
+    private final SysRoleMenuService sysRoleMenuService;
 
-    private final SysRoleDeptDao sysRoleDeptDao;
+    private final SysRoleDeptService sysRoleDeptService;
 
     @Override
-    public PageUtils<SysRoleEntity> queryPage(Map<String, Object> params, SysRoleReqVo sysRoleReqVo) {
-
-        SysRoleEntity sysRoleEntity = new SysRoleEntity();
-        BeanUtils.copyProperties(sysRoleReqVo, sysRoleEntity);
-
-        IPage<SysRoleEntity> page = baseMapper.getRolePage(
+    public PageUtils<SysRoleEntity> queryPage(Map<String, Object> params, SysRoleSearchVo roleSearchVo) {
+        IPage<SysRoleEntity> page = super.page(
                 new Query<SysRoleEntity>().getPage(params),
-                sysRoleEntity
+                Wrappers.<SysRoleEntity>lambdaQuery()
+                        .eq(StringUtils.isNotEmpty(roleSearchVo.getRoleKey()),SysRoleEntity::getRoleKey, roleSearchVo.getRoleKey())
+                        .eq(StringUtils.isNotEmpty(roleSearchVo.getStatus()),SysRoleEntity::getStatus, roleSearchVo.getStatus())
+                        .like(StringUtils.isNotEmpty(roleSearchVo.getRoleName()),SysRoleEntity::getRoleName, roleSearchVo.getRoleName())
+                        .orderBy(Boolean.TRUE,Boolean.TRUE,SysRoleEntity::getRoleSort, SysRoleEntity::getCreateTime)
         );
+
         return new PageUtils<>(page);
     }
 
     /**
      * 保存角色信息
      *
-     * @param sysRoleResVo
+     * @param sysRoleVo
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean saveRole(SysRoleResVo sysRoleResVo) {
-
-        SysRoleEntity sysRoleEntity = new SysRoleEntity();
-        BeanUtils.copyProperties(sysRoleResVo, sysRoleEntity);
+    public boolean saveRole(SysRoleVo sysRoleVo) {
+        SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleVo, SysRoleEntity.class);
         if (save(sysRoleEntity)) {
             Long roleId = sysRoleEntity.getRoleId();
-            insertRoleMenuOrRoleDept(sysRoleResVo, roleId);
+            insertRoleMenuOrRoleDept(sysRoleVo, roleId);
             return true;
         }
         return false;
     }
 
+    /**
+     * 修改状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return 修改结果
+     */
     @Override
-    public SysRoleResVo getRoleById(Long roleId) {
+    public boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo) {
+        SysRoleEntity sysRoleEntity = new SysRoleEntity();
+        sysRoleEntity.setRoleId(idAndStatusReqVo.getSysId());
+        sysRoleEntity.setStatus(idAndStatusReqVo.getStatus());
+        return updateById(sysRoleEntity);
+    }
+
+    @Override
+    public SysRoleVo getRoleById(Long roleId) {
 
         SysRoleEntity sysRoleEntity = baseMapper.selectById(roleId);
-        SysRoleResVo sysRoleResVo = new SysRoleResVo();
-        BeanUtils.copyProperties(sysRoleEntity, sysRoleResVo);
+        SysRoleVo sysRoleVo = BeanUtil.copyProperties(sysRoleEntity, SysRoleVo.class);
 
-        List<Long> menuIds = sysRoleMenuDao.getMenuIdsByRoleId(roleId);
-        List<Long> deptIds = sysRoleDeptDao.getDeptIdsByRoleId(roleId);
+        Set<Long> menuIds = sysRoleMenuService.getMenuIdsByRoleId(roleId);
+        Set<Long> deptIds = sysRoleDeptService.getDeptIdsByRoleId(roleId);
 
-        sysRoleResVo.setMenuIds(menuIds);
-        sysRoleResVo.setDeptIds(deptIds);
+        sysRoleVo.setMenuIds(menuIds);
+        sysRoleVo.setDeptIds(deptIds);
 
-        return sysRoleResVo;
+        return sysRoleVo;
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public boolean updateRoleById(SysRoleResVo sysRoleResVo) {
+    public boolean updateRoleById(SysRoleVo sysRoleVo) {
 
-        SysRoleEntity sysRoleEntity = new SysRoleEntity();
-        BeanUtils.copyProperties(sysRoleResVo, sysRoleEntity);
+        SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleVo, SysRoleEntity.class);
 
         if (updateById(sysRoleEntity)) {
             Long roleId = sysRoleEntity.getRoleId();
             // 删除角色的绑定关系
-            sysRoleMenuDao.delete(Wrappers.<SysRoleMenuEntity>lambdaQuery().eq(SysRoleMenuEntity::getRoleId, roleId));
-            sysRoleDeptDao.delete(Wrappers.<SysRoleDeptEntity>lambdaQuery().eq(SysRoleDeptEntity::getRoleId, roleId));
+            sysRoleMenuService.remove(Wrappers.<SysRoleMenuEntity>lambdaQuery().eq(SysRoleMenuEntity::getRoleId, roleId));
+            sysRoleDeptService.remove(Wrappers.<SysRoleDeptEntity>lambdaQuery().eq(SysRoleDeptEntity::getRoleId, roleId));
 
             // 重新添加绑定关系
-            insertRoleMenuOrRoleDept(sysRoleResVo, roleId);
+            insertRoleMenuOrRoleDept(sysRoleVo, roleId);
 
             return true;
         }
@@ -115,27 +125,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
     @Transactional(rollbackFor = Exception.class)
     public boolean removeRoleByIds(List<Long> roleIds) {
 
-        if (removeByIds(roleIds)) {
-            sysRoleMenuDao.delete(Wrappers.<SysRoleMenuEntity>lambdaQuery().in(SysRoleMenuEntity::getRoleId, roleIds));
-            sysRoleDeptDao.delete(Wrappers.<SysRoleDeptEntity>lambdaQuery().in(SysRoleDeptEntity::getRoleId, roleIds));
-            return true;
-        }
-        // 删除 失败回滚删除的数据
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-        return false;
+        return removeByIds(roleIds);
     }
 
-    private void insertRoleMenuOrRoleDept(SysRoleResVo sysRoleResVo, Long roleId) {
-        List<Long> menuIds = sysRoleResVo.getMenuIds();
-        if (!CollectionUtils.isEmpty(menuIds)) {
-            Set<SysRoleMenuEntity> roleMenus = menuIds.stream().map(menuId -> new SysRoleMenuEntity(roleId, menuId)).collect(Collectors.toSet());
-            sysRoleMenuDao.insertRoleMenus(roleMenus);
-        }
-        List<Long> deptIds = sysRoleResVo.getDeptIds();
-        if (!CollectionUtils.isEmpty(deptIds)) {
-            Set<SysRoleDeptEntity> roleDepts = deptIds.stream().map(deptId -> new SysRoleDeptEntity(roleId, deptId)).collect(Collectors.toSet());
-            sysRoleDeptDao.insertRoleDepts(roleDepts);
-        }
+    private void insertRoleMenuOrRoleDept(SysRoleVo sysRoleVo, Long roleId) {
+        Set<Long> menuIds = sysRoleVo.getMenuIds();
+        sysRoleMenuService.saveRoleMenus(roleId, menuIds);
+        Set<Long> deptIds = sysRoleVo.getDeptIds();
+        sysRoleDeptService.saveRoleDepts(roleId, deptIds);
     }
 
 }

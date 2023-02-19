@@ -8,10 +8,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.validation.constraints.Size;
 import java.util.Arrays;
 import java.util.Map;
 
@@ -26,9 +28,9 @@ import java.util.Map;
 @Api(tags = "定时任务调度表")
 @RestController
 @RequestMapping("admin/sysjob")
+@RequiredArgsConstructor
 public class SysJobController {
-    @Autowired
-    private SysJobService sysJobService;
+    private final SysJobService sysJobService;
 
     /**
      * 分页查询所有数据
@@ -56,7 +58,7 @@ public class SysJobController {
             @ApiImplicitParam(name="jobId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{jobId}")
+    @GetMapping("/info/{jobId:\\d+}")
     public R<SysJobEntity> info(@PathVariable("jobId") Long jobId){
             SysJobEntity sysJob = sysJobService.getById(jobId);
 
@@ -96,7 +98,7 @@ public class SysJobController {
      */
     @ApiOperation("删除数据")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody Long[] jobIds){
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] jobIds){
             sysJobService.removeByIds(Arrays.asList(jobIds));
 
         return R.ok(Boolean.TRUE);

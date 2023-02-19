@@ -4,11 +4,20 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.json.JSONUtil;
-import com.mz.common.core.constants.Constant;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mz.common.constant.Constant;
+import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.common.utils.TreeUtils;
 import com.mz.system.model.dto.SysMenuDto;
-import com.mz.system.model.entity.SysDeptEntity;
+import com.mz.system.model.entity.SysUserEntity;
+import com.mz.system.model.vo.SysDeptTree;
+import com.mz.system.model.vo.SysUserVo;
+import com.mz.system.model.vo.search.SysUserSearchVo;
 import com.mz.system.provider.dao.SysDeptDao;
 import com.mz.system.provider.dao.SysMenuDao;
+import com.mz.system.provider.dao.SysUserRoleDao;
+import com.mz.system.provider.service.SysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,25 +38,32 @@ class MzSystemProviderApplicationTests {
     private SysMenuDao sysMenuDao;
 
     @Autowired
+    private SysUserService sysUserService;
+
+    @Autowired
+    private SysUserRoleDao sysUserRoleDao;
+
+    @Autowired
     private Environment environment;
 
     @Test
     void contextLoads() {
         Object appName = ((StandardEnvironment) environment).getSystemProperties().get("@appId");
-        System.out.println("应用名称= " + appName);
+        log.info("应用名称 = {}", appName);
     }
 
-    @Test
-    void getDeptTree() {
-        List<SysDeptEntity> entities = sysDeptDao.selectList(null);
-        log.info("{}",entities);
 
-        List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
+    @Test
+    void getMenuTree() {
+        List<SysMenuDto> menuByUserId = sysMenuDao.getMenuByUserId(1L, true);
+        log.info("{}", menuByUserId);
+
+        List<TreeNode<Long>> nodeList = menuByUserId.stream().map(m -> {
             TreeNode<Long> objectTreeNode = new TreeNode<>();
-            objectTreeNode.setId(m.getDeptId());
-            objectTreeNode.setName(m.getDeptName());
+            objectTreeNode.setId(m.getMenuId());
+            objectTreeNode.setName(m.getMenuName());
             objectTreeNode.setParentId(m.getParentId());
-            objectTreeNode.setWeight(m.getOrderNum().intValue());
+            objectTreeNode.setWeight(m.getOrderNum());
             return objectTreeNode;
         }).collect(Collectors.toList());
         List<Tree<Long>> treeList = TreeUtil.build(nodeList, Constant.ROOT_NODE);
@@ -55,20 +71,34 @@ class MzSystemProviderApplicationTests {
     }
 
     @Test
-    void getMenuTree() {
-        List<SysMenuDto> menuByUserId = sysMenuDao.getMenuByUserId(1L,true);
-        log.info("{}",menuByUserId);
+    void getDeptTreeCondition() {
+        List<SysDeptTree> entities = sysDeptDao.getAllByDeptNameAndStatus("", "1");
+        List<SysDeptTree> deptTrees = TreeUtils.generateTrees(entities, false);
+        System.out.println(JSONUtil.toJsonStr(deptTrees));
+    }
 
-        List<TreeNode<Long>> nodeList = menuByUserId.stream().map(m -> {
-            TreeNode<Long> objectTreeNode = new TreeNode<>();
-            objectTreeNode.setId(m.getMenuId());
-            objectTreeNode.setName(m.getMenuName());
-            objectTreeNode.setParentId(m.getParentId());
-            objectTreeNode.setWeight(m.getOrderNum().intValue());
-            return objectTreeNode;
-        }).collect(Collectors.toList());
-        List<Tree<Long>> treeList = TreeUtil.build(nodeList,Constant.ROOT_NODE);
-        log.info("{}", JSONUtil.toJsonStr(treeList));
+    @Test
+    void getUserByName() {
+        SysUserEntity sysUser = sysUserService.getUserByName("test");
+        log.info("{}", JSONUtil.toJsonStr(sysUser));
+    }
+
+    @Test
+    void getUserPageByRoleId() {
+        SysUserSearchVo sysUserByRoleIdReqVo = new SysUserSearchVo();
+        sysUserByRoleIdReqVo.setRoleId(1L);
+        sysUserByRoleIdReqVo.setStatus("0");
+        IPage<SysUserVo> userPage = sysUserRoleDao.selectUserPageByRoleId(new Page<>(), sysUserByRoleIdReqVo);
+        log.info("{}", JSONUtil.toJsonStr(new PageUtils<>(userPage)));
+    }
+
+    @Test
+    void getNotThisRoleUserPage() {
+        SysUserSearchVo sysUserByRoleIdReqVo = new SysUserSearchVo();
+        sysUserByRoleIdReqVo.setRoleId(1L);
+        sysUserByRoleIdReqVo.setStatus("0");
+        IPage<SysUserVo> userPage = sysUserRoleDao.selectNotThisRoleUserPage(new Page<>(), sysUserByRoleIdReqVo);
+        log.info("{}", JSONUtil.toJsonStr(new PageUtils<>(userPage)));
     }
 
 }

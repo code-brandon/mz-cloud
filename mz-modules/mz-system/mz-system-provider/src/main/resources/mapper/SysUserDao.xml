@@ -27,12 +27,13 @@
     </resultMap>
 
     <sql id = "fromHead">
-        `user_id`,`dept_id`,`username`,`nick_name`,`user_type`,`email`,`phonenumber`,`sex`,`avatar`,`status`,`del_flag`,`login_ip`,`login_date`,`create_by`,`create_time`,`update_by`,`update_time`,`remark`
+        su.`user_id`,su.`dept_id`,su.`username`,su.`nick_name`,su.`user_type`,su.`email`,su.`phonenumber`,su.`sex`,su.`avatar`,su.`status`,su.`del_flag`,su.`login_ip`,su.`login_date`,su.`create_by`,su.`create_time`,su.`update_by`,su.`update_time`,su.`remark`
     </sql>
 
     <resultMap type="com.mz.system.model.dto.SysUserDto" id="sysUserDtoMap">
         <result property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
+        <result property = "deptName" column = "dept_name"/>
         <result property="username" column="username"/>
         <result property="nickName" column="nick_name"/>
         <result property="userType" column="user_type"/>
@@ -66,6 +67,7 @@
     <select id = "loadUserByUserName" resultMap="sysUserDtoMap">
         select
             su.*,
+            sd.dept_name,
             ( select
                 if
                     ( count( 1 ) > 0, true, false )
@@ -79,10 +81,12 @@
                     and sr.role_key = 'admin'
             ) as ifAdmin
         from sys_user su
-        where su.username = #{username} and su.status = 0 and su.del_flag = 0
+        left join sys_dept sd on sd.dept_id = su.dept_id
+        where su.username = #{username} and su.del_flag = 0
+
     </select>
 
-    <select id = "getUserPage" resultType = "com.mz.system.model.vo.res.SysUserResVo">
+    <select id = "selectPageUser" resultType = "com.mz.system.model.vo.SysUserVo">
         select
         <include refid = "fromHead"/>
         from sys_user su
@@ -104,11 +108,24 @@
         order by su.`create_time`
     </select>
 
-    <resultMap type="com.mz.system.model.vo.res.SysUserResVo" id="sysUserVoMap" extends="sysUserMap">
+    <resultMap type="com.mz.system.model.vo.SysUserVo" id="sysUserVoMap" extends="sysUserMap">
         <collection property = "postIds" column = "user_id" ofType = "Long" select = "com.mz.system.provider.dao.SysUserPostDao.getPostIdsByUserId"/>
         <collection property = "roleIds" column = "user_id" ofType = "Long" select = "com.mz.system.provider.dao.SysUserRoleDao.getRoleIdsByUserId"/>
     </resultMap>
 
+
+    <update id = "updateLoginLog">
+        update sys_user su
+        <set>
+            <if test = "sysUserLog.loginIp != null and sysUserLog.loginIp != ''">
+                su.login_ip = #{sysUserLog.loginIp},
+            </if>
+            <if test = "sysUserLog.loginDate != null ">
+                su.login_date = #{sysUserLog.loginDate},
+            </if>
+        </set>
+        where su.user_id = #{sysUserLog.userId}
+    </update>
 
 
 </mapper>

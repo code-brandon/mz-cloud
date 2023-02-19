@@ -20,6 +20,44 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
     </resultMap>
+    <select id = "getAllByDeptNameAndStatus" resultType = "com.mz.system.model.vo.SysDeptTree">
+        SELECT dept_id,
+               parent_id,
+               ancestors,
+               dept_name,
+               order_num,
+               leader,
+               phone,
+               email,
+               `status`,
+               create_by,
+               create_time,
+               update_by,
+               update_time
+        FROM sys_dept as sda
+        <where>
+            <choose>
+                <when test="deptName != null and deptName != ''">
+                    AND sda.dept_name LIKE CONCAT('%',#{deptName},'%')
+                </when>
+                <when test="status != null and status eq 0">
+                    AND NOT EXISTS(
+                        SELECT sdb.dept_id
+                        FROM `sys_dept` as sdb
+                        WHERE sdb.`status` = '1'
+                        AND sdb.del_flag = 0
+                        AND (FIND_IN_SET(sda.parent_id, sdb.dept_id) or FIND_IN_SET(sda.dept_id, sdb.dept_id))
+                    )
+                </when>
+                <when test="status != null and status eq 1">
+                    AND sda.`status` = '1'
+                </when>
+            </choose>
+            AND sda.del_flag = 0
+        </where>
+        ORDER BY sda.order_num ASC
+
+    </select>
 
 
 </mapper>

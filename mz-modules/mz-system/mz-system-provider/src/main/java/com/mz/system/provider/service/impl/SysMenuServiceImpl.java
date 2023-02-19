@@ -1,29 +1,38 @@
 package com.mz.system.provider.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.lang.Assert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mz.common.core.constants.Constant;
-import com.mz.common.core.constants.UserConstants;
-import com.mz.common.core.utils.BeanMapUtils;
-import com.mz.common.core.utils.MzWebUtils;
+import com.mz.common.constant.Constant;
+import com.mz.common.constant.UserConstants;
+import com.mz.common.core.exception.MzException;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.utils.MzSecurityUtils;
+import com.mz.common.utils.MzUtils;
+import com.mz.common.utils.TreeUtils;
+import com.mz.common.validated.groups.UpdateField;
 import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
+import com.mz.system.model.vo.MenuButtonVo;
+import com.mz.system.model.vo.MenuDirectoryVo;
+import com.mz.system.model.vo.MenuMenuVo;
+import com.mz.system.model.vo.SysMenuTree;
+import com.mz.system.model.vo.req.SysMenuReqVo;
 import com.mz.system.model.vo.res.MenuResVo;
 import com.mz.system.model.vo.res.MetaResVo;
 import com.mz.system.provider.dao.SysMenuDao;
 import com.mz.system.provider.service.SysMenuService;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,10 +42,13 @@ import java.util.stream.Collectors;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
 
     @Override
-    public PageUtils<SysMenuEntity> queryPage(Map<String, Object> params) {
+    public PageUtils<SysMenuEntity> queryPage(Map<String, Object> params, SysMenuReqVo sysMenuVo) {
         IPage<SysMenuEntity> page = this.page(
                 new Query<SysMenuEntity>().getPage(params),
-                new QueryWrapper<SysMenuEntity>()
+                Wrappers.<SysMenuEntity>lambdaQuery()
+                        .eq(StringUtils.isNotEmpty(sysMenuVo.getStatus()),SysMenuEntity::getStatus, sysMenuVo.getStatus())
+                        .like(StringUtils.isNotEmpty(sysMenuVo.getMenuName()),SysMenuEntity::getMenuName, sysMenuVo.getMenuName())
+                        .orderBy(Boolean.TRUE,Boolean.TRUE,SysMenuEntity::getOrderNum, SysMenuEntity::getCreateTime)
         );
         return new PageUtils<>(page);
     }
@@ -69,13 +81,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             objectTreeNode.setWeight(m.getOrderNum());
             return objectTreeNode;
         }).collect(Collectors.toList());
-
-        return TreeUtil.build(nodeList, Constant.ROOT_NODE);
+        List<Tree<Long>> build = TreeUtil.build(nodeList, Constant.ROOT_NODE);
+        return CollectionUtils.isEmpty(build) ? Collections.emptyList() : build;
     }
 
     @Override
-    public List<Tree<Long>> getMenuListTree() {
-        List<SysMenuEntity> entities = list();
+    public List<SysMenuTree> getMenuListTree(SysMenuReqVo sysMenuVo) {
+
+
+        List<SysMenuTree> allMenu = baseMapper.getAllByMenuNameAndStatus(sysMenuVo.getMenuName(), sysMenuVo.getStatus());
+        /*List<SysMenuEntity> entities = list(Wrappers.<SysMenuEntity> lambdaQuery()
+                .eq(StringUtils.isNotEmpty(sysMenuVo.getStatus()),SysMenuEntity::getStatus, sysMenuVo.getStatus())
+                .like(StringUtils.isNotEmpty(sysMenuVo.getMenuName()),SysMenuEntity::getMenuName, sysMenuVo.getMenuName()));
 
         List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
             TreeNode<Long> objectTreeNode = new TreeNode<>();
@@ -84,8 +101,33 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             objectTreeNode.setExtra(BeanMapUtils.beanToMap(m));
             return objectTreeNode;
         }).collect(Collectors.toList());
-        return TreeUtil.build(nodeList,Constant.ROOT_NODE);
+        List<Tree<Long>> build = TreeUtil.build(nodeList, Constant.ROOT_NODE);*/
+
+        List<SysMenuTree> trees = TreeUtils.generateTrees(allMenu, false);
+        return CollectionUtils.isEmpty(trees) ? Collections.emptyList() : trees;
     }
+
+    /**
+     * 保存菜单信息
+     * @param menuMenuVo
+     * @return
+     */
+    @Override
+    public boolean saveMenu(MenuMenuVo menuMenuVo) {
+        Assert.notNull(menuMenuVo);
+        Assert.notBlank(menuMenuVo.getMenuType());
+        SysMenuEntity sysMenuEntity = getSysMenuEntityByType(menuMenuVo);
+        return super.save(sysMenuEntity);
+    }
+
+    @Override
+    public boolean updateMenuById(MenuMenuVo menuMenuVo) {
+        Assert.notNull(menuMenuVo);
+        Assert.notBlank(menuMenuVo.getMenuType());
+        SysMenuEntity sysMenuEntity = getSysMenuEntityByType(menuMenuVo, UpdateField.class);
+        return super.updateById(sysMenuEntity);
+    }
+
 
     /**
      * 构建前端路由所需要的菜单
@@ -275,7 +317,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return 结果
      */
     public boolean isInnerLink(SysMenuDto menu) {
-        return menu.getIsFrame().equals(UserConstants.NO_FRAME) && MzWebUtils.ishttp(menu.getPath());
+        return menu.getIsFrame().equals(UserConstants.NO_FRAME) && MzUtils.ishttp(menu.getPath());
     }
 
     /**
@@ -296,5 +338,36 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
     public String innerLinkReplaceEach(String path) {
         return StringUtils.replaceEach(path, new String[]{Constant.HTTP, Constant.HTTPS},
                 new String[]{"", ""});
+    }
+
+    /**
+     * 根据菜单类型进行类型转换并进行字段校验
+     * @param menuMenuVo
+     * @return
+     */
+    private SysMenuEntity getSysMenuEntityByType(MenuMenuVo menuMenuVo, Class<?>... groups) {
+        SysMenuEntity sysMenuEntity = new SysMenuEntity();
+        // 菜单类型（M目录 C菜单 F按钮）
+        switch (menuMenuVo.getMenuType().toUpperCase()) {
+            case "M":
+                MenuDirectoryVo menuDirectoryVo = new MenuDirectoryVo();
+                BeanUtil.copyProperties(menuMenuVo, menuDirectoryVo);
+                MzUtils.validate(menuDirectoryVo,groups);
+                BeanUtil.copyProperties(menuDirectoryVo, sysMenuEntity);
+                break;
+            case "C":
+                MzUtils.validate(menuMenuVo,groups);
+                BeanUtil.copyProperties(menuMenuVo, sysMenuEntity);
+                break;
+            case "F":
+                MenuButtonVo menuButtonVo = new MenuButtonVo();
+                BeanUtil.copyProperties(menuMenuVo, menuButtonVo);
+                MzUtils.validate(menuButtonVo,groups);
+                BeanUtil.copyProperties(menuButtonVo, sysMenuEntity);
+                break;
+            default:
+                throw new MzException("没有对应的MenuType类型");
+        }
+        return sysMenuEntity;
     }
 }

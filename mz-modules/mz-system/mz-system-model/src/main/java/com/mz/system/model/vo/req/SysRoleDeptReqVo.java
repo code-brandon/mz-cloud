@@ -2,12 +2,13 @@ package com.mz.system.model.vo.req;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 /**
  * What --
@@ -22,7 +23,8 @@ import java.util.List;
  */
 @ApiModel("角色部门请求参数")
 @Data
-@RequiredArgsConstructor
+@NoArgsConstructor
+@AllArgsConstructor
 public class SysRoleDeptReqVo implements Serializable {
 
     /**
@@ -43,6 +45,6 @@ public class SysRoleDeptReqVo implements Serializable {
     private String dataScope;
 
     @ApiModelProperty("角色岗位ID集合")
-    private List<Long> deptIds;
+    private Set<Long> deptIds;
 
 }

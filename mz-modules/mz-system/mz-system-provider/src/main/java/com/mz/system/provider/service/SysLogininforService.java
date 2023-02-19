@@ -2,6 +2,7 @@ package com.mz.system.provider.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.mz.common.mybatis.utils.PageUtils;
+import com.mz.system.model.dto.SysLogininforDto;
 import com.mz.system.model.entity.SysLogininforEntity;
 
 import java.util.Map;
@@ -16,5 +17,7 @@ import java.util.Map;
 public interface SysLogininforService extends IService<SysLogininforEntity> {
 
     PageUtils<SysLogininforEntity> queryPage(Map<String, Object> params);
+
+    boolean saveLogininfor(SysLogininforDto sysLogininfor);
 }
 

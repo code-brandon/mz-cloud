@@ -1,9 +1,10 @@
-package com.mz.system.model.vo.req;
+package com.mz.system.model.vo.search;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
@@ -14,14 +15,15 @@ import java.io.Serializable;
  * <br>
  *
  * @Package: com.mz.system.model.vo
- * @ClassName: SysRoleReqVo
+ * @ClassName: SysRoleSearchVo
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/10/23 21:40
  */
-@ApiModel("角色请求参数")
+@ApiModel("角色搜索请求参数")
 @Data
-@RequiredArgsConstructor
-public class SysRoleReqVo implements Serializable {
+@NoArgsConstructor
+@AllArgsConstructor
+public class SysRoleSearchVo implements Serializable {
 
     /**
      * 角色名称

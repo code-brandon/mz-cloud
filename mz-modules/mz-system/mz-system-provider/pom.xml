@@ -17,14 +17,26 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.mz.system.model</groupId>
-            <artifactId>mz-system-model</artifactId>
+            <groupId>com.mz.system.api</groupId>
+            <artifactId>mz-system-api</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>com.mz.common.mybatis</groupId>
             <artifactId>mz-common-mybatis</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common.log</groupId>
+            <artifactId>mz-common-log</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common.validated</groupId>
+            <artifactId>mz-common-validated</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
@@ -36,6 +48,11 @@
         <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
         </dependency>
 
         <dependency>
@@ -67,6 +84,12 @@
         <dependency>
             <groupId>com.mz.common.swagger</groupId>
             <artifactId>mz-common-swagger</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common.feign</groupId>
+            <artifactId>mz-common-feign</artifactId>
             <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
