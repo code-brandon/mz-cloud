@@ -40,7 +40,6 @@ public class MzCustomBeanSerializerModifier extends BeanSerializerModifier {
                 beanProperty.assignNullSerializer(new MzCustomNullJsonSerializers.NullObjectJsonSerializer());
             }
         }
-        log.debug("Mz 自定义 Bean 序列化器修饰符 加载完毕！");
         return beanProperties;
     }
 

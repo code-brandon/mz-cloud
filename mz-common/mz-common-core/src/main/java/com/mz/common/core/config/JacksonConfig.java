@@ -83,7 +83,7 @@ public class JacksonConfig {
 		return objectMapper;
 	}
 
-	class MzJavaTimeModule extends SimpleModule {
+	public static class MzJavaTimeModule extends SimpleModule {
 		public MzJavaTimeModule() {
 			super(PackageVersion.VERSION);
 

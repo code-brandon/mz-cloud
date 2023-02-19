@@ -3,6 +3,7 @@ package com.mz.common.core.entity;
 
 import com.mz.common.constant.Constant;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
+import com.mz.common.utils.MzUtils;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -193,6 +194,29 @@ public class R<T> {
         R<T> r = fail();
         r.setCode(mzErrorCodeEnum.getCode());
         r.setMessage(mzErrorCodeEnum.getMsg());
+        return r;
+    }
+
+    public static <T> R<T> okOrFail(boolean flag, String operate) {
+        return okOrFail(flag, operate, null);
+    }
+
+
+    public static <T> R<T> okOrFail(boolean flag, String operate, T data) {
+
+        R<T> r;
+        if (flag) {
+            r = ok();
+            r.setMessage(operate.concat("成功!"));
+        }else {
+            r= fail();
+            r.setMessage(operate.concat("失败!"));
+        }
+        if (MzUtils.isEmpty(data)) {
+            r.setData((T) Boolean.valueOf(flag));
+        }else {
+            r.setData(data);
+        }
         return r;
     }
 }
