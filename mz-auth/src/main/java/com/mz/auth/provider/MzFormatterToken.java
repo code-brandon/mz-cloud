@@ -3,6 +3,7 @@ package com.mz.auth.provider;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.nacos.common.utils.JacksonUtils;
 import com.mz.common.core.entity.R;
+import com.mz.common.utils.MzUtils;
 import com.mz.common.utils.MzWebUtils;
 import org.springframework.core.MethodParameter;
 import org.springframework.http.ResponseEntity;
@@ -67,6 +68,9 @@ public class MzFormatterToken implements HandlerMethodReturnValueHandler {
      */
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer container, NativeWebRequest request) {
+        if (MzUtils.isEmpty(returnValue)) {
+            return;
+        }
         ResponseEntity responseEntity = (ResponseEntity) returnValue;
         Object body = responseEntity.getBody();
 

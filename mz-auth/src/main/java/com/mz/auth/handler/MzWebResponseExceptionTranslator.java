@@ -14,8 +14,8 @@ import org.springframework.security.oauth2.common.exceptions.UnsupportedGrantTyp
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 
 import javax.security.auth.message.AuthException;
+import javax.validation.constraints.NotNull;
 import java.util.Objects;
-import java.util.Optional;
 
 /**
  * What -- Mz Web 响应异常翻译器
@@ -32,6 +32,13 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
 
     @Override
     public ResponseEntity translate(Exception e) {
+        ResponseEntity<R<Object>> response = getrResponseEntity(e);
+        log.error("登录失败: {}", response.getBody().getMessage());
+        return response;
+    }
+
+    @NotNull
+    public static ResponseEntity<R<Object>> getrResponseEntity(Throwable e) {
         MzErrorCodeEnum oauthAuthException = MzErrorCodeEnum.UNKNOW_EXCEPTION;
         if (e instanceof AuthException || e.getCause() instanceof AuthException) {
             oauthAuthException = MzErrorCodeEnum.OAUTH_EXCEPTION;
@@ -50,7 +57,6 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
         } else if (e instanceof UnsupportedGrantTypeException) {
             oauthAuthException = MzErrorCodeEnum.OAUTH_GRANTTYPE_EXCEPTION;
         }
-        log.warn("登录失败: {}", Optional.ofNullable(e.getLocalizedMessage()).orElse(Optional.ofNullable(oauthAuthException).orElse(MzErrorCodeEnum.UNKNOW_EXCEPTION).getMsg()));
         return ResponseEntity.ok(Objects.nonNull(oauthAuthException) ? R.fail(oauthAuthException) : R.fail(MzErrorCodeEnum.OAUTH_EXCEPTION.getCode(), e.getLocalizedMessage()));
     }
 

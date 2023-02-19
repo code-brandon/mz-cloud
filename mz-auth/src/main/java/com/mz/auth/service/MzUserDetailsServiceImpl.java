@@ -1,19 +1,23 @@
 package com.mz.auth.service;
 
+import com.google.common.collect.Maps;
 import com.mz.common.constant.Constant;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.constant.enums.UserStatus;
+import com.mz.common.core.context.MzDefaultContextHolder;
 import com.mz.common.core.entity.R;
 import com.mz.common.core.exception.MzException;
 import com.mz.common.core.exception.MzRemoteException;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.service.MzUserDetailsService;
-import com.mz.system.api.MzSysUcerApi;
+import com.mz.common.utils.MzUtils;
+import com.mz.system.api.MzSysUserApi;
 import com.mz.system.model.dto.SysUserDto;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.nullness.qual.Nullable;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,10 +26,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -41,10 +42,10 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class MzUserDetailsServiceImpl implements MzUserDetailsService {
 
-    @Autowired
-    private MzSysUcerApi mzSysUcerApi;
+    private final MzSysUserApi mzSysUserApi;
 
     /**
      * 按用户名加载用户
@@ -55,7 +56,7 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        R<SysUserDto> sysUserDtoR = mzSysUcerApi.loadUserByUserName(username);
+        R<SysUserDto> sysUserDtoR = mzSysUserApi.loadUserByUserName(username);
         if (Constant.SUCCESS.equals(sysUserDtoR.getCode())) {
             if (Objects.isNull(sysUserDtoR.getData())) {
                 throw new UsernameNotFoundException("用户名不存在");
@@ -78,24 +79,30 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
      * @return
      */
     private UserDetails createLoginUser(SysUserDto sysUserDto) {
-        Collection<GrantedAuthority> authorities = null;
+        Collection<GrantedAuthority> authorities = new HashSet<>(5);
 
         // 判断用户角色是否是管理员
         if (sysUserDto.isIfAdmin()) {
             authorities = AuthorityUtils.createAuthorityList("*:*:*", SecurityConstants.MZ_ROLE + "admin");
         } else {
+            Set<String> auth = sysUserDto.getAuthorities();
             // 组装角色
             Set<GrantedAuthority> roles = sysUserDto.getRolePermission().stream().filter(role -> {
                 return !StringUtils.isEmpty(role);
             }).map(role -> {
                 return new SimpleGrantedAuthority(SecurityConstants.MZ_ROLE + role);
             }).collect(Collectors.toSet());
-            authorities = AuthorityUtils.createAuthorityList(sysUserDto.getAuthorities().toArray(new String[10]));
+            if (MzUtils.notEmpty(auth)) {
+                List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(sysUserDto.getAuthorities().toArray(new String[sysUserDto.getAuthorities().size()]));
+                authorities.addAll(authorityList);
+            }
             authorities.addAll(roles);
         }
         MzUserDetailsSecurity detailsSecurity = new MzUserDetailsSecurity();
         BeanUtils.copyProperties(sysUserDto, detailsSecurity);
         detailsSecurity.setAuthorities(authorities);
+        Map<@Nullable String, @Nullable Object> map = Maps.newHashMap();
+        MzDefaultContextHolder.CONTEXT_HOLDER.get().put("user", detailsSecurity);
         return detailsSecurity;
     }
 

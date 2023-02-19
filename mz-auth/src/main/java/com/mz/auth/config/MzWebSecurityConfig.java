@@ -9,11 +9,13 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
@@ -99,7 +101,11 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
      */
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        // 根据传入的自定义AuthenticationProvider添加身份验证。由于AuthenticationProvider实现未知，因此必须在外部完成所有自定义，并立即返回AuthenticationManagerBuilder 。
+        /**
+         * 根据传入的自定义AuthenticationProvider添加身份验证。由于AuthenticationProvider实现未知，
+         * 因此必须在外部完成所有自定义，并立即返回AuthenticationManagerBuilder。
+         * {@link ProviderManager#authenticate(Authentication)} 此处进行选择身份验证
+         */
         auth.authenticationProvider(authenticationProvider);
         auth.userDetailsService(mzUserDetailsServiceImpl).passwordEncoder(passwordEncoder);
     }
