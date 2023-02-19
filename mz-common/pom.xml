@@ -24,5 +24,9 @@
         <module>mz-common-feign</module>
         <module>mz-common-sentinel</module>
         <module>mz-common-encrypt</module>
+        <module>mz-common-validated</module>
+        <module>mz-common-constant</module>
+        <module>mz-common-utils</module>
+        <module>mz-common-log</module>
     </modules>
 </project>
