@@ -1,8 +1,8 @@
 package com.mz.common.swagger.config;
 
 import io.swagger.annotations.ApiOperation;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.Assert;
@@ -28,13 +28,12 @@ import java.util.*;
  * @ClassName: SwaggerConfig
  * @CreateTime 2022/5/24 16:08
  */
-
 @Slf4j
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
 
-    @Autowired
-    private SwaggerProperties properties;
+    private final SwaggerProperties properties;
 
     private final String Authorization = "Authorization";
 
