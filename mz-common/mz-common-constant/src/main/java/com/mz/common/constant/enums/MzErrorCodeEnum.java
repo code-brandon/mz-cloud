@@ -16,7 +16,7 @@ package com.mz.common.constant.enums;
  * @ClassName: MzCodeEnum
  * @CreateTime 2022/5/20 21:51
  */
-public enum MzErrorCodeEnum {
+public enum MzErrorCodeEnum implements KeyValueEnum<Integer,String>{
 
     /**
      * 参数错误
@@ -57,7 +57,7 @@ public enum MzErrorCodeEnum {
     /**
      * 状态码
      */
-    private final int code;
+    private final Integer code;
     /**
      * 信息
      */
@@ -86,5 +86,25 @@ public enum MzErrorCodeEnum {
 
     public String getI18Key() {
         return i18Key;
+    }
+
+    /**
+     * 获取枚举键
+     *
+     * @return
+     */
+    @Override
+    public Integer getKey() {
+        return getCode();
+    }
+
+    /**
+     * 获取枚举值
+     *
+     * @return
+     */
+    @Override
+    public String getValue() {
+        return getMsg();
     }
 }

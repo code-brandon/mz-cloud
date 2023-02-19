@@ -10,7 +10,7 @@ package com.mz.common.constant.enums;
  * @ClassName: UserStatus
  * @CreateTime 2022/5/20 21:55
  */
-public enum UserStatus {
+public enum UserStatus implements KeyValueEnum<String,String>{
     OK("0", "正常"), DISABLE("1", "停用"), DELETED("2", "删除");
 
     private final String code;
@@ -27,5 +27,25 @@ public enum UserStatus {
 
     public String getInfo() {
         return info;
+    }
+
+    /**
+     * 获取枚举键
+     *
+     * @return
+     */
+    @Override
+    public String getKey() {
+        return getCode();
+    }
+
+    /**
+     * 获取枚举值
+     *
+     * @return
+     */
+    @Override
+    public String getValue() {
+        return getInfo();
     }
 }
