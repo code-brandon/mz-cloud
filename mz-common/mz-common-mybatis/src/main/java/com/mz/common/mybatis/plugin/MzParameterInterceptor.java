@@ -1,7 +1,7 @@
 package com.mz.common.mybatis.plugin;
 
+import cn.hutool.db.sql.SqlFormatter;
 import com.baomidou.mybatisplus.core.MybatisParameterHandler;
-import com.mz.common.utils.SqlFormatterUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.logging.Log;
@@ -61,7 +61,7 @@ public class MzParameterInterceptor implements Interceptor {
         String showSql = showSql(configuration, boundSql);
 
         Log thisLog = mappedStatement.getStatementLog();
-        thisLog.debug(getFormatLogString(SqlFormatterUtils.getPrettySql(showSql), 33, 0));
+        thisLog.debug("===> SqlFormatter:\n\t" + getFormatLogString(SqlFormatter.format(showSql), 33, 0));
         //直接返回结果
         return invocation.proceed();
     }
