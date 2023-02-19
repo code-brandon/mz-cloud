@@ -13,8 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Date;
 
 /**
  * What -- Mz 用户详细信息安全
@@ -42,6 +42,12 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
      */
     @ApiModelProperty("部门ID")
     private Long deptId;
+
+    /**
+     * 部门名称
+     */
+    @ApiModelProperty("部门名称")
+    private String deptName;
 
     /**
      * 用户昵称
@@ -96,7 +102,9 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
      * 最后登录时间
      */
     @ApiModelProperty("最后登录时间")
-    private Date loginDate;
+    // @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+    // @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private LocalDateTime loginDate;
 
 
 
@@ -107,6 +115,12 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
     @JSONField(serialize = false)
     @JsonIgnore
     private transient String password;
+
+    /**
+     * 头像地址
+     */
+    @ApiModelProperty("头像地址")
+    private String avatar;
 
     @ApiModelProperty("用户权限列表 （spring security）")
     private Collection<? extends GrantedAuthority> authorities;
@@ -124,12 +138,12 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
     private boolean accountNonExpired = true;
 
     @ApiModelProperty("凭证是否到期（true：未过期）（spring security）")
-    @JsonProperty("credentialsNonExpired")//实现对userPhone的映射
-    @JsonAlias("credential")//映射别名 实现phone对userPhone的映射
+    @JsonProperty("credentialsNonExpired")
+    @JsonAlias("credential")
     private boolean credentialsNonExpired = true;
 
     @ApiModelProperty("用户是否锁定（true：未锁定）（spring security）")
-    @JsonProperty("accountNonLocked")//实现对userPhone的映射
+    @JsonProperty("accountNonLocked")
     @JsonAlias("locked")
     private boolean accountNonLocked = true;
 

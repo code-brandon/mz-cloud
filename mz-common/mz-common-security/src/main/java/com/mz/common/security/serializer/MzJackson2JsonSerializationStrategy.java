@@ -3,6 +3,7 @@ package com.mz.common.security.serializer;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.mz.common.core.config.JacksonConfig;
 import com.mz.common.security.serializer.access.Oauth2AccessTokenMixIn;
 import com.mz.common.security.serializer.authen.Oauth2AuthenticationMixIn;
 import com.mz.common.security.serializer.request.Oauth2RequestMixIn;
@@ -39,6 +40,7 @@ public class MzJackson2JsonSerializationStrategy extends StandardStringSerializa
         objectMapper.disable(MapperFeature.AUTO_DETECT_SETTERS);
         objectMapper.registerModule(new CoreJackson2Module());
         objectMapper.registerModule(new WebJackson2Module());
+        objectMapper.registerModule(new JacksonConfig.MzJavaTimeModule());
         objectMapper.addMixIn(OAuth2AccessToken.class, Oauth2AccessTokenMixIn.class);
         objectMapper.addMixIn(OAuth2Authentication.class, Oauth2AuthenticationMixIn.class);
         objectMapper.addMixIn(OAuth2Request.class, Oauth2RequestMixIn.class);

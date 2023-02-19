@@ -1,6 +1,7 @@
 package com.mz.common.security.access;
 
 import cn.hutool.core.util.ArrayUtil;
+import com.mz.common.constant.Constant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -29,7 +30,7 @@ public class MzPermissionAccess {
 	private static final String ALL_PERMISSION = "*:*:*";
 
 	/** 管理员角色权限标识 */
-	private static final String SUPER_ADMIN = "admin";
+	private static final String SUPER_ADMIN = Constant.ADMIN;
 
 	/**
 	 * 判断接口是否有任意xxx，xxx权限
