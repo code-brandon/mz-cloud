@@ -1,5 +1,7 @@
 package com.mz.common.redis.exception;
 
+import com.mz.common.constant.Constant;
+import com.mz.common.utils.ThrowableUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
@@ -27,10 +29,9 @@ public class MzRedisExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(MzRedisLockException.class)
-    public String baseException(MzRedisLockException e) {
-
-        log.error("redis锁异常：{}", e.getMsg());
-        return String.format("{code:%d,message:'%s',timestamp:%d}", 1210, "锁异常", System.currentTimeMillis());
+    @ExceptionHandler(MzRedisException.class)
+    public String baseException(MzRedisException e) {
+        log.error("redis锁异常：{}", ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX));
+        return String.format("{code:%d,message:'%s',timestamp:%d}", e.getCode(), "锁异常", System.currentTimeMillis());
     }
 }

@@ -3,7 +3,7 @@ package com.mz.common.redis.aspect;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mz.common.redis.annotation.MzLock;
 import com.mz.common.redis.constants.RedisConstant;
-import com.mz.common.redis.exception.MzRedisLockException;
+import com.mz.common.redis.exception.MzRedisException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -13,7 +13,9 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.redisson.Redisson;
 import org.redisson.api.RLock;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
@@ -39,6 +41,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Aspect
 @Slf4j
+@ConditionalOnClass({Redisson.class, RedisOperations.class})
 @RequiredArgsConstructor
 public class MzDistributedLockAspect {
 
@@ -114,7 +117,7 @@ public class MzDistributedLockAspect {
         if (distributedLock.tryLock()) {
             if (!lock.tryLock(waitTime, leaseTime, timeUnit)) {
                 // 获取锁失败
-                throw new MzRedisLockException(message);
+                throw new MzRedisException(message);
             }
         } else {
             if (leaseTime > 0) {

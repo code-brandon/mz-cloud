@@ -10,25 +10,37 @@ package com.mz.common.redis.exception;
  * @ClassName: MzException
  * @CreateTime 2022/5/20 21:53
  */
-public class MzRedisLockException extends Exception {
+public class MzRedisException extends RuntimeException {
 	private static final long serialVersionUID = 1L;
 
     private String msg;
-    private int code = 1200;
+    private Integer code = 1200;
 
-	public MzRedisLockException() {
+	public MzRedisException() {
 		super();
 	}
 
 
-    public MzRedisLockException(String msg) {
+    public MzRedisException(String msg,Integer code) {
+		super(msg);
+		this.msg = msg;
+		this.code = code;
+	}
+
+	public MzRedisException(String msg) {
 		super(msg);
 		this.msg = msg;
 	}
 
-	public MzRedisLockException(String msg, Throwable e) {
+	public MzRedisException(String msg, Throwable e) {
 		super(msg, e);
 		this.msg = msg;
+	}
+
+	public MzRedisException(String msg,Integer code, Throwable e) {
+		super(msg, e);
+		this.msg = msg;
+		this.code = code;
 	}
 
 
@@ -40,11 +52,11 @@ public class MzRedisLockException extends Exception {
 		this.msg = msg;
 	}
 
-	public int getCode() {
+	public Integer getCode() {
 		return code;
 	}
 
-	public void setCode(int code) {
+	public void setCode(Integer code) {
 		this.code = code;
 	}
 
