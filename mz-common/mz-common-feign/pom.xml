@@ -20,6 +20,8 @@
             <groupId>com.mz.common.core</groupId>
             <artifactId>mz-common-core</artifactId>
             <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+            <optional>true</optional>
         </dependency>
 
         <dependency>
