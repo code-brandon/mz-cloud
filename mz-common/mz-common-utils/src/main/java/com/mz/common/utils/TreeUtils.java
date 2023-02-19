@@ -38,11 +38,11 @@ public class TreeUtils {
                 }
             }
             if (!roots.isEmpty()) {
-                roots.parallelStream().forEach(r -> {
+                roots.forEach(r -> {
                     setChildren(r, nodes);
                 });
             }else {
-                nodes.parallelStream().forEach(r -> {
+                nodes.forEach(r -> {
                     setChildren(r, nodes);
                 });
                 return nodes;
@@ -80,7 +80,7 @@ public class TreeUtils {
         Object parentId = parent.id();
         for (Iterator<T> ite = nodes.iterator(); ite.hasNext(); ) {
             T node = ite.next();
-            if (Objects.equals(node.parentId(), parentId)) {
+            if (MzUtils.notEmpty(node) && Objects.equals(node.parentId(), parentId)) {
                 children.add(node);
                 // 从所有节点列表中删除该节点，以免后续重复遍历该节点
                 ite.remove();
@@ -91,7 +91,7 @@ public class TreeUtils {
             return;
         }
         parent.setChildren(children);
-        children.parallelStream().forEach(m -> {
+        children.forEach(m -> {
             // 递归设置子节点
             setChildren(m, nodes);
         });

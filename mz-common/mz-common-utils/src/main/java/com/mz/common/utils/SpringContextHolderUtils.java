@@ -1,12 +1,15 @@
 package com.mz.common.utils;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * What -- Bean工具类
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
  * @CreateTime 2022/6/6 9:07
  */
 @Component(value = "springContextHolderUtils")
+@ConditionalOnMissingBean(SpringContextHolderUtils.class)
 public class SpringContextHolderUtils implements ApplicationContextAware {
 
     private static ApplicationContext applicationContext;
@@ -55,7 +59,13 @@ public class SpringContextHolderUtils implements ApplicationContextAware {
     @SuppressWarnings("unchecked")
     public static <T> T getBean(Class<T> clazz) {
         checkApplicationContext();
-        return (T) applicationContext.getBeansOfType(clazz);
+        return (T) applicationContext.getBean(clazz);
+    }
+
+    @SuppressWarnings("unchecked")
+    public static  <T> Map<String, T> getBeans(Class<T> clazz) {
+        checkApplicationContext();
+        return applicationContext.getBeansOfType(clazz);
     }
 
     /**
@@ -67,9 +77,19 @@ public class SpringContextHolderUtils implements ApplicationContextAware {
 
     private static void checkApplicationContext() {
         if (applicationContext == null) {
-            throw new IllegalStateException(
-                    "applicaitonContext未注入,请在applicationContext.xml中定义SpringContextHolder");
+            throw new IllegalStateException("applicaitonContext未注入,请在applicationContext.xml中定义SpringContextHolder");
         }
+    }
+
+    /**
+     * 发布事件
+     * @param event
+     */
+    public static void publishEvent(ApplicationEvent event) {
+        if (applicationContext == null) {
+            return;
+        }
+        applicationContext.publishEvent(event);
     }
 
 

@@ -1,6 +1,7 @@
 package com.mz.common.utils;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.mz.common.constant.Constant;
 import org.apache.commons.lang3.StringUtils;
 
@@ -69,4 +70,32 @@ public class MzUtils {
     public static boolean ishttp(String link) {
         return StringUtils.startsWithAny(link, Constant.HTTP, Constant.HTTPS);
     }
+
+    /**
+     * 判断指定对象是否为空，支持：
+     *
+     * <pre>
+     * 1. CharSequence
+     * 2. Map
+     * 3. Iterable
+     * 4. Iterator
+     * 5. Array
+     * </pre>
+     *
+     * @param value 被判断的对象
+     * @return 是否为空，是空：true ;如果类型不支持，返回false
+     * @since  hutool
+     */
+
+    public static <V> boolean isEmpty(V value) {
+        if (ObjectUtil.isNull(value)) {
+            return true;
+        }
+        return ObjectUtil.isEmpty(value);
+    }
+
+    public static <V> boolean notEmpty(V value) {
+        return !isEmpty(value);
+    }
+
 }

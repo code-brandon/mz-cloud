@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.mz.common.utils.SpringContextHolderUtils,\
+  com.mz.common.utils.RestTemplateUtils

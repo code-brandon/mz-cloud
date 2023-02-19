@@ -1,6 +1,6 @@
 package com.mz.common.utils;
 
-import java.util.Random;
+import java.security.SecureRandom;
 import java.util.UUID;
 
 /**
@@ -21,7 +21,7 @@ public class CustomizeUtils {
      * @return 4位随机数
      */
     public static String getFourRandom() {
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         String fourRandom = random.nextInt(10000) + "";
         int randLength = fourRandom.length();
         if (randLength < 4) {

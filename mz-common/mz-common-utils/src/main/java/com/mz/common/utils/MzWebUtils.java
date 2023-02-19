@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * What -- 客户端工具类
@@ -292,5 +294,18 @@ public class MzWebUtils {
         return true;
     }
 
+    /**
+     * 获取 请求UserAgent中携带的系统类型与浏览器信息
+     * @param userAgent
+     * @return
+     */
+    public static Map<String, String> parseUserAgent(String userAgent) {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>(2);
+        String os = userAgent.substring(userAgent.indexOf('(') + 1, userAgent.indexOf(')'));
+        map.put("os", os);
+        String browser = userAgent.substring(userAgent.lastIndexOf(')') + 1);
+        map.put("browser", browser);
+        return map;
+    }
 
 }
