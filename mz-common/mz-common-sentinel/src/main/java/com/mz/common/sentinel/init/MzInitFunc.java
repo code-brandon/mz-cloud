@@ -33,7 +33,7 @@ import java.util.List;
  */
 public class MzInitFunc implements ApplicationRunner {
 
-    private final Logger logger = LoggerFactory.getLogger(MzInitFunc.class);
+    private static final Logger logger = LoggerFactory.getLogger(MzInitFunc.class);
 
     @Autowired
     private SentinelProperties sentinelProperties;
