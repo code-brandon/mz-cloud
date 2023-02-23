@@ -1,7 +1,7 @@
 package com.mz.common.log.listener.produce;
 
 import cn.hutool.json.JSONUtil;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.log.entity.SysOperLog;
 import com.mz.common.log.listener.MzLogProduceListener;
 import com.mz.common.redis.exception.MzRedisException;
@@ -47,9 +47,9 @@ public class MzLogRedisProduceListener implements MzLogProduceListener {
             try {
                 sysOperLog.setOperLocation(IPSearcherUtils.searcher(sysOperLog.getOperIp()));
                 String jsonStr = JSONUtil.toJsonStr(sysOperLog);
-                Long aLong = conn.listCommands().lLen(CHANNEL.getBytes(Constant.UTF8));
+                Long aLong = conn.listCommands().lLen(CHANNEL.getBytes(MzConstant.UTF8));
                 if (aLong < 10000) {
-                    return conn.lPush(CHANNEL.getBytes(Constant.UTF8), jsonStr.getBytes(Constant.UTF8));
+                    return conn.lPush(CHANNEL.getBytes(MzConstant.UTF8), jsonStr.getBytes(MzConstant.UTF8));
                 }else {
                     log.warn("日志队列已满：{}",aLong);
                     log.warn("日志队列已满===>：{}",jsonStr );

@@ -1,6 +1,6 @@
 package com.mz.common.core.exception;
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.utils.MessageUtils;
 import org.springframework.util.ObjectUtils;
@@ -27,7 +27,7 @@ public class MzException extends RuntimeException {
 	private Object[] args;
 
 	private MzErrorCodeEnum codeEnum;
-    private int code = Constant.ERROR;
+    private int code = MzConstant.ERROR;
     
     public MzException(String msg) {
 		super(msg);

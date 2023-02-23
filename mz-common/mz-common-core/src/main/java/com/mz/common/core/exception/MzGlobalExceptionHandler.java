@@ -1,7 +1,7 @@
 package com.mz.common.core.exception;
 
 import com.fasterxml.jackson.databind.exc.MismatchedInputException;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
 import com.mz.common.utils.CharsetKitUtils;
@@ -16,6 +16,7 @@ import org.springframework.validation.BindException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.UnexpectedTypeException;
@@ -60,7 +61,7 @@ public class MzGlobalExceptionHandler {
      */
     @ExceptionHandler(MzException.class)
     public R<String> mzException(MzException e) {
-        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX);
+        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, MzConstant.PACKAGE_PRE_FIX);
         log.error("业务异常:{}",stackTraceByPn);
         return R.error(MzErrorCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
     }
@@ -72,7 +73,7 @@ public class MzGlobalExceptionHandler {
      */
     @ExceptionHandler(MzRemoteException.class)
     public R<String> remoteException(MzRemoteException e) {
-        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX);
+        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, MzConstant.PACKAGE_PRE_FIX);
         log.error("远程调用异常:{}",stackTraceByPn);
         return R.error(MzErrorCodeEnum.UNKNOW_EXCEPTION.getCode(),e.getMessage());
     }
@@ -106,7 +107,7 @@ public class MzGlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class})
+    @ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class, MethodArgumentTypeMismatchException.class})
     public R<Map<String,String>> methodException(Exception e) {
         Map<String, String> map = new HashMap<>(5);
         if (e instanceof MethodArgumentNotValidException) {
@@ -141,6 +142,16 @@ public class MzGlobalExceptionHandler {
                 // 将错误信息放到MAP中
                 map.put(field, message);
             });
+        }else if (e instanceof MethodArgumentTypeMismatchException) {
+            MethodArgumentTypeMismatchException mismatchException = (MethodArgumentTypeMismatchException) e;
+            String causeType = Optional.ofNullable(mismatchException.getCause()).map((misex) -> {
+                return misex.getClass().getName();
+            }).orElse(null);
+            log.debug("字段类型不匹配：{}",causeType);
+            String name = mismatchException.getName();
+            String reqType = mismatchException.getRequiredType().getName();
+            reqType = reqType.substring(reqType.lastIndexOf('.') + 1);
+            map.put(name, String.format("所需类型为:%s", reqType));
         }
         log.error("字段校验异常：{}",e.getMessage());
         return R.fail(MzErrorCodeEnum.VAILD_EXCEPTION.getCode(), MzErrorCodeEnum.VAILD_EXCEPTION.getMsg(),map);

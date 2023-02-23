@@ -10,7 +10,7 @@ import com.alibaba.nacos.api.naming.pojo.Instance;
 import com.alibaba.nacos.client.naming.utils.CollectionUtils;
 import com.alibaba.nacos.common.utils.MapUtil;
 import com.alibaba.nacos.common.utils.StringUtils;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractLoadBalancerRule;
@@ -72,7 +72,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 			}
 
 			// 从线程变量中获取请求头携带的环境信息
-			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get(Constant.GATEWAY_ENV);
+			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get(MzConstant.GATEWAY_ENV);
 			List<Instance> instancesToChoose = instances;
 
 			if (StringUtils.isNotBlank(clusterName)) {
@@ -81,7 +81,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 						.collect(Collectors.toList());
 				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
 					if (!CollectionUtils.isEmpty(envs)) {
-						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(Constant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(Constant.GATEWAY_ENV)));
+						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(MzConstant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(MzConstant.GATEWAY_ENV)));
 						LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
 						if (MapUtil.isNotEmpty(envInstanceMap)) {
@@ -92,7 +92,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
 
 					} else {
 						List<Instance> envInstances = sameClusterInstances.stream().filter(f -> {
-							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get(Constant.GATEWAY_ENV));
+							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get(MzConstant.GATEWAY_ENV));
 						}).collect(Collectors.toList());
 						instancesToChoose = envInstances;
 					}

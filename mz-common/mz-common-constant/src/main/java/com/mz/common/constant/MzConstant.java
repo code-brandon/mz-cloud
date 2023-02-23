@@ -7,10 +7,10 @@ package com.mz.common.constant;
  * <br>
  *
  * @author 小政同学    QQ:xiaozheng666888@qq.com
- * @ClassName: Constant
+ * @ClassName: MzConstant
  * @CreateTime 2022/5/20 21:57
  */
-public class Constant {
+public class MzConstant {
 	/** 超级管理员标识符 */
 	public static final String ADMIN = "admin";
 
@@ -21,22 +21,22 @@ public class Constant {
      * <br>
      *
      * @author 小政同学    QQ:xiaozheng666888@qq.com
-     * @ClassName: Constant
+     * @ClassName: MzConstant
      * @CreateTime 2022/5/20 21:57
      */
     public enum MenuType {
         /**
          * 目录
          */
-    	CATALOG("M"),
+    	CATALOG(TYPE_DIR),
         /**
          * 菜单
          */
-        MENU("C"),
+        MENU(TYPE_MENU),
         /**
          * 按钮
          */
-        BUTTON("F");
+        BUTTON(TYPE_BUTTON);
 
         private final String value;
 
@@ -56,7 +56,7 @@ public class Constant {
      * <br>
      *
      * @author 小政同学    QQ:xiaozheng666888@qq.com
-     * @ClassName: Constant
+     * @ClassName: MzConstant
      * @CreateTime 2022/5/20 21:56
      */
     public enum ScheduleStatus {
@@ -87,7 +87,7 @@ public class Constant {
      * <br>
      *
      * @author 小政同学    QQ:xiaozheng666888@qq.com
-     * @ClassName: Constant
+     * @ClassName: MzConstant
      * @CreateTime 2022/5/20 21:56
      */
     public enum CloudService {
@@ -274,5 +274,102 @@ public class Constant {
      * 默认项目包前缀
      */
     public static final String PACKAGE_PRE_FIX = "com.mz";
+
+    /**
+     * 平台内系统用户的唯一标志
+     */
+    public static final String SYS_USER = "SYS_USER";
+
+    /**
+     * 正常状态
+     */
+    public static final String NORMAL = "0";
+
+    /**
+     * 异常状态
+     */
+    public static final String EXCEPTION = "1";
+
+    /**
+     * 用户封禁状态
+     */
+    public static final String USER_DISABLE = "1";
+
+    /**
+     * 角色封禁状态
+     */
+    public static final String ROLE_DISABLE = "1";
+
+    /**
+     * 部门正常状态
+     */
+    public static final String DEPT_NORMAL = "0";
+
+    /**
+     * 部门停用状态
+     */
+    public static final String DEPT_DISABLE = "1";
+
+    /**
+     * 字典正常状态
+     */
+    public static final String DICT_NORMAL = "0";
+
+    /**
+     * 是否为系统默认（是）
+     */
+    public static final String YES = "Y";
+
+    /**
+     * 是否菜单外链（是）
+     */
+    public static final int YES_FRAME = 0;
+
+    /**
+     * 是否菜单外链（否）
+     */
+    public static final int NO_FRAME = 1;
+
+    /**
+     * 菜单类型（目录）
+     */
+    public static final String TYPE_DIR = "M";
+
+    /**
+     * 菜单类型（菜单）
+     */
+    public static final String TYPE_MENU = "C";
+
+    /**
+     * 菜单类型（按钮）
+     */
+    public static final String TYPE_BUTTON = "F";
+
+    /**
+     * Layout组件标识
+     */
+    public final static String LAYOUT = "Layout";
+
+    /**
+     * ParentView组件标识
+     */
+    public final static String PARENT_VIEW = "ParentView";
+
+    /**
+     * InnerLink组件标识
+     */
+    public final static String INNER_LINK = "InnerLink";
+
+    /**
+     * 用户名长度限制
+     */
+    public static final int USERNAME_MIN_LENGTH = 2;
+    public static final int USERNAME_MAX_LENGTH = 20;
+
+    /**
+     * 密码长度限制
+     */
+    public static final int PASSWORD_MIN_LENGTH = 5;
+    public static final int PASSWORD_MAX_LENGTH = 20;
 
 }

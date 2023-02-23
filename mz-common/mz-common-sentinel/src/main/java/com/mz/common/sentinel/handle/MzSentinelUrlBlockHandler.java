@@ -4,7 +4,7 @@ import cn.hutool.http.ContentType;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.csp.sentinel.adapter.spring.webmvc.callback.BlockExceptionHandler;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.entity.R;
 import com.mz.common.sentinel.enums.SentinelException;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +38,7 @@ public class MzSentinelUrlBlockHandler implements BlockExceptionHandler {
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, BlockException e) throws IOException {
         String errMsg = "";
-        int errCode = Constant.FAIL;
+        int errCode = MzConstant.FAIL;
 
         String errName = e.getClass().getName();
         int indexOf = errName.lastIndexOf(".");

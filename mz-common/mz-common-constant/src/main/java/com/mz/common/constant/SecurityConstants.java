@@ -16,5 +16,5 @@ public interface SecurityConstants {
     String MZ_FROM_IN = "FROM_MZ";
     String MZ_FROM = "mz_from";
     String MZ_FROM_KV = MZ_FROM + "=" + MZ_FROM_IN;
-    String MZ_CLOUD_AUTH = Constant.OAUTH_KEY + "auth:";
+    String MZ_CLOUD_AUTH = MzConstant.OAUTH_KEY + "auth:";
 }

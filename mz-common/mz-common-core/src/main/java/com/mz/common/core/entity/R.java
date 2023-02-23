@@ -1,7 +1,7 @@
 package com.mz.common.core.entity;
 
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.utils.MzUtils;
 import io.swagger.annotations.ApiModel;
@@ -50,7 +50,7 @@ public class R<T> {
     public static <T> R<T>  error() {
         R<T> r = new R<>();
         r.setData((T) Boolean.FALSE);
-        r.setCode(Constant.ERROR);
+        r.setCode(MzConstant.ERROR);
         r.setMessage("未知异常，请联系管理员");
         return r;
     }
@@ -58,7 +58,7 @@ public class R<T> {
     public static <T> R<T>  error(T data) {
         R<T> r = new R<>();
         r.setData(data);
-        r.setCode(Constant.ERROR);
+        r.setCode(MzConstant.ERROR);
         r.setMessage("未知异常，请联系管理员");
         return r;
     }
@@ -100,7 +100,7 @@ public class R<T> {
 
     public static <T> R<T> ok() {
         R<T> r = new R<>();
-        r.setCode(Constant.SUCCESS);
+        r.setCode(MzConstant.SUCCESS);
         r.setMessage("操作成功！");
         return r;
     }
@@ -149,7 +149,7 @@ public class R<T> {
     public static <T> R<T> fail() {
         R<T> r = new R<>();
         r.setData((T) Boolean.FALSE);
-        r.setCode(Constant.FAIL);
+        r.setCode(MzConstant.FAIL);
         r.setMessage("操作失败");
         return r;
     }
@@ -157,7 +157,7 @@ public class R<T> {
     public static <T> R<T> fail(T data) {
         R<T> r = new R<>();
         r.setData(data);
-        r.setCode(Constant.FAIL);
+        r.setCode(MzConstant.FAIL);
         r.setMessage("操作失败");
         return r;
     }

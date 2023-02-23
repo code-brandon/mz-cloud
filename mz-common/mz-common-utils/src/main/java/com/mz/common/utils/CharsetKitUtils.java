@@ -2,7 +2,7 @@ package com.mz.common.utils;
 
 
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import org.springframework.util.StringUtils;
 
 import java.nio.charset.Charset;
@@ -22,11 +22,11 @@ public class CharsetKitUtils
 {
 
     /** ISO-8859-1 */
-    public static final Charset CHARSET_ISO_8859_1 = Charset.forName(Constant.ISO_8859_1);
+    public static final Charset CHARSET_ISO_8859_1 = Charset.forName(MzConstant.ISO_8859_1);
     /** UTF-8 */
-    public static final Charset CHARSET_UTF_8 = Charset.forName(Constant.UTF8);
+    public static final Charset CHARSET_UTF_8 = Charset.forName(MzConstant.UTF8);
     /** GBK */
-    public static final Charset CHARSET_GBK = Charset.forName(Constant.GBK);
+    public static final Charset CHARSET_GBK = Charset.forName(MzConstant.GBK);
 
     /**
      * 转换为Charset对象

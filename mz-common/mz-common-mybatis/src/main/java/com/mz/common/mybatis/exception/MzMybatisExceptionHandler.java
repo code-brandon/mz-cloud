@@ -2,7 +2,7 @@ package com.mz.common.mybatis.exception;
 
 import cn.hutool.json.JSONObject;
 import cn.hutool.json.JSONUtil;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.utils.ThrowableUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ import java.util.Optional;
  */
 @Slf4j
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@RestControllerAdvice(basePackages = {"org.springframework.jdbc", "java.sql", Constant.PACKAGE_PRE_FIX})
+@RestControllerAdvice(basePackages = {"org.springframework.jdbc", "java.sql", MzConstant.PACKAGE_PRE_FIX})
 public class MzMybatisExceptionHandler {
 
     /**
@@ -82,7 +82,7 @@ public class MzMybatisExceptionHandler {
      */
     @ExceptionHandler(BadSqlGrammarException.class)
     public JSONObject badSqlGrammarException(BadSqlGrammarException e) {
-        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, Constant.PACKAGE_PRE_FIX);
+        String stackTraceByPn = ThrowableUtils.getStackTraceByPn(e, MzConstant.PACKAGE_PRE_FIX);
         log.error("糟糕的SQL语法异常:{}", stackTraceByPn);
         String message = Optional.ofNullable(e.getCause()).orElse(e).getMessage();
         return JSONUtil.parseObj(String.format("{code:%d,message:'%s',timestamp:%d}", MzErrorCodeEnum.SQL_GRAMMAR_EXCEPTION.getCode(), message.replace("'", "\\'").replace("\n", ""), System.currentTimeMillis()));

@@ -2,7 +2,7 @@ package com.mz.common.utils;
 
 
 import cn.hutool.json.JSONUtil;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.context.request.RequestAttributes;
@@ -108,7 +108,7 @@ public class MzWebUtils {
         try {
             response.setStatus(200);
             response.setContentType("application/json");
-            response.setCharacterEncoding(Constant.UTF8);
+            response.setCharacterEncoding(MzConstant.UTF8);
             response.getWriter().print(string);
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,7 +124,7 @@ public class MzWebUtils {
      */
     public static void renderJson(HttpServletResponse response, Object obj) {
         response.setContentType("application/json");
-        response.setCharacterEncoding(Constant.UTF8);
+        response.setCharacterEncoding(MzConstant.UTF8);
         try (PrintWriter out = response.getWriter()) {
             out.append(JSONUtil.toJsonStr(obj));
         } catch (IOException e) {

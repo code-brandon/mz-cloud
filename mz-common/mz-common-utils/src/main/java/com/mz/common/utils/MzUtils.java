@@ -2,7 +2,7 @@ package com.mz.common.utils;
 
 
 import cn.hutool.core.util.ObjectUtil;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.validation.ConstraintViolation;
@@ -68,7 +68,7 @@ public class MzUtils {
      * @return 结果
      */
     public static boolean ishttp(String link) {
-        return StringUtils.startsWithAny(link, Constant.HTTP, Constant.HTTPS);
+        return StringUtils.startsWithAny(link, MzConstant.HTTP, MzConstant.HTTPS);
     }
 
     /**

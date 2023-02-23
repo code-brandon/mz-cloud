@@ -6,7 +6,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.utils.TreeUtils;
 import com.mz.system.model.dto.SysMenuDto;
@@ -66,7 +66,7 @@ class MzSystemProviderApplicationTests {
             objectTreeNode.setWeight(m.getOrderNum());
             return objectTreeNode;
         }).collect(Collectors.toList());
-        List<Tree<Long>> treeList = TreeUtil.build(nodeList, Constant.ROOT_NODE);
+        List<Tree<Long>> treeList = TreeUtil.build(nodeList, MzConstant.ROOT_NODE);
         log.info("{}", JSONUtil.toJsonStr(treeList));
     }
 

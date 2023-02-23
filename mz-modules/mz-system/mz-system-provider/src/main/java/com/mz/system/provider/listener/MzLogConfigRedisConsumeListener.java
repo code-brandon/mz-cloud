@@ -7,7 +7,6 @@ import com.mz.common.utils.MzUtils;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.stereotype.Component;
 
 import java.util.concurrent.TimeUnit;
 
@@ -25,7 +24,7 @@ import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @NoArgsConstructor
-@Component
+// @Component
 public class MzLogConfigRedisConsumeListener extends MzLogRedisConsumeListener {
 
 

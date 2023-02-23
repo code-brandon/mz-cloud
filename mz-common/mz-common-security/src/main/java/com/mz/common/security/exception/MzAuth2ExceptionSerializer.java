@@ -3,7 +3,7 @@ package com.mz.common.security.exception;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import lombok.SneakyThrows;
 
 /**
@@ -26,7 +26,7 @@ public class MzAuth2ExceptionSerializer extends StdSerializer<MzOAuth2Exception>
 	@SneakyThrows
 	public void serialize(MzOAuth2Exception value, JsonGenerator gen, SerializerProvider provider) {
 		gen.writeStartObject();
-		gen.writeObjectField("code", Constant.FAIL);
+		gen.writeObjectField("code", MzConstant.FAIL);
 		gen.writeStringField("message", value.getMessage());
 		gen.writeStringField("data", value.getOAuth2ErrorCode());
 		gen.writeEndObject();

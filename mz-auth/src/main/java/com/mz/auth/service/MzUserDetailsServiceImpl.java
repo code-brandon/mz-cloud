@@ -1,7 +1,7 @@
 package com.mz.auth.service;
 
 import com.google.common.collect.Maps;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.constant.enums.UserStatus;
@@ -57,7 +57,7 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         R<SysUserDto> sysUserDtoR = mzSysUserApi.loadUserByUserName(username);
-        if (Constant.SUCCESS.equals(sysUserDtoR.getCode())) {
+        if (MzConstant.SUCCESS.equals(sysUserDtoR.getCode())) {
             if (Objects.isNull(sysUserDtoR.getData())) {
                 throw new UsernameNotFoundException("用户名不存在");
             }

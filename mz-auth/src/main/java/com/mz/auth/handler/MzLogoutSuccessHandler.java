@@ -1,6 +1,6 @@
 package com.mz.auth.handler;
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.entity.R;
 import com.mz.common.utils.MzWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,9 +44,9 @@ public class MzLogoutSuccessHandler extends AbstractAuthenticationTargetUrlReque
                 response.addCookie(cookie);
             }
         }
-        String authHeader = request.getHeader(Constant.AUTHORIZATION);
+        String authHeader = request.getHeader(MzConstant.AUTHORIZATION);
         if (authHeader != null) {
-            String tokenValue = authHeader.replace(Constant.TOKEN_PREFIX,"").trim();
+            String tokenValue = authHeader.replace(MzConstant.TOKEN_PREFIX,"").trim();
             OAuth2AccessToken accessToken = tokenStore.readAccessToken(tokenValue);
             if (Objects.nonNull(accessToken)) {
                 tokenStore.removeAccessToken(accessToken);

@@ -1,7 +1,7 @@
 package com.mz.auth.aspectj;
 
 import com.mz.auth.handler.MzWebResponseExceptionTranslator;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.mz.common.core.entity.R;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
@@ -91,7 +91,7 @@ public class MzOauthAspectj {
         Object proceed = null;
         try {
             proceed = joinPoint.proceed();
-            logininfor.setStatus(Constant.SUCCESS.toString());
+            logininfor.setStatus(MzConstant.SUCCESS.toString());
             logininfor.setMsg("登录成功!");
             MzUserDetailsSecurity userSecurity = (MzUserDetailsSecurity) MzDefaultContextHolder.CONTEXT_HOLDER.get().get("user");
             // 异步发送用户登录记录更新请求
@@ -101,7 +101,7 @@ public class MzOauthAspectj {
             });
         } catch (Throwable e) {
             ResponseEntity<R<Object>> exTranslation = MzWebResponseExceptionTranslator.getrResponseEntity(e);
-            logininfor.setStatus(Constant.FAIL.toString());
+            logininfor.setStatus(MzConstant.FAIL.toString());
             logininfor.setMsg(exTranslation.getBody().getMessage());
             throw e;
         }finally {

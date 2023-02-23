@@ -2,7 +2,7 @@ package com.mz.gateway.route;
 
 import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSON;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.redis.utils.MzRedisUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,7 +48,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     @Override
     public Flux<RouteDefinition> getRouteDefinitions() {
         List<RouteDefinition> definitionList = new ArrayList<>();
-        Boolean aBoolean = mzRedisUtil.getoRedisTemplate().hasKey(Constant.ROUTE_KEY);
+        Boolean aBoolean = mzRedisUtil.getoRedisTemplate().hasKey(MzConstant.ROUTE_KEY);
         if (!aBoolean) {
             RouteDefinition routeDefinition = new RouteDefinition();
             routeDefinition.setId("null");
@@ -61,7 +61,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
             definitionList.add(routeDefinition);
             return Flux.fromIterable(definitionList);
         }
-        definitionList = mzRedisUtil.getoRedisTemplate().opsForHash().values(Constant.ROUTE_KEY);
+        definitionList = mzRedisUtil.getoRedisTemplate().opsForHash().values(MzConstant.ROUTE_KEY);
         gatewayProperties.setRoutes(definitionList);
         log.debug("redis 中路由定义条数： {}， definitionList={}", definitionList.size(), JSON.toJSONString(definitionList));
         return Flux.fromIterable(definitionList);
@@ -85,7 +85,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     public Mono<Void> save(Mono<RouteDefinition> route) {
         return route.flatMap(r -> {
             log.debug("保存路由信息{}", r);
-            mzRedisUtil.getoRedisTemplate().opsForHash().put(Constant.ROUTE_KEY,r.getId(),r);
+            mzRedisUtil.getoRedisTemplate().opsForHash().put(MzConstant.ROUTE_KEY,r.getId(),r);
             refreshRoutes();
             return Mono.empty();
         });
@@ -100,7 +100,7 @@ public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepo
     public Mono<Void> delete(Mono<String> routeId) {
         routeId.subscribe(id -> {
             log.debug("删除路由信息={}", id);
-            mzRedisUtil.getoRedisTemplate().opsForHash().delete(Constant.ROUTE_KEY,id);
+            mzRedisUtil.getoRedisTemplate().opsForHash().delete(MzConstant.ROUTE_KEY,id);
             refreshRoutes();
         });
         return Mono.empty();

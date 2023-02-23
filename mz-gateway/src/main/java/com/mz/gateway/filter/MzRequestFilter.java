@@ -2,7 +2,7 @@ package com.mz.gateway.filter;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.mz.common.utils.IPSearcherUtils;
@@ -58,9 +58,9 @@ public class MzRequestFilter implements GlobalFilter, Ordered {
         jsonHeaders.put("accept-language", headers.getFirst("Accept-Language"));
         log.info("网关拦截到请求，headers：{}", jsonHeaders.toJSONString());
 
-        boolean isEnv = headers.containsKey(Constant.GATEWAY_ENV);
+        boolean isEnv = headers.containsKey(MzConstant.GATEWAY_ENV);
         if (isEnv) {
-            MzDefaultContextHolder.CONTEXT_HOLDER.get().put(Constant.GATEWAY_ENV, headers.get(Constant.GATEWAY_ENV));
+            MzDefaultContextHolder.CONTEXT_HOLDER.get().put(MzConstant.GATEWAY_ENV, headers.get(MzConstant.GATEWAY_ENV));
         }
         // 放行
         return chain.filter(exchange.mutate().request(request.mutate().build()).build());

@@ -1,6 +1,6 @@
 package com.mz.common.feign.config;
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.feign.exception.MzFeignExceptionHandler;
 import feign.Contract;
 import feign.Logger;
@@ -45,10 +45,10 @@ public class MzFeignConfiguration {
                 HttpServletRequest request = requestAttributes.getRequest();
                 // 同步请求头  给新请求同步了老请求的cookie
                 template.header("Cookie", request.getHeader("Cookie"));
-                String env = request.getHeader(Constant.GATEWAY_ENV);
+                String env = request.getHeader(MzConstant.GATEWAY_ENV);
                 if ("".equals(env)) {
                     // 灰度环境标识
-                    template.header(Constant.GATEWAY_ENV, env);
+                    template.header(MzConstant.GATEWAY_ENV, env);
                 }
             }
         };

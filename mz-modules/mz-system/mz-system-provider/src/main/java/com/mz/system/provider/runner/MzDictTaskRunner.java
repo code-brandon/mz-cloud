@@ -8,7 +8,6 @@ import com.mz.system.provider.service.SysDictDataService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
 import java.util.Map;
@@ -25,7 +24,7 @@ import java.util.stream.Collectors;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/10/15 18:39
  */
-@Component
+// @Component
 @RequiredArgsConstructor
 public class MzDictTaskRunner implements ApplicationRunner {
 
