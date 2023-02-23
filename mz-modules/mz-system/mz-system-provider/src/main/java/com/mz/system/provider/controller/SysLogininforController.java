@@ -60,7 +60,7 @@ public class SysLogininforController {
             @ApiImplicitParam(name="infoId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{infoId:\\d+}")
+    @GetMapping("/info/{infoId}")
     public R<SysLogininforEntity> info(@PathVariable("infoId") Long infoId){
         SysLogininforEntity sysLogininfor = sysLogininforService.getById(infoId);
         return R.ok(sysLogininfor);

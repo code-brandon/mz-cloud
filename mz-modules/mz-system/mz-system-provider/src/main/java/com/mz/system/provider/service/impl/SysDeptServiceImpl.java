@@ -7,7 +7,7 @@ import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.utils.MzUtils;
 import com.mz.common.utils.TreeUtils;
 import com.mz.system.model.entity.SysDeptEntity;
@@ -56,7 +56,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
             return objectTreeNode;
         }).collect(Collectors.toList());
 
-        return TreeUtil.build(nodeList, Constant.ROOT_NODE);
+        return TreeUtil.build(nodeList, MzConstant.ROOT_NODE);
     }
 
     @Override

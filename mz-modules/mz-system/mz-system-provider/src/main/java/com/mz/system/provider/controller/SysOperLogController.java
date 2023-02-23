@@ -60,7 +60,7 @@ public class SysOperLogController {
             @ApiImplicitParam(name="operId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{operId:\\d+}")
+    @GetMapping("/info/{operId}")
     public R<SysOperLogEntity> info(@PathVariable("operId") Long operId){
             SysOperLogEntity sysOperLog = sysOperLogService.getById(operId);
 

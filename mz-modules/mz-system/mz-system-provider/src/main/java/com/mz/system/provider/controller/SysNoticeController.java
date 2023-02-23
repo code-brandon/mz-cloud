@@ -59,12 +59,12 @@ public class SysNoticeController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="noticeId",value="主键",dataTypeClass = Integer.class, paramType = "path",example="1")
+            @ApiImplicitParam(name="noticeId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:notice:query')")
-    @GetMapping("/info/{noticeId:\\d+}")
-    public R<SysNoticeEntity> info(@PathVariable("noticeId") Integer noticeId){
+    @GetMapping("/info/{noticeId}")
+    public R<SysNoticeEntity> info(@PathVariable("noticeId") Long noticeId){
         SysNoticeEntity sysNotice = sysNoticeService.getById(noticeId);
         return R.ok(sysNotice);
     }
@@ -117,7 +117,7 @@ public class SysNoticeController {
     @ApiOperation("删除数据")
     @PreAuthorize("@pms.hasPermission('system:notice:delete')")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Integer[] noticeIds){
+    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] noticeIds){
         boolean remove = sysNoticeService.removeByIds(Arrays.asList(noticeIds));
         return R.okOrFail(remove, "删除");
     }

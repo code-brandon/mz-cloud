@@ -72,7 +72,7 @@ public class SysDeptController {
      */
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:dept:query')")
-    @GetMapping("/info/{deptId:\\d+}")
+    @GetMapping("/info/{deptId}")
     public R<SysDeptEntity> info(@PathVariable("deptId") Long deptId){
         SysDeptEntity sysDept = sysDeptService.getById(deptId);
         return R.ok(sysDept);

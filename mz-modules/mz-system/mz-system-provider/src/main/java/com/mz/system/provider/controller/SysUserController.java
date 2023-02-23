@@ -97,7 +97,7 @@ public class SysUserController {
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:user:query')")
-    @GetMapping("/info//{userId:\\d+}")
+    @GetMapping("/info/{userId}")
     public R<SysUserVo> info(@PathVariable("userId") Long userId) {
         SysUserVo sysUser = sysUserService.getUserById(userId);
 

@@ -32,7 +32,7 @@ public class SysConfigEntity extends BaseEntity implements Serializable {
 	 */
     @ApiModelProperty("参数主键")
 	@TableId(type = IdType.AUTO)
-	private Integer configId;
+	private Long configId;
 	/**
 	 * 参数名称
 	 */

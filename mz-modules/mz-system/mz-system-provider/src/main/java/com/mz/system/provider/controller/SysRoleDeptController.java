@@ -43,7 +43,7 @@ public class SysRoleDeptController {
             @ApiImplicitParam(name = "roleId", value = "角色ID", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
     @ApiOperation("根据角色ID查询部门ID")
-    @GetMapping("/list/{roleId:\\d+}")
+    @GetMapping("/list/{roleId}")
     public R<List<SysRoleDeptEntity>> list(@PathVariable("roleId") Long roleId) {
 
         List<SysRoleDeptEntity> roleDepts = sysRoleDeptService.listByIds(Collections.singletonList(roleId));

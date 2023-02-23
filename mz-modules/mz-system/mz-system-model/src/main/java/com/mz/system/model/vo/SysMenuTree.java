@@ -1,6 +1,6 @@
 package com.mz.system.model.vo;
 
-import com.mz.common.constant.Constant;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.utils.TreeUtils;
 import com.mz.system.model.entity.SysMenuEntity;
 import lombok.Data;
@@ -51,7 +51,7 @@ public class SysMenuTree extends SysMenuEntity implements TreeUtils.TreeNode<Lon
      */
     @Override
     public boolean root() {
-        return Objects.equals(parentId(), Constant.ROOT_NODE);
+        return Objects.equals(parentId(), MzConstant.ROOT_NODE);
     }
 
     /**

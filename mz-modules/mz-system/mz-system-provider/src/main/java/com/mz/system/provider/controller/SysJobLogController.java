@@ -58,7 +58,7 @@ public class SysJobLogController {
             @ApiImplicitParam(name="jobLogId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
-    @GetMapping("/info/{jobLogId:\\d+}")
+    @GetMapping("/info/{jobLogId}")
     public R<SysJobLogEntity> info(@PathVariable("jobLogId") Long jobLogId){
             SysJobLogEntity sysJobLog = sysJobLogService.getById(jobLogId);
 

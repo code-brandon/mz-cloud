@@ -96,7 +96,7 @@ public class SysMenuController {
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:menu:query')")
-    @GetMapping("/info/{menuId:\\d+}")
+    @GetMapping("/info/{menuId}")
     public R<SysMenuEntity> info(@PathVariable("menuId") Long menuId){
         SysMenuEntity sysMenu = sysMenuService.getById(menuId);
         return R.ok(sysMenu);

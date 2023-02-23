@@ -7,6 +7,7 @@ import com.mz.system.model.vo.req.SysDictDataReqVo;
 import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
 import com.mz.system.model.vo.search.SysDictDataSearchVo;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,5 +26,7 @@ public interface SysDictDataService extends IService<SysDictDataEntity> {
     boolean updateDictDataById(SysDictDataReqVo sysDictDataVo);
 
     boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
+
+    List<SysDictDataEntity> listByDictType(String dictType);
 }
 

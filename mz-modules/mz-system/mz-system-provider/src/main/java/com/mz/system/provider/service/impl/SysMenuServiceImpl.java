@@ -9,8 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mz.common.constant.Constant;
-import com.mz.common.constant.UserConstants;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.exception.MzException;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
@@ -61,7 +60,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
     public List<SysMenuDto> getUserMenuTree() {
         MzUserDetailsSecurity sysUserSecurity = MzSecurityUtils.getMzSysUserSecurity();
         List<SysMenuDto> menus = baseMapper.getMenuByUserId(sysUserSecurity .getUserId(), sysUserSecurity .isIfAdmin());
-        return getChildPerms(menus, Constant.ROOT_NODE);
+        return getChildPerms(menus, MzConstant.ROOT_NODE);
     }
 
     @Override
@@ -81,7 +80,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             objectTreeNode.setWeight(m.getOrderNum());
             return objectTreeNode;
         }).collect(Collectors.toList());
-        List<Tree<Long>> build = TreeUtil.build(nodeList, Constant.ROOT_NODE);
+        List<Tree<Long>> build = TreeUtil.build(nodeList, MzConstant.ROOT_NODE);
         return CollectionUtils.isEmpty(build) ? Collections.emptyList() : build;
     }
 
@@ -101,7 +100,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             objectTreeNode.setExtra(BeanMapUtils.beanToMap(m));
             return objectTreeNode;
         }).collect(Collectors.toList());
-        List<Tree<Long>> build = TreeUtil.build(nodeList, Constant.ROOT_NODE);*/
+        List<Tree<Long>> build = TreeUtil.build(nodeList, MzConstant.ROOT_NODE);*/
 
         List<SysMenuTree> trees = TreeUtils.generateTrees(allMenu, false);
         return CollectionUtils.isEmpty(trees) ? Collections.emptyList() : trees;
@@ -148,7 +147,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             router.setIsFrame(menu.getIsFrame());
             router.setMeta(new MetaResVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("0", menu.getIsCache().toString()), menu.getPath()));
             List<SysMenuDto> cMenus = menu.getChildren();
-            if (!cMenus.isEmpty()  && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
+            if (!cMenus.isEmpty()  && MzConstant.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
@@ -171,7 +170,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
                 MenuResVo children = new MenuResVo();
                 String routerPath = innerLinkReplaceEach(menu.getPath());
                 children.setPath(routerPath);
-                children.setComponent(UserConstants.INNER_LINK);
+                children.setComponent(MzConstant.INNER_LINK);
                 children.setName(StringUtils.capitalize(routerPath));
                 children.setMeta(new MetaResVo(menu.getMenuName(), menu.getIcon(), menu.getPath()));
                 children.setIsFrame(menu.getIsFrame());
@@ -271,7 +270,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
             routerPath = innerLinkReplaceEach(routerPath);
         }
         // 非外链并且是一级目录（类型为目录）
-        if (0 == menu.getParentId().intValue() && UserConstants.TYPE_DIR.equals(menu.getMenuType()) && UserConstants.NO_FRAME == menu.getIsFrame()) {
+        if (0 == menu.getParentId().intValue() && MzConstant.TYPE_DIR.equals(menu.getMenuType()) && MzConstant.NO_FRAME == menu.getIsFrame()) {
             routerPath = "/" + menu.getPath();
         }
         // 非外链并且是一级目录（类型为菜单）
@@ -288,13 +287,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return 组件信息
      */
     public String getComponent(SysMenuDto menu) {
-        String component = UserConstants.LAYOUT;
+        String component = MzConstant.LAYOUT;
         if (StringUtils.isNotEmpty(menu.getComponent()) && !isMenuFrame(menu)) {
             component = menu.getComponent();
         } else if (StringUtils.isEmpty(menu.getComponent()) && menu.getParentId().intValue() != 0 && isInnerLink(menu)) {
-            component = UserConstants.INNER_LINK;
+            component = MzConstant.INNER_LINK;
         } else if (StringUtils.isEmpty(menu.getComponent()) && isParentView(menu)) {
-            component = UserConstants.PARENT_VIEW;
+            component = MzConstant.PARENT_VIEW;
         }
         return component;
     }
@@ -306,8 +305,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return 结果
      */
     public boolean isMenuFrame(SysMenuDto menu) {
-        return menu.getParentId().intValue() == 0 && UserConstants.TYPE_MENU.equals(menu.getMenuType())
-                && menu.getIsFrame().equals(UserConstants.NO_FRAME);
+        return menu.getParentId().intValue() == 0 && MzConstant.TYPE_MENU.equals(menu.getMenuType())
+                && menu.getIsFrame().equals(MzConstant.NO_FRAME);
     }
 
     /**
@@ -317,7 +316,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return 结果
      */
     public boolean isInnerLink(SysMenuDto menu) {
-        return menu.getIsFrame().equals(UserConstants.NO_FRAME) && MzUtils.ishttp(menu.getPath());
+        return menu.getIsFrame().equals(MzConstant.NO_FRAME) && MzUtils.ishttp(menu.getPath());
     }
 
     /**
@@ -327,7 +326,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return 结果
      */
     public boolean isParentView(SysMenuDto menu) {
-        return menu.getParentId().intValue() != 0 && UserConstants.TYPE_DIR.equals(menu.getMenuType());
+        return menu.getParentId().intValue() != 0 && MzConstant.TYPE_DIR.equals(menu.getMenuType());
     }
 
     /**
@@ -336,7 +335,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      * @return
      */
     public String innerLinkReplaceEach(String path) {
-        return StringUtils.replaceEach(path, new String[]{Constant.HTTP, Constant.HTTPS},
+        return StringUtils.replaceEach(path, new String[]{MzConstant.HTTP, MzConstant.HTTPS},
                 new String[]{"", ""});
     }
 

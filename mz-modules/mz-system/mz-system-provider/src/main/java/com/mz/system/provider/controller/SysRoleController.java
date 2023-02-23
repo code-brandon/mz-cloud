@@ -79,7 +79,7 @@ public class SysRoleController {
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:role:query')")
-    @GetMapping("/info/{roleId:\\d+}")
+    @GetMapping("/info/{roleId}")
     public R<SysRoleVo> info(@PathVariable("roleId") Long roleId) {
         SysRoleVo sysRole = sysRoleService.getRoleById(roleId);
         return R.ok(sysRole);

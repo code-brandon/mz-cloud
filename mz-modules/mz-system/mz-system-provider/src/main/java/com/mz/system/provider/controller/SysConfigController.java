@@ -59,12 +59,12 @@ public class SysConfigController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="configId",value="主键",dataTypeClass = Integer.class, paramType = "path",example="1")
+            @ApiImplicitParam(name="configId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:config:query')")
-    @GetMapping("/info/{configId:\\d+}")
-    public R<SysConfigEntity> info(@PathVariable("configId") Integer configId){
+    @GetMapping("/info/{configId}")
+    public R<SysConfigEntity> info(@PathVariable("configId") Long configId){
         SysConfigEntity sysConfig = sysConfigService.getById(configId);
         return R.ok(sysConfig);
     }

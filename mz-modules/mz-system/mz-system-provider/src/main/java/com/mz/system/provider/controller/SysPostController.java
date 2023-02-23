@@ -81,7 +81,7 @@ public class SysPostController {
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:post:query')")
-    @GetMapping("/info/{postId:\\d+}")
+    @GetMapping("/info/{postId}")
     public R<SysPostEntity> info(@PathVariable("postId") Long postId) {
         SysPostEntity sysPost = sysPostService.getById(postId);
 

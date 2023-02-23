@@ -65,7 +65,7 @@ public class SysDictTypeController {
     })
     @ApiOperation("通过主键查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:dict:query')")
-    @GetMapping("/info/{dictId://d+}")
+    @GetMapping(value = "/info/{dictId}")
     public R<SysDictTypeEntity> info(@PathVariable("dictId") Long dictId){
         SysDictTypeEntity sysDictType = sysDictTypeService.getById(dictId);
         return R.ok(sysDictType);

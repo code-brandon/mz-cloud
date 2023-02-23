@@ -4,6 +4,7 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mz.common.constant.MzConstant;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
 import com.mz.common.utils.MzUtils;
@@ -15,6 +16,7 @@ import com.mz.system.provider.dao.SysDictDataDao;
 import com.mz.system.provider.service.SysDictDataService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Map;
 
 
@@ -53,6 +55,16 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataDao, SysDictD
         sysDictDataEntity.setDictCode(idAndStatusReqVo.getSysId());
         sysDictDataEntity.setStatus(idAndStatusReqVo.getStatus());
         return super.updateById(sysDictDataEntity);
+    }
+
+    @Override
+    public List<SysDictDataEntity> listByDictType(String dictType) {
+
+        return list(Wrappers.<SysDictDataEntity>lambdaQuery()
+                .eq(SysDictDataEntity::getDictType, dictType)
+                .eq(SysDictDataEntity::getStatus, MzConstant.DICT_NORMAL)
+                .orderByAsc(SysDictDataEntity::getDictSort)
+        );
     }
 
 }
