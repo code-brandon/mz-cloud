@@ -7,6 +7,7 @@ import com.mz.common.log.listener.produce.MzLogConsoleProduceListener;
 import com.mz.common.log.listener.produce.MzLogRedisProduceListener;
 import com.mz.common.log.listener.produce.MzLogRemoteApiProduceListener;
 import lombok.RequiredArgsConstructor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
@@ -35,6 +36,7 @@ public class MzLogAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnBean(MzLogRedisProduceListener.class)
     public MzLogRedisConsumeListener mzLogRedisConsumeListener() {
         return new MzLogRedisConsumeListener();
     }

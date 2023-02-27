@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.PreDestroy;
 import javax.annotation.Resource;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -48,6 +49,9 @@ public class MzLogRedisConsumeListener implements MzLogConsumeListener {
             fixedThreadPool.execute(()->{
                 while (true) {
                     try {
+                        if (Thread.currentThread().isInterrupted()){
+                            break;
+                        }
                         String pop = redisTemplate.opsForList().rightPop(MzLogRedisProduceListener.CHANNEL, 5L, TimeUnit.SECONDS);
                         if (MzUtils.notEmpty(pop)) {
                             log.warn("\n{}", JSONStrFormatter.format(pop));
@@ -67,5 +71,10 @@ public class MzLogRedisConsumeListener implements MzLogConsumeListener {
 
     public ExecutorService getFixedThreadPool() {
         return fixedThreadPool;
+    }
+
+    @PreDestroy
+    private void destroyed() {
+        fixedThreadPool.shutdown();
     }
 }
