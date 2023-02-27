@@ -87,16 +87,20 @@ public class MzUserDetailsServiceImpl implements MzUserDetailsService {
         } else {
             Set<String> auth = sysUserDto.getAuthorities();
             // 组装角色
-            Set<GrantedAuthority> roles = sysUserDto.getRolePermission().stream().filter(role -> {
-                return !StringUtils.isEmpty(role);
-            }).map(role -> {
-                return new SimpleGrantedAuthority(SecurityConstants.MZ_ROLE + role);
-            }).collect(Collectors.toSet());
+            String rolePermission = sysUserDto.getRolePermission();
+            if (MzUtils.notEmpty(rolePermission)) {
+                Set<GrantedAuthority> roles = StringUtils.commaDelimitedListToSet(rolePermission).stream().filter(role -> {
+                    return !StringUtils.isEmpty(role);
+                }).map(role -> {
+                    return new SimpleGrantedAuthority(SecurityConstants.MZ_ROLE + role);
+                }).collect(Collectors.toSet());
+                authorities.addAll(roles);
+            }
+
             if (MzUtils.notEmpty(auth)) {
                 List<GrantedAuthority> authorityList = AuthorityUtils.createAuthorityList(sysUserDto.getAuthorities().toArray(new String[sysUserDto.getAuthorities().size()]));
                 authorities.addAll(authorityList);
             }
-            authorities.addAll(roles);
         }
         MzUserDetailsSecurity detailsSecurity = new MzUserDetailsSecurity();
         BeanUtils.copyProperties(sysUserDto, detailsSecurity);

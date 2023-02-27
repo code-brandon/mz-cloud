@@ -126,6 +126,28 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
     private Collection<? extends GrantedAuthority> authorities;
 
     /**
+     * 角色ID列表
+     */
+    @ApiModelProperty("角色ID列表（逗号分割）")
+    private String roleIds;
+
+    /**
+     * 数据权限范围
+     */
+    @ApiModelProperty("数据权限范围（逗号分割）")
+    private String dataScopes;
+    /**
+     * 岗位ID列表
+     */
+    @ApiModelProperty("岗位ID列表（逗号分割）")
+    private String postIds;
+    /**
+     * 岗位名称列表
+     */
+    @ApiModelProperty("岗位名称列表（逗号分割）")
+    private String postNames;
+
+    /**
      * 账户启用
      */
     @ApiModelProperty("账户启用 （spring security）")
