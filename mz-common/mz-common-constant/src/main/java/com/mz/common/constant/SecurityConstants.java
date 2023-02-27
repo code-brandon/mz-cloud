@@ -17,4 +17,10 @@ public interface SecurityConstants {
     String MZ_FROM = "mz_from";
     String MZ_FROM_KV = MZ_FROM + "=" + MZ_FROM_IN;
     String MZ_CLOUD_AUTH = MzConstant.OAUTH_KEY + "auth:";
+
+    /**
+     * 数据权限过滤关键字
+     */
+    String DATA_SCOPE = "dataScope";
+
 }
