@@ -2,6 +2,7 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
 import com.mz.common.log.annotation.MzLog;
+import com.mz.common.mybatis.annotation.MzIgnoreDataAuth;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.security.annotation.Ignore;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
@@ -116,6 +117,7 @@ public class SysUserController {
     @ApiOperation(value = "按用户名获取用户信息",tags = "登录暴漏接口")
     @PostMapping("/getUserInfoByUserName")
     @Ignore
+    @MzIgnoreDataAuth
     public R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "username") @NotBlank String userName) {
         SysUserDto sysUserDto = sysUserService.loadUserByUserName(userName);
         return R.ok(sysUserDto);

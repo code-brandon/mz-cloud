@@ -38,6 +38,12 @@ public class SysUserVo extends SysUserEntity implements Serializable {
     private Set<Long> roleIds;
 
     /**
+     * 部门名称
+     */
+    @ApiModelProperty("部门名称")
+    private String deptName;
+
+    /**
      * 用户ID
      */
     @Override

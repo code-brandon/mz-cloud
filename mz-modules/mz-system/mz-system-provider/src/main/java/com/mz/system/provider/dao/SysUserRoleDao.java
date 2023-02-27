@@ -39,6 +39,14 @@ public interface SysUserRoleDao extends BaseMapper<SysUserRoleEntity> {
      */
     Set<Long> selectRoleIdsByUserId(@Param("userId") Long userId);
 
+
+    /**
+     * 根据用户名获取角色ID字符串集合
+     * @param userId
+     * @return
+     */
+    String selectStrRoleIdsByUserId(@Param("userId") Long userId);
+
     /**
      * 根据角色ID查询用户分页数据
      *

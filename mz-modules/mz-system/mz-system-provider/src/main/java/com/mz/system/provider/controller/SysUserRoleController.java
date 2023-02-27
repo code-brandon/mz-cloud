@@ -1,5 +1,6 @@
 package com.mz.system.provider.controller;
 
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.entity.R;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.vo.SysUserVo;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import java.util.Map;
 
@@ -44,6 +46,7 @@ public class SysUserRoleController {
             @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
     })
     @ApiOperation(value = "根据角色ID查询用户分页数据", tags = "角色查询分配用户")
+    @RolesAllowed({MzConstant.ADMIN})
     @PostMapping("/getUserPage")
     public R<PageUtils<SysUserVo>> getUserPage(@ApiIgnore @RequestParam Map<String, Object> params, @Valid @RequestBody SysUserSearchVo userSearchVo) {
         PageUtils<SysUserVo> userResVoPage = sysUserRoleService.getUserPageByRoleId(params, userSearchVo);
@@ -55,6 +58,7 @@ public class SysUserRoleController {
             @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
     })
     @ApiOperation(value = "根据角色ID查询不是此角色用户分页数据", tags = "角色选择用户")
+    @RolesAllowed({MzConstant.ADMIN})
     @PostMapping("/getNotThisRoleUserPage")
     public R<PageUtils<SysUserVo>> getNotThisRoleUserPage(@ApiIgnore @RequestParam Map<String, Object> params, @Valid @RequestBody SysUserSearchVo userSearchVo) {
         PageUtils<SysUserVo> userResVoPage = sysUserRoleService.getNotThisRoleUserPage(params, userSearchVo);
@@ -68,6 +72,7 @@ public class SysUserRoleController {
      * @return
      */
     @ApiOperation(value = "保存角色绑定用户的关系", tags = "角色绑定用户")
+    @RolesAllowed({MzConstant.ADMIN})
     @PostMapping("/save/roleBindUser")
     public R<Boolean> saveRoleBindUser(@Valid @RequestBody SysRoleBindUserReqVo roleBindUserReqVo) {
         boolean save = sysUserRoleService.saveRoleBindUser(roleBindUserReqVo);

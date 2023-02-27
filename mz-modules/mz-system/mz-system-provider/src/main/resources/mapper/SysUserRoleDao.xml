@@ -29,6 +29,12 @@
         where `user_id` = #{userId}
     </select>
 
+    <select id = "selectStrRoleIdsByUserId" resultType = "java.lang.String">
+        select group_concat(`role_id`) as role_ids
+        from `sys_user_role`
+        where `user_id` = #{userId}
+    </select>
+
     <!--
     SQL执行计划
     +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+

@@ -2,6 +2,7 @@ package com.mz.system.provider.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mz.common.mybatis.annotation.MzDataAuth;
 import com.mz.system.model.dto.SysUserDto;
 import com.mz.system.model.dto.SysUserLoginLogDto;
 import com.mz.system.model.entity.SysUserEntity;
@@ -19,13 +20,16 @@ import org.springframework.stereotype.Repository;
  */
 @Mapper
 @Repository
+@MzDataAuth
 public interface SysUserDao extends BaseMapper<SysUserEntity> {
 
     /**
      * 按用户名加载用户
+     *
      * @param username 用户名
      * @return
      */
+    @MzDataAuth(ignore = true)
     SysUserDto loadUserByUserName(String username);
 
     /**

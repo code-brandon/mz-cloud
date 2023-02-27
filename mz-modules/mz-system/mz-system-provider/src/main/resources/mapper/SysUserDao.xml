@@ -51,45 +51,48 @@
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
-        <result property = "ifAdmin" column = "ifAdmin"/>
+        <result property = "ifAdmin" column = "if_admin"/>
+        <result property = "rolePermission" column = "role_keys"/>
+        <result property = "dataScopes" column = "data_scopes"/>
+        <result property = "postIds" column = "post_ids"/>
+        <result property = "postNames" column = "post_names"/>
+        <result property = "roleIds" column = "role_ids"/>
         <collection property = "authorities" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysMenuDao.getAuthorities">
             <constructor>
                 <arg column="perms"/>
-            </constructor>
-        </collection>
-        <collection property = "rolePermission" column="user_id" ofType="java.lang.String" select="com.mz.system.provider.dao.SysRoleDao.getRolePermissions">
-            <constructor>
-                <arg column="role_key"/>
             </constructor>
         </collection>
     </resultMap>
     <!--根据用户名查询当前用户-->
     <select id = "loadUserByUserName" resultMap="sysUserDtoMap">
         select
-            su.*,
+            <include refid = "fromHead"/>,
+            su.password,
             sd.dept_name,
-            ( select
-                if
-                    ( count( 1 ) > 0, true, false )
-                from
-                    sys_role sr
-                    left join sys_user_role sur on sur.role_id = sr.role_id
-                where
-                    sur.user_id = su.user_id
-                    and sr.status = 0
-                    and sr.del_flag = 0
-                    and sr.role_key = 'admin'
-            ) as ifAdmin
+            group_concat(sr.data_scope) as data_scopes,
+            group_concat(sr.role_id) as role_ids,
+            group_concat(sr.role_key) as role_keys,
+            find_in_set('admin', group_concat(sr.role_key)) as if_admin,
+            group_concat(sp.post_id) as post_ids,
+            group_concat(sp.post_name) as post_names
         from sys_user su
         left join sys_dept sd on sd.dept_id = su.dept_id
-        where su.username = #{username} and su.del_flag = 0
-
+        left join sys_user_role sur on sur.user_id = su.user_id
+        left join sys_user_post sup on sup.user_id = su.user_id
+        left join sys_role sr on sr.role_id = sur.role_id and sr.del_flag = 0
+        left join sys_post sp on sp.post_id = sup.post_id
+        where su.username = #{username}
+          and sr.status = 0
+          and su.del_flag = 0
+        group by sur.user_id,sup.user_id
     </select>
 
     <select id = "selectPageUser" resultType = "com.mz.system.model.vo.SysUserVo">
         select
-        <include refid = "fromHead"/>
+            <include refid = "fromHead"/>,
+            sd.dept_name
         from sys_user su
+        left join sys_dept sd on su.dept_id = sd.dept_id
         <where>
             <if test = "userVo.username != null and userVo.username != ''">
                 and su.username = #{userVo.username}
