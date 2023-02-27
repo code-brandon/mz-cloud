@@ -12,6 +12,7 @@ import com.mz.common.utils.MzUtils;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.JSQLParserException;
+import net.sf.jsqlparser.expression.Alias;
 import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.parser.CCJSqlParserUtil;
 import net.sf.jsqlparser.schema.Table;
@@ -51,6 +52,8 @@ import java.util.Set;
 @Slf4j
 public class MzDataPermissionIntercept implements Interceptor {
 
+    private static String ZYZF = "`";
+
     @Override
     public Object intercept(Invocation invocation) throws Throwable {
 
@@ -73,7 +76,7 @@ public class MzDataPermissionIntercept implements Interceptor {
                 cacheKey = (CacheKey) args[4];
                 boundSql = (BoundSql) args[5];
             }
-            //TODO 自己要进行的各种处理
+
             String sql = boundSql.getSql();
             String className = ms.getId().substring(0, ms.getId().lastIndexOf('.'));
             String methodName = ms.getId().substring(ms.getId().lastIndexOf('.') + 1);
@@ -184,8 +187,8 @@ public class MzDataPermissionIntercept implements Interceptor {
         String userFrom = dataAuth.userFrom();
         String deptFrom = dataAuth.deptFrom();
 
-        String newUserAlias = setNewAlias(plainSelect, userAlias, userFrom);
-        String newDeptAlias = setNewAlias(plainSelect, deptAlias, deptFrom);
+        userAlias = setNewAlias(plainSelect, userAlias, userFrom);
+        deptAlias = setNewAlias(plainSelect, deptAlias, deptFrom);
 
 
         Long deptId = loginUser.getLong("deptId");
@@ -195,24 +198,24 @@ public class MzDataPermissionIntercept implements Interceptor {
         Set<String> dataScopes = StringUtils.commaDelimitedListToSet(dataScopeStr);
         StringBuilder sqlString = new StringBuilder();
         for (String dataScope : dataScopes) {
-            if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_ALL.getValue())) {
+            if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_ALL.getKey().toString())) {
                 // 全部数据权限
                 sqlString = new StringBuilder();
-            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_CUSTOM.getValue())) {
+            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_CUSTOM.getKey().toString())) {
                 String format = String.format(" OR %1$s.%2$s IN ( SELECT %2$s FROM `sys_role_dept` WHERE FIND_IN_SET(role_id,'%3$s'))", userAlias, deptField, roleIds);
                 sqlString.append(format);
-            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT.getValue())) {
+            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT.getKey().toString())) {
                 String format = "";
                 if (MzUtils.notEmpty(deptAlias)) {
                     format = String.format(" OR %1$s.%2$s = %3$s", deptAlias, deptField, deptId);
-                }else {
+                }/*else {
                     format = String.format(" OR %1$s.%2$s = %3$s", userAlias, deptField, deptId);
-                }
+                }*/
                 sqlString.append(format);
-            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT_AND_CHILD.getValue()) && MzUtils.notEmpty(deptAlias)) {
+            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT_AND_CHILD.getKey().toString()) && MzUtils.notEmpty(deptAlias)) {
                 String format = String.format(" OR FIND_IN_SET(%1$s.%2$s,%1$s.ancestors) ", deptAlias, deptField);
                 sqlString.append(format);
-            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_SELF.getValue())) {
+            } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_SELF.getKey().toString())) {
                 if (MzUtils.notEmpty(userAlias)) {
                     sqlString.append(String.format(" OR %1$s.%2$s = %3$s ", userAlias, userField, userId));
                 } else {
@@ -239,7 +242,6 @@ public class MzDataPermissionIntercept implements Interceptor {
      * 检索别名 并设置，没有返回原值
      *
      * @param plainSelect
-     * @param newAlias    改变赋值的别名
      * @param alias
      * @param from
      */
@@ -248,13 +250,14 @@ public class MzDataPermissionIntercept implements Interceptor {
         FromItem fromItem = plainSelect.getFromItem();
         Table table = (Table) fromItem;
         String tableName = table.getName();
-        String nameAlias = table.getAlias().getName();
+        Alias tableAlias = table.getAlias();
+        String nameAlias = MzUtils.notEmpty(tableAlias) ? tableAlias.getName() : "";
         List<Join> joins = plainSelect.getJoins();
 
         // 去掉 ` 后相同  用 jsqlparser 解析的 原因，后面分页插件 对LEFT JINO 优化根据别名 所以别名 要和 真正SQL的别名保持一直
-        if (from.replaceAll("`", "").equalsIgnoreCase(tableName.replaceAll("`", ""))) {
+        if (from.replaceAll(ZYZF, "").equalsIgnoreCase(tableName.replaceAll(ZYZF, ""))) {
             if (MzUtils.notEmpty(nameAlias)) {
-                if (alias.replaceAll("`", "").equalsIgnoreCase(nameAlias.replaceAll("`", ""))) {
+                if (alias.replaceAll(ZYZF, "").equalsIgnoreCase(nameAlias.replaceAll(ZYZF, ""))) {
                     newAlias = nameAlias;
                 }
             }else {
@@ -265,12 +268,13 @@ public class MzDataPermissionIntercept implements Interceptor {
                 for (Join join : joins) {
                     FromItem rightItem = join.getRightItem();
                     Table rightable = (Table) rightItem;
-                    String righTableName = rightable.getName();
-                    String righNameAlias = rightable.getAlias().getName();
-                    if (from.replaceAll("`", "").equalsIgnoreCase(righTableName.replaceAll("`", ""))) {
-                        if (MzUtils.notEmpty(righNameAlias)) {
-                            if (alias.replaceAll("`", "").equalsIgnoreCase(righNameAlias.replaceAll("`", ""))) {
-                                newAlias = righNameAlias;
+                    String rightTableName = rightable.getName();
+                    Alias  rightTableAlias = rightable.getAlias();
+                    String rightNameAlias = MzUtils.notEmpty(rightTableAlias) ? rightTableAlias.getName() : "";
+                    if (from.replaceAll(ZYZF, "").equalsIgnoreCase(rightTableName.replaceAll(ZYZF, ""))) {
+                        if (MzUtils.notEmpty(rightNameAlias)) {
+                            if (alias.replaceAll(ZYZF, "").equalsIgnoreCase(rightNameAlias.replaceAll(ZYZF, ""))) {
+                                newAlias = rightNameAlias;
                             }
                         }else {
                             newAlias = tableName;
