@@ -3,12 +3,15 @@ package com.mz.common.mybatis.config;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.mz.common.mybatis.aspect.MzDataAuthAspectj;
+import com.mz.common.mybatis.plugin.MzDataPermissionIntercept;
 import com.mz.common.mybatis.plugin.MzObjectWrapperFactoryConverter;
 import com.mz.common.mybatis.plugin.MzParameterInterceptor;
 import com.mz.common.mybatis.plugin.MzSqlFilterArgumentResolver;
 import org.springframework.boot.context.properties.ConfigurationPropertiesBinding;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.Profile;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -25,6 +28,7 @@ import java.util.List;
  * @ClassName: MzMybatisAutoConfiguration
  * @CreateTime 2022/6/1 17:40
  */
+@Import(MzDataAuthAspectj.class)
 @Configuration(proxyBeanMethods = false)
 public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 
@@ -73,8 +77,18 @@ public class MzMybatisAutoConfiguration implements WebMvcConfigurer {
 	}
 
 	@Bean
+	public MzDataPermissionIntercept mzDataPermissionIntercept(){
+		return new MzDataPermissionIntercept();
+	}
+
+	@Bean
 	@ConfigurationPropertiesBinding
 	public MzObjectWrapperFactoryConverter mzObjectWrapperFactoryConverter() {
 		return new MzObjectWrapperFactoryConverter();
+	}
+
+	@Bean
+	public MzMybatisPostpositionHandler mzMybatisPostpositionHandler(){
+		return new MzMybatisPostpositionHandler();
 	}
 }
