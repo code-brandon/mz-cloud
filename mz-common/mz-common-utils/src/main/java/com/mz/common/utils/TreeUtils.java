@@ -38,13 +38,13 @@ public class TreeUtils {
                 }
             }
             if (!roots.isEmpty()) {
-                roots.forEach(r -> {
-                    setChildren(r, nodes);
-                });
+                for (T root : roots) {
+                    setChildren(root, nodes);
+                }
             }else {
-                nodes.forEach(r -> {
-                    setChildren(r, nodes);
-                });
+                for (T root : roots) {
+                    setChildren(root, nodes);
+                }
                 return nodes;
             }
 
@@ -91,10 +91,10 @@ public class TreeUtils {
             return;
         }
         parent.setChildren(children);
-        children.forEach(m -> {
+        for (T child : children) {
             // 递归设置子节点
-            setChildren(m, nodes);
-        });
+            setChildren(child, nodes);
+        }
     }
 
     /**

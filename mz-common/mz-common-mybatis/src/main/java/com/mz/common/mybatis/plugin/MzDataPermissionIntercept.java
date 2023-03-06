@@ -52,6 +52,9 @@ import java.util.Set;
 @Slf4j
 public class MzDataPermissionIntercept implements Interceptor {
 
+    /**
+     * MYSQL 转义字符
+     */
     private static String ZYZF = "`";
 
     @Override
@@ -202,15 +205,20 @@ public class MzDataPermissionIntercept implements Interceptor {
                 // 全部数据权限
                 sqlString = new StringBuilder();
             } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_CUSTOM.getKey().toString())) {
-                String format = String.format(" OR %1$s.%2$s IN ( SELECT %2$s FROM `sys_role_dept` WHERE FIND_IN_SET(role_id,'%3$s'))", userAlias, deptField, roleIds);
+                String format = "";
+                if (MzUtils.notEmpty(userAlias)) {
+                    format = String.format(" OR %1$s.%2$s IN ( SELECT %2$s FROM `sys_role_dept` WHERE FIND_IN_SET(role_id,'%3$s'))", userAlias, deptField, roleIds);
+                }else {
+                    format = String.format(" OR %1$s.%2$s IN ( SELECT %2$s FROM `sys_role_dept` WHERE FIND_IN_SET(role_id,'%3$s'))", deptAlias, deptField, roleIds);
+                }
                 sqlString.append(format);
             } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT.getKey().toString())) {
                 String format = "";
                 if (MzUtils.notEmpty(deptAlias)) {
                     format = String.format(" OR %1$s.%2$s = %3$s", deptAlias, deptField, deptId);
-                }/*else {
+                }else {
                     format = String.format(" OR %1$s.%2$s = %3$s", userAlias, deptField, deptId);
-                }*/
+                }
                 sqlString.append(format);
             } else if (dataScope.equalsIgnoreCase(MzDataAuthEnum.DATA_SCOPE_DEPT_AND_CHILD.getKey().toString()) && MzUtils.notEmpty(deptAlias)) {
                 String format = String.format(" OR FIND_IN_SET(%1$s.%2$s,%1$s.ancestors) ", deptAlias, deptField);
@@ -257,9 +265,7 @@ public class MzDataPermissionIntercept implements Interceptor {
         // 去掉 ` 后相同  用 jsqlparser 解析的 原因，后面分页插件 对LEFT JINO 优化根据别名 所以别名 要和 真正SQL的别名保持一直
         if (from.replaceAll(ZYZF, "").equalsIgnoreCase(tableName.replaceAll(ZYZF, ""))) {
             if (MzUtils.notEmpty(nameAlias)) {
-                if (alias.replaceAll(ZYZF, "").equalsIgnoreCase(nameAlias.replaceAll(ZYZF, ""))) {
-                    newAlias = nameAlias;
-                }
+                newAlias = nameAlias;
             }else {
                 newAlias = tableName;
             }
@@ -272,12 +278,10 @@ public class MzDataPermissionIntercept implements Interceptor {
                     Alias  rightTableAlias = rightable.getAlias();
                     String rightNameAlias = MzUtils.notEmpty(rightTableAlias) ? rightTableAlias.getName() : "";
                     if (from.replaceAll(ZYZF, "").equalsIgnoreCase(rightTableName.replaceAll(ZYZF, ""))) {
-                        if (MzUtils.notEmpty(rightNameAlias)) {
-                            if (alias.replaceAll(ZYZF, "").equalsIgnoreCase(rightNameAlias.replaceAll(ZYZF, ""))) {
-                                newAlias = rightNameAlias;
-                            }
+                        if (MzUtils.notEmpty(nameAlias)) {
+                            newAlias = rightNameAlias;
                         }else {
-                            newAlias = tableName;
+                            newAlias = rightTableName;
                         }
                     }
                 }

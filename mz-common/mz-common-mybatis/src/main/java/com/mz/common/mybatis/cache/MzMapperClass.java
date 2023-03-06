@@ -37,7 +37,11 @@ public class MzMapperClass {
 
     public MzMapperMethod getMethod(String key,Object parameter) {
         MzMapperMethod mzMapperMethod = null;
-        for (MzMapperMethod methodValue : getMethodValues(key)) {
+        List<MzMapperMethod> methodValues = getMethodValues(key);
+        if (methodValues.size() == 1) {
+            return methodValues.get(0);
+        }
+        for (MzMapperMethod methodValue : methodValues) {
             if (parameter instanceof MapperMethod.ParamMap) {
                 MapperMethod.ParamMap paramMap = (MapperMethod.ParamMap) parameter;
                 long sum = paramMap.keySet().stream().filter(f -> ReUtil.isMatch("^(param)[0-9]+", (String) f)).count();
