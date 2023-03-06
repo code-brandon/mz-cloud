@@ -25,7 +25,7 @@ import org.springframework.security.oauth2.provider.token.TokenStore;
  */
 @Configuration
 // 开启SpringSecurity注解支持
-@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class MzResourceServerConfig extends ResourceServerConfigurerAdapter {
 
 
