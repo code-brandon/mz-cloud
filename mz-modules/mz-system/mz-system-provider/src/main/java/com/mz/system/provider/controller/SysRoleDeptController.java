@@ -1,6 +1,9 @@
 package com.mz.system.provider.controller;
 
+import com.mz.common.constant.MzConstant;
 import com.mz.common.core.entity.R;
+import com.mz.common.log.annotation.MzLog;
+import com.mz.common.log.enums.BusinessType;
 import com.mz.system.model.entity.SysRoleDeptEntity;
 import com.mz.system.model.vo.req.SysRoleDeptReqVo;
 import com.mz.system.provider.service.SysRoleDeptService;
@@ -12,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.security.RolesAllowed;
 import javax.validation.Valid;
 import javax.validation.constraints.Size;
 import java.util.Arrays;
@@ -34,15 +38,15 @@ public class SysRoleDeptController {
     private final SysRoleDeptService sysRoleDeptService;
 
     /**
-     * 分页查询所有数据
+     * 分页根据角色ID查询部门
      *
      * @param roleId 请求集合
-     * @return 所有数据
+     * @return 分页数据
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "roleId", value = "角色ID", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
-    @ApiOperation("根据角色ID查询部门ID")
+    @ApiOperation(value = "根据角色ID查询部门", tags = {"回显角色绑定的部门"})
     @GetMapping("/list/{roleId}")
     public R<List<SysRoleDeptEntity>> list(@PathVariable("roleId") Long roleId) {
 
@@ -51,25 +55,31 @@ public class SysRoleDeptController {
     }
 
     /**
-     * 保存数据
+     * 保存角色所在部门
+     *
      * @param sysRoleDeptReqVo 实体对象
      * @return 新增结果
      */
-    @ApiOperation("保存数据")
+    @ApiOperation("保存角色部门")
+    @MzLog(title = "角色绑定部门", businessType = BusinessType.SAVE)
+    @RolesAllowed({MzConstant.ADMIN})
     @PostMapping("/save")
-    public R<Boolean> save(@Valid @RequestBody SysRoleDeptReqVo sysRoleDeptReqVo){
+    public R<Boolean> save(@Valid @RequestBody SysRoleDeptReqVo sysRoleDeptReqVo) {
         boolean save = sysRoleDeptService.saveRoleDept(sysRoleDeptReqVo);
         return R.okOrFail(save, "保存");
     }
 
     /**
-     * 删除数据
-     * @param roleIds 集合/数组
+     * 删除角色绑定的部门
+     *
+     * @param roleIds 角色ID集合/数组
      * @return 删除结果
      */
-    @ApiOperation("删除数据")
+    @ApiOperation("删除角色绑定的部门")
+    @MzLog(title = "角色绑定部门", businessType = BusinessType.REMOVE)
+    @RolesAllowed({MzConstant.ADMIN})
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] roleIds){
+    public R<Boolean> delete(@RequestBody @Validated @Size(min = 1) Long[] roleIds) {
         boolean remove = sysRoleDeptService.removeByIds(Arrays.asList(roleIds));
         return R.okOrFail(remove, "删除");
     }

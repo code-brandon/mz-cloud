@@ -17,12 +17,36 @@ import java.util.Map;
  */
 public interface SysDictTypeService extends IService<SysDictTypeEntity> {
 
+    /**
+     * 分页查询字典类型
+     *
+     * @param params 分页参数
+     * @return 分页数据
+     */
     PageUtils<SysDictTypeEntity> queryPage(Map<String, Object> params);
 
+    /**
+     * 保存字典类型
+     *
+     * @param sysDictTypeVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean saveDictType(SysDictTypeReqVo sysDictTypeVo);
 
+    /**
+     * 根据字典类型ID修改字典类型
+     *
+     * @param sysDictTypeVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean updateDictTypeById(SysDictTypeReqVo sysDictTypeVo);
 
+    /**
+     * 修改字典类型状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 }
 

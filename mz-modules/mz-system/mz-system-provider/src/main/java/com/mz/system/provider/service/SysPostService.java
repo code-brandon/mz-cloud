@@ -22,13 +22,23 @@ public interface SysPostService extends IService<SysPostEntity> {
     /**
      * 更新岗位状态
      *
-     * @param idAndStatusReqVo
-     * @return
+     * @param idAndStatusReqVo 实体类
+     * @return true：成功，false：失败
      */
     boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 
+    /**
+     * 根据岗位ID更新岗位
+     * @param sysPostReqVo 实体类
+     * @return true：成功，false：失败
+     */
     boolean updatePostById(SysPostReqVo sysPostReqVo);
 
+    /**
+     * 保存岗位
+     * @param sysPostReqVo 实体类
+     * @return true：成功，false：失败
+     */
     boolean savePost(SysPostReqVo sysPostReqVo);
 }
 

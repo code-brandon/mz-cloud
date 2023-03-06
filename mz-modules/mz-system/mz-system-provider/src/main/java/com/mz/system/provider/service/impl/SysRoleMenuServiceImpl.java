@@ -13,7 +13,6 @@ import com.mz.system.provider.dao.SysRoleMenuDao;
 import com.mz.system.provider.service.SysRoleMenuService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,7 +26,6 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
 
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean saveRoleMenu(SysRoleMenuReqVo sysRoleMenuReqVo) {
         SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleMenuReqVo, SysRoleEntity.class);
         if (sysRoleDao.insert(sysRoleEntity) > 0) {
@@ -39,7 +37,6 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean updateRoleMenuById(SysRoleMenuReqVo sysRoleMenuReqVo) {
         SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleMenuReqVo, SysRoleEntity.class);
         if (sysRoleDao.updateById(sysRoleEntity) > 0) {
@@ -51,24 +48,11 @@ public class SysRoleMenuServiceImpl extends ServiceImpl<SysRoleMenuDao, SysRoleM
         return false;
     }
 
-    /**
-     * 按角色 ID 获取菜单 ID
-     *
-     * @param roleId 角色ID
-     * @return
-     */
     @Override
     public Set<Long> getMenuIdsByRoleId(Long roleId) {
         return baseMapper.selectMenuIdsByRoleId(roleId);
     }
 
-    /**
-     * 保存角色菜单
-     *
-     * @param roleId  角色ID
-     * @param menuIds 菜单ID
-     * @return
-     */
     @Override
     public boolean saveRoleMenus(Long roleId, Set<Long> menuIds) {
         if (MzUtils.notEmpty(menuIds)) {

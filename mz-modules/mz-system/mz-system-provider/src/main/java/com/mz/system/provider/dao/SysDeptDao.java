@@ -1,6 +1,7 @@
 package com.mz.system.provider.dao;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.mz.common.mybatis.annotation.MzDataAuth;
 import com.mz.system.model.entity.SysDeptEntity;
 import com.mz.system.model.vo.SysDeptTree;
 import org.apache.ibatis.annotations.Mapper;
@@ -18,6 +19,7 @@ import java.util.List;
  */
 @Mapper
 @Repository
+@MzDataAuth
 public interface SysDeptDao extends BaseMapper<SysDeptEntity> {
 
     /**

@@ -1,6 +1,8 @@
 package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
+import com.mz.common.log.annotation.MzLog;
+import com.mz.common.log.enums.BusinessType;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.utils.MzUtils;
 import com.mz.common.validated.groups.IdField;
@@ -41,16 +43,16 @@ public class SysDictDataController {
     private final SysDictDataService sysDictDataService;
 
     /**
-     * 分页查询所有数据
+     * 分页查询字典数据
      *
-     * @param params 请求集合
-     * @return 所有数据
+     * @param params 分页参数
+     * @return 分页信息
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
             @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
     })
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("分页查询字典数据")
     @PreAuthorize("@pms.hasPermission('system:dict:query')")
     @PostMapping("/page")
     public R<PageUtils<SysDictDataEntity>> page(@RequestBody @Validated SysDictDataSearchVo dataSearchVo, @ApiIgnore @RequestParam Map<String, Object> params) {
@@ -63,7 +65,7 @@ public class SysDictDataController {
      * 通过字典类型查询字典数据
      *
      * @param dictType 字典类型
-     * @return
+     * @return 字典数据列表
      */
     @ApiOperation("通过字典类型查询字典数据")
     @GetMapping("/type/{dictType}")
@@ -74,15 +76,15 @@ public class SysDictDataController {
 
 
     /**
-     * 通过主键查询单条数据
+     * 通过字典码查询单条数据
      *
-     * @param dictCode 主键
+     * @param dictCode 字典码
      * @return 单条数据
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "dictCode", value = "主键", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
-    @ApiOperation("通过主键查询单条数据")
+    @ApiOperation("通过字典码查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:dict:query')")
     @GetMapping("/info/{dictCode}")
     public R<SysDictDataEntity> info(@PathVariable("dictCode") Long dictCode) {
@@ -91,12 +93,13 @@ public class SysDictDataController {
     }
 
     /**
-     * 保存数据
+     * 保存字典数据
      *
      * @param sysDictDataVo 实体对象
      * @return 新增结果
      */
-    @ApiOperation("保存数据")
+    @ApiOperation("保存字典数据")
+    @MzLog(title = "字典管理", businessType = BusinessType.SAVE)
     @PreAuthorize("@pms.hasPermission('system:dict:save')")
     @PostMapping("/save")
     public R<Boolean> save(@Validated @RequestBody SysDictDataReqVo sysDictDataVo) {
@@ -105,12 +108,13 @@ public class SysDictDataController {
     }
 
     /**
-     * 修改数据
+     * 修改字典数据
      *
      * @param sysDictDataVo 实体对象
      * @return 修改结果
      */
-    @ApiOperation("修改数据")
+    @ApiOperation("修改字典数据")
+    @MzLog(title = "字典管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("@pms.hasPermission('system:dict:update')")
     @PutMapping("/update")
     public R<Boolean> update(@Validated(IdField.class) @RequestBody SysDictDataReqVo sysDictDataVo) {
@@ -119,12 +123,13 @@ public class SysDictDataController {
     }
 
     /**
-     * 修改状态
+     * 修改字典数据状态
      *
      * @param idAndStatusReqVo 实体对象
      * @return 修改结果
      */
-    @ApiOperation("修改状态")
+    @ApiOperation("修改字典数据状态")
+    @MzLog(title = "字典管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("@pms.hasPermission('system:dict:update')")
     @PutMapping("/update/status")
     public R<Boolean> updateStatus(@Validated @RequestBody SysIdAndStatusReqVo idAndStatusReqVo) {
@@ -133,12 +138,13 @@ public class SysDictDataController {
     }
 
     /**
-     * 删除数据
+     * 删除字典数据
      *
      * @param dictCodes 集合/数组
      * @return 删除结果
      */
-    @ApiOperation("删除数据")
+    @ApiOperation("删除字典数据")
+    @MzLog(title = "字典管理", businessType = BusinessType.REMOVE)
     @PreAuthorize("@pms.hasPermission('system:dict:delete')")
     @DeleteMapping("/delete")
     public R<Boolean> delete(@RequestBody @Validated @Size(min = 1) Long[] dictCodes) {

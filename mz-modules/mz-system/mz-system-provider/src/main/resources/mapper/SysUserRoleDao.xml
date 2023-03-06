@@ -8,6 +8,8 @@
         <result property = "userId" column = "user_id"/>
         <result property = "roleId" column = "role_id"/>
     </resultMap>
+
+    <!--批量插入 用户和角色关联-->
     <insert id = "insertUserRoles">
         insert into `sys_user_role` (`user_id`,`role_id`)
         values
@@ -16,6 +18,7 @@
         </foreach>
     </insert>
 
+    <!--按角色ID和用户ID删除-->
     <delete id = "deleteByRoleIdAndUserIds">
         delete from sys_user_role where `role_id` = #{userByRole.roleId} and `user_id` in
         <foreach collection = "userByRole.userIds" open = "(" close = ")" separator = "," item = "item">
@@ -23,38 +26,28 @@
         </foreach>
     </delete>
 
+    <!--根据用ID获取角色ID集合-->
     <select id = "selectRoleIdsByUserId" resultType = "java.lang.Long">
         select `role_id`
         from `sys_user_role`
         where `user_id` = #{userId}
     </select>
 
+    <!--根据用ID获取角色ID字符串集合-->
     <select id = "selectStrRoleIdsByUserId" resultType = "java.lang.String">
         select group_concat(`role_id`) as role_ids
         from `sys_user_role`
         where `user_id` = #{userId}
     </select>
 
-    <!--
-    SQL执行计划
-    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
-    | id | select_type | table   | partitions | type   | possible_keys          | key     | key_len | ref                      | rows | filtered | Extra                                                     |
-    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
-    |  1 | SIMPLE      | tmp_sur | NULL       | index  | NULL                   | PRIMARY | 16      | NULL                     |    3 |    33.33 | Using where; Using index; Using temporary; Using filesort |
-    |  1 | SIMPLE      | tmp_su  | NULL       | eq_ref | PRIMARY,del_flag_index | PRIMARY | 8       | xz_admin.tmp_sur.user_id |    1 |   100.00 | Using where                                               |
-    +****+*************+*********+************+********+************************+*********+*********+**************************+******+**********+***********************************************************+
-    2 rows in set, 3 warnings (0.00 sec)
-    -->
+    <!--根据角色ID查询用户分页数据-->
     <select id = "selectUserPageByRoleId" resultType = "com.mz.system.model.vo.SysUserVo">
         select
         <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
-        from (
-            select
-            tmp_su.*
-            from ( SELECT tmp_sur.`user_id` FROM sys_user_role tmp_sur WHERE tmp_sur.`role_id` = #{userByRole.roleId} ) as sur
-            left join sys_user tmp_su on sur.user_id = tmp_su.user_id and tmp_su.`del_flag` = 0
-        ) as su
+        from sys_user as su
+        left join sys_user_role sur on sur.user_id = su.user_id
         <where>
+            sur.`role_id` = #{userByRole.roleId}
             <if test = "userByRole.username != null and userByRole.username != ''">
                 and su.`username` = #{userByRole.username}
             </if>
@@ -71,20 +64,12 @@
         order by su.`create_time`
     </select>
 
-    <!--
-    SQL执行计划
-    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
-    | id | select_type | table   | partitions | type   | possible_keys  | key     | key_len | ref                       | rows | filtered | Extra                                |
-    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
-    |  1 | SIMPLE      | su      | NULL       | ALL    | del_flag_index | NULL    | NULL    | NULL                      |    3 |    33.33 | Using where                          |
-    |  1 | SIMPLE      | tmp_sur | NULL       | eq_ref | PRIMARY        | PRIMARY | 16      | xz_admin.su.user_id,const |    1 |   100.00 | Using where; Not exists; Using index |
-    +****+*************+*********+************+********+****************+*********+*********+***************************+******+**********+**************************************+
-    2 rows in set, 4 warnings (0.00 sec)
-    -->
+    <!--根据角色ID查询不是此角色用户分页数据-->
     <select id = "selectNotThisRoleUserPage" resultType = "com.mz.system.model.vo.SysUserVo">
         select
         <include refid = "com.mz.system.provider.dao.SysUserDao.fromHead"/>
         from sys_user su
+        left join sys_user_role sur on sur.user_id = su.user_id
         <where>
             su.`del_flag` = 0
             <if test = "userByRole.username != null and userByRole.username != ''">

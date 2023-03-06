@@ -35,62 +35,65 @@ public class SysOperLogController {
     private final SysOperLogService sysOperLogService;
 
     /**
-     * 分页查询所有数据
-     * @param params  请求集合
-     * @return 所有数据
+     * 分页查询操作日志
+     *
+     * @param params 分页参数
+     * @return 分页数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="page",value="当前页码",dataTypeClass = String.class, paramType = "query",example="1"),
-            @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
+            @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
+            @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
     })
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("分页查询操作日志")
     @GetMapping("/page")
-    public R<PageUtils<SysOperLogEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params){
+    public R<PageUtils<SysOperLogEntity>> list(@ApiIgnore @RequestParam Map<String, Object> params) {
         PageUtils<SysOperLogEntity> page = sysOperLogService.queryPage(params);
         return R.ok(page);
     }
 
 
     /**
-     * 通过主键查询单条数据
+     * 通过操作ID查询单条数据
+     *
      * @param operId 主键
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name="operId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
+            @ApiImplicitParam(name = "operId", value = "主键", dataTypeClass = Long.class, paramType = "path", example = "1")
     })
-    @ApiOperation("通过主键查询单条数据")
+    @ApiOperation("通过操作ID查询单条数据")
     @GetMapping("/info/{operId}")
-    public R<SysOperLogEntity> info(@PathVariable("operId") Long operId){
-            SysOperLogEntity sysOperLog = sysOperLogService.getById(operId);
+    public R<SysOperLogEntity> info(@PathVariable("operId") Long operId) {
+        SysOperLogEntity sysOperLog = sysOperLogService.getById(operId);
 
         return R.ok(sysOperLog);
     }
 
     /**
-     * 保存数据
+     * 保存操作日志
+     *
      * @param sysOperLog 实体对象
      * @return 新增结果
      */
-    @ApiOperation("保存数据")
+    @ApiOperation("保存操作日志")
     @PostMapping("/save")
     @Ignore
-    public R<Boolean> save(@RequestBody SysOperLogDto sysOperLog){
-        boolean save =  sysOperLogService.saveOperLog(sysOperLog);
+    public R<Boolean> save(@RequestBody SysOperLogDto sysOperLog) {
+        boolean save = sysOperLogService.saveOperLog(sysOperLog);
         return R.okOrFail(save, "保存");
     }
 
     /**
-     * 删除数据
+     * 删除日志记录
+     *
      * @param operIds 集合/数组
      * @return 删除结果
      */
-    @ApiOperation("删除数据")
+    @ApiOperation("删除日志记录")
     @DeleteMapping("/delete")
-    public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] operIds){
+    public R<Boolean> delete(@RequestBody @Validated @Size(min = 1) Long[] operIds) {
         boolean remove = sysOperLogService.removeByIds(Arrays.asList(operIds));
-
-        return R.ok(Boolean.TRUE);
+        return R.okOrFail(remove, "删除");
     }
 
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Repository;
 
 /**
  * 用户信息表
- * 
+ *
  * @author 小政同学 QQ:xiaozheng666888@qq.com
  * @email 1911298402@qq.com
  * @date 2021-11-13 22:14:36
@@ -27,18 +27,25 @@ public interface SysUserDao extends BaseMapper<SysUserEntity> {
      * 按用户名加载用户
      *
      * @param username 用户名
-     * @return
+     * @return 用户信息
      */
     @MzDataAuth(ignore = true)
     SysUserDto loadUserByUserName(String username);
 
     /**
      * 用户列表分页查询
-     * @param page 分页条件
+     *
+     * @param page      分页条件
      * @param userReqVo 用户Vo
      * @return 分页数据
      */
     IPage<SysUserVo> selectPageUser(IPage<SysUserVo> page, @Param("userVo") SysUserVo userReqVo);
 
+    /**
+     * 修改登录记录
+     *
+     * @param userLoginLogDto 登录记录Dto
+     * @return true：成功，false：失败
+     */
     int updateLoginLog(@Param("sysUserLog") SysUserLoginLogDto userLoginLogDto);
 }

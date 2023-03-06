@@ -63,6 +63,7 @@
             </constructor>
         </collection>
     </resultMap>
+
     <!--根据用户名查询当前用户-->
     <select id = "loadUserByUserName" resultMap="sysUserDtoMap">
         select
@@ -87,6 +88,7 @@
         group by sur.user_id,sup.user_id
     </select>
 
+    <!--用户列表分页查询-->
     <select id = "selectPageUser" resultType = "com.mz.system.model.vo.SysUserVo">
         select
             <include refid = "fromHead"/>,
@@ -116,7 +118,7 @@
         <collection property = "roleIds" column = "user_id" ofType = "Long" select = "com.mz.system.provider.dao.SysUserRoleDao.getRoleIdsByUserId"/>
     </resultMap>
 
-
+    <!--修改登录记录-->
     <update id = "updateLoginLog">
         update sys_user su
         <set>

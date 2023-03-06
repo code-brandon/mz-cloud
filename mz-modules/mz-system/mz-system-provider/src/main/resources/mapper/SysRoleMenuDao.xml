@@ -9,6 +9,7 @@
         <result property = "menuId" column = "menu_id"/>
     </resultMap>
 
+    <!--根据角色Id获取菜单ID集合-->
     <insert id = "insertRoleMenus">
         insert into `sys_role_menu` (`role_id`, `menu_id`)
         values
@@ -17,6 +18,7 @@
         </foreach>
     </insert>
 
+    <!--批量插入 角色和菜单关联-->
     <select id = "selectMenuIdsByRoleId" resultType = "java.lang.Long">
         select `menu_id`
         from `sys_role_menu`

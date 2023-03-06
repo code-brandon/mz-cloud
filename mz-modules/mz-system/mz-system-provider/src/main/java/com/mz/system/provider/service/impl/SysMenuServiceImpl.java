@@ -6,13 +6,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.lang.tree.TreeNode;
 import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.mz.common.constant.MzConstant;
 import com.mz.common.core.exception.MzException;
-import com.mz.common.mybatis.utils.PageUtils;
-import com.mz.common.mybatis.utils.Query;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.security.utils.MzSecurityUtils;
 import com.mz.common.utils.MzUtils;
@@ -39,18 +36,6 @@ import java.util.stream.Collectors;
 
 @Service("sysMenuService")
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> implements SysMenuService {
-
-    @Override
-    public PageUtils<SysMenuEntity> queryPage(Map<String, Object> params, SysMenuReqVo sysMenuVo) {
-        IPage<SysMenuEntity> page = this.page(
-                new Query<SysMenuEntity>().getPage(params),
-                Wrappers.<SysMenuEntity>lambdaQuery()
-                        .eq(StringUtils.isNotEmpty(sysMenuVo.getStatus()),SysMenuEntity::getStatus, sysMenuVo.getStatus())
-                        .like(StringUtils.isNotEmpty(sysMenuVo.getMenuName()),SysMenuEntity::getMenuName, sysMenuVo.getMenuName())
-                        .orderBy(Boolean.TRUE,Boolean.TRUE,SysMenuEntity::getOrderNum, SysMenuEntity::getCreateTime)
-        );
-        return new PageUtils<>(page);
-    }
 
     /**
      * 当前登录用户的菜单列表

@@ -52,15 +52,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         return new PageUtils<>(page);
     }
 
-    /**
-     * 按名称获取用户
-     *
-     * @param userName
-     * @return
-     */
     @Override
     public SysUserEntity getUserByName(String userName) {
-        return super.getOne(new QueryWrapper<SysUserEntity>().eq("username", userName));
+        SysUserEntity sysUserEntity = super.getOne(new QueryWrapper<SysUserEntity>().eq("username", userName));
+        return BeanUtil.copyProperties(sysUserEntity, SysUserVo.class);
     }
 
     @Override
@@ -81,7 +76,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean saveUser(SysUserVo sysUserVo) {
         SysUserEntity sysUserEntity = BeanUtil.copyProperties(sysUserVo, SysUserEntity.class);
         String encodePassword = passwordEncoder.encode(sysUserEntity.getPassword());
@@ -95,12 +89,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         return false;
     }
 
-    /**
-     * 通过主键查询单条数据
-     *
-     * @param userId
-     * @return
-     */
     @Override
     public SysUserVo getUserById(Long userId) {
 
@@ -115,14 +103,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         return sysUserVo;
     }
 
-    /**
-     * 根据ID更新用户信息
-     *
-     * @param sysUserVo
-     * @return
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean updateUserById(SysUserVo sysUserVo) {
         SysUserEntity sysUserEntity = BeanUtil.copyProperties(sysUserVo, SysUserEntity.class, "password","loginIp","loginDate");
         if (updateById(sysUserEntity)) {
@@ -140,11 +121,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         return false;
     }
 
-    /**
-     * 重置用户密码
-     * @param userVo
-     * @return boolean
-     */
+
     @Override
     public boolean resetPasswd(SysUserIdAndPasswdReqVo userVo) {
         SysUserEntity sysUserEntity = new SysUserEntity();
@@ -154,24 +131,13 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
         return super.updateById(sysUserEntity);
     }
 
-    /**
-     * 根据ID集合删除用户
-     *
-     * @param userIds
-     * @return boolean
-     */
+
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean removeUserByIds(List<Long> userIds) {
         return removeByIds(userIds);
     }
 
-    /**
-     * 修改状态
-     *
-     * @param idAndStatusReqVo 实体对象
-     * @return 修改结果
-     */
     @Override
     public boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo) {
         SysUserEntity sysUserEntity = new SysUserEntity();
@@ -188,8 +154,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserDao, SysUserEntity> i
     /**
      * 添加用户绑定关系
      *
-     * @param sysUserVo
-     * @param userId
+     * @param sysUserVo 用户Vo
+     * @param userId 用户ID
      */
     private void insertUserRolesOrUserPosts(SysUserVo sysUserVo, Long userId) {
         Set<Long> roleIds = sysUserVo.getRoleIds();

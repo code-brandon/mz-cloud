@@ -16,8 +16,20 @@ import java.util.Map;
  */
 public interface SysLogininforService extends IService<SysLogininforEntity> {
 
+    /**
+     * 分页查询访问记录
+     *
+     * @param params 分页参数
+     * @return 分页数据
+     */
     PageUtils<SysLogininforEntity> queryPage(Map<String, Object> params);
 
+    /**
+     * 保存访问记录
+     *
+     * @param sysLogininfor 实体对象
+     * @return true：成功，false：失败
+     */
     boolean saveLogininfor(SysLogininforDto sysLogininfor);
 }
 

@@ -17,12 +17,36 @@ import java.util.Map;
  */
 public interface SysNoticeService extends IService<SysNoticeEntity> {
 
+    /**
+     * 分页查询通知公告
+     *
+     * @param params 分页参数
+     * @return 分页数据
+     */
     PageUtils<SysNoticeEntity> queryPage(Map<String, Object> params);
 
+    /**
+     * 保存通知公告
+     *
+     * @param sysNoticeVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean saveNotice(SysNoticeReqVo sysNoticeVo);
 
+    /**
+     * 修改通知公告
+     *
+     * @param sysNoticeVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean updateNoticeById(SysNoticeReqVo sysNoticeVo);
 
+    /**
+     * 修改通知公告状态
+     *
+     * @param idAndStatusReqVo 实体对象
+     * @return true：成功，false：失败
+     */
     boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 }
 

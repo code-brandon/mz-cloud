@@ -1,13 +1,9 @@
 package com.mz.system.provider.service.impl;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.lang.tree.Tree;
-import cn.hutool.core.lang.tree.TreeNode;
-import cn.hutool.core.lang.tree.TreeUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.mz.common.constant.MzConstant;
 import com.mz.common.utils.MzUtils;
 import com.mz.common.utils.TreeUtils;
 import com.mz.system.model.entity.SysDeptEntity;
@@ -39,7 +35,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
     }
 
     @Override
-    public List<Tree<Long>> getDeptTree() {
+    public List<SysDeptTree> getDeptTree() {
         LambdaQueryWrapper<SysDeptEntity> queryWrapper = Wrappers.<SysDeptEntity>lambdaQuery()
                 .select(SysDeptEntity::getDeptId,
                         SysDeptEntity::getDeptName,
@@ -47,16 +43,16 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptDao, SysDeptEntity> i
                         SysDeptEntity::getOrderNum);
         List<SysDeptEntity> entities = baseMapper.selectList(queryWrapper);
 
-        List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
-            TreeNode<Long> objectTreeNode = new TreeNode<>();
-            objectTreeNode.setId(m.getDeptId());
-            objectTreeNode.setName(m.getDeptName());
-            objectTreeNode.setParentId(m.getParentId());
-            objectTreeNode.setWeight(m.getOrderNum());
-            return objectTreeNode;
+        List<SysDeptTree> deptTrees = entities.stream().map(m -> {
+            SysDeptTree deptTree = new SysDeptTree();
+            deptTree.setDeptId(m.getDeptId());
+            deptTree.setDeptName(m.getDeptName());
+            deptTree.setParentId(m.getParentId());
+            deptTree.setOrderNum(m.getOrderNum());
+            return deptTree;
         }).collect(Collectors.toList());
-
-        return TreeUtil.build(nodeList, MzConstant.ROOT_NODE);
+        List<SysDeptTree> trees = TreeUtils.generateTrees(deptTrees, false);
+        return CollectionUtils.isEmpty(trees) ? Collections.emptyList() : trees;
     }
 
     @Override

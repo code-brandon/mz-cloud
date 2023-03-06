@@ -1,6 +1,8 @@
 package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
+import com.mz.common.log.annotation.MzLog;
+import com.mz.common.log.enums.BusinessType;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.validated.groups.UpdateField;
 import com.mz.system.model.entity.SysConfigEntity;
@@ -36,15 +38,16 @@ public class SysConfigController {
     private final SysConfigService sysConfigService;
 
     /**
-     * 分页查询所有数据
-     * @param params  请求集合
-     * @return 所有数据
+     * 分页查询配置
+     * @param params  分页参数
+     * @param sysConfigReqVo 查询条件
+     * @return 分页信息
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name="page",value="当前页码",dataTypeClass = String.class, paramType = "query",example="1"),
             @ApiImplicitParam(name="limit",value="每页显示记录数",dataTypeClass = String.class, paramType = "query",example="10")
     })
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("分页查询配置")
     @PreAuthorize("@pms.hasPermission('system:config:query')")
     @PostMapping("/page")
     public R<PageUtils<SysConfigEntity>> page(@RequestBody SysConfigReqVo sysConfigReqVo, @ApiIgnore @RequestParam Map<String, Object> params){
@@ -54,14 +57,14 @@ public class SysConfigController {
 
 
     /**
-     * 通过主键查询单条数据
+     * 通过配置ID查询单条数据
      * @param configId 主键
      * @return 单条数据
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name="configId",value="主键",dataTypeClass = Long.class, paramType = "path",example="1")
     })
-    @ApiOperation("通过主键查询单条数据")
+    @ApiOperation("通过配置ID查询单条数据")
     @PreAuthorize("@pms.hasPermission('system:config:query')")
     @GetMapping("/info/{configId}")
     public R<SysConfigEntity> info(@PathVariable("configId") Long configId){
@@ -70,11 +73,12 @@ public class SysConfigController {
     }
 
     /**
-     * 保存数据
+     * 保存配置信息
      * @param sysConfigReqVo 实体对象
      * @return 新增结果
      */
-    @ApiOperation("保存数据")
+    @ApiOperation("保存配置信息")
+    @MzLog(title = "参数配置", businessType = BusinessType.SAVE)
     @PreAuthorize("@pms.hasPermission('system:config:save')")
     @PostMapping("/save")
     public R<Boolean> save(@Validated @RequestBody SysConfigReqVo sysConfigReqVo){
@@ -83,11 +87,12 @@ public class SysConfigController {
     }
 
     /**
-     * 修改数据
+     * 修改配置信息
      * @param sysConfigReqVo 实体对象
      * @return 修改结果
      */
-    @ApiOperation("修改数据")
+    @ApiOperation("修改配置信息")
+    @MzLog(title = "参数配置", businessType = BusinessType.UPDATE)
     @PreAuthorize("@pms.hasPermission('system:config:update')")
     @PutMapping("/update")
     public R<Boolean> update(@Validated(UpdateField.class) @RequestBody SysConfigReqVo sysConfigReqVo){
@@ -96,11 +101,12 @@ public class SysConfigController {
     }
 
     /**
-     * 删除数据
-     * @param configIds 集合/数组
+     * 删除配置信息
+     * @param configIds 配置ID集合/数组
      * @return 删除结果
      */
-    @ApiOperation("删除数据")
+    @ApiOperation("删除配置信息")
+    @MzLog(title = "参数配置", businessType = BusinessType.REMOVE)
     @PreAuthorize("@pms.hasPermission('system:config:delete')")
     @DeleteMapping("/delete")
     public R<Boolean>  delete(@RequestBody @Validated @Size(min = 1) Long[] configIds){

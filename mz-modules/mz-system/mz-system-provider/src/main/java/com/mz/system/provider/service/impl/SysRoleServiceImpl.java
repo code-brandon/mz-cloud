@@ -19,7 +19,6 @@ import com.mz.system.provider.service.SysRoleService;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -48,14 +47,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
         return new PageUtils<>(page);
     }
 
-    /**
-     * 保存角色信息
-     *
-     * @param sysRoleVo
-     * @return
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean saveRole(SysRoleVo sysRoleVo) {
         SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleVo, SysRoleEntity.class);
         if (save(sysRoleEntity)) {
@@ -66,12 +58,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
         return false;
     }
 
-    /**
-     * 修改状态
-     *
-     * @param idAndStatusReqVo 实体对象
-     * @return 修改结果
-     */
     @Override
     public boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo) {
         SysRoleEntity sysRoleEntity = new SysRoleEntity();
@@ -96,7 +82,6 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean updateRoleById(SysRoleVo sysRoleVo) {
 
         SysRoleEntity sysRoleEntity = BeanUtil.copyProperties(sysRoleVo, SysRoleEntity.class);
@@ -115,16 +100,8 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleDao, SysRoleEntity> i
         return false;
     }
 
-    /**
-     * 批量删除 角色相关信息
-     *
-     * @param roleIds
-     * @return
-     */
     @Override
-    @Transactional(rollbackFor = Exception.class)
     public boolean removeRoleByIds(List<Long> roleIds) {
-
         return removeByIds(roleIds);
     }
 

@@ -9,6 +9,7 @@ import com.mz.system.model.vo.LoginBodyVo;
 import com.mz.system.model.vo.SysUserVo;
 import com.mz.system.model.vo.req.SysIdAndStatusReqVo;
 import com.mz.system.model.vo.req.SysUserIdAndPasswdReqVo;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -22,62 +23,72 @@ import java.util.Map;
  */
 public interface SysUserService extends IService<SysUserEntity> {
 
+    /**
+     * 分页查询用户
+     * @param params 分页参数
+     * @param userReqVo 分页条件
+     * @return 分数据
+     */
     PageUtils<SysUserVo> queryPage(Map<String, Object> params, SysUserVo userReqVo);
 
     /**
      * 按名称获取用户
-     * @param userName
-     * @return
+     * @param userName 用户名称
+     * @return 用户信息
      */
     SysUserEntity getUserByName(String userName);
 
     /**
      * 按用户名加载用户
-     * @param userName
-     * @return
+     * @param userName 用户姓名
+     * @return 用户信息
      */
     SysUserDto loadUserByUserName(String userName);
 
     /**
      * 按用户名和密码加载用户(登录暴漏接口)
      * @param loginBodyVo
-     * @return
+     * @return 用户个人信息
      */
     SysUserDto loadUserByUserNameAndPassword(LoginBodyVo loginBodyVo);
 
     /**
      * 保存用户信息
      *
-     * @param sysUserVo
-     * @return
+     * @param sysUserVo 用户Vo
+     * @return true：成功，false：失败
      */
+
+    @Transactional(rollbackFor = Exception.class)
     boolean saveUser(SysUserVo sysUserVo);
 
     /**
      * 根据用户ID查询用户信息
-     * @param userId
-     * @return
+     * @param userId 用户ID
+     * @return 用户信息
      */
     SysUserVo getUserById(Long userId);
 
     /**
      * 根据用户ID更新用户信息
-     * @param sysUserVo
-     * @return
+     * @param sysUserVo 用户Vo
+     * @return true：成功，false：失败
      */
+
+    @Transactional(rollbackFor = Exception.class)
     boolean updateUserById(SysUserVo sysUserVo);
 
     /**
      * 重置密码
-     * @param userVo
-     * @return
+     * @param userVo 用户Vo
+     * @return true：成功，false：失败
      */
     boolean resetPasswd(SysUserIdAndPasswdReqVo userVo);
 
     /**
      * 根据ID集合删除用户
-     * @param userIds
-     * @return
+     * @param userIds 用户IDS
+     * @return true：成功，false：失败
      */
     boolean removeUserByIds(List<Long> userIds);
 
@@ -85,14 +96,14 @@ public interface SysUserService extends IService<SysUserEntity> {
      * 修改状态
      *
      * @param idAndStatusReqVo 实体对象
-     * @return 修改结果
+     * @return true：成功，false：失败
      */
     boolean updateStatus(SysIdAndStatusReqVo idAndStatusReqVo);
 
     /**
      * 修改登录记录
-     * @param sysUserLoginLogDto
-     * @return
+     * @param sysUserLoginLogDto 登录记录Dto
+     * @return true：成功，false：失败
      */
     boolean updateLoginLog(SysUserLoginLogDto sysUserLoginLogDto);
 }

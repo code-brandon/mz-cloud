@@ -40,6 +40,7 @@
             </if>
             and sm.menu_type in ('M', 'C') and sm.status = 0
         </where>
+        group by sm.menu_id
         order by sm.parent_id, sm.order_num
     </select>
 

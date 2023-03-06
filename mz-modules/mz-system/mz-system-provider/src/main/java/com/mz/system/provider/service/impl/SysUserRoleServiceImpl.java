@@ -23,13 +23,6 @@ import java.util.stream.Collectors;
 @Service("sysUserRoleService")
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserRoleEntity> implements SysUserRoleService {
 
-    /**
-     * 根据角色ID查询用户分页数据
-     *
-     * @param params            分页数据
-     * @param userSearchVo 分页条件
-     * @return
-     */
     @Override
     public PageUtils<SysUserVo> getUserPageByRoleId(Map<String, Object> params, SysUserSearchVo userSearchVo) {
         IPage<SysUserVo> page = baseMapper.selectUserPageByRoleId(
@@ -39,13 +32,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
         return new PageUtils<>(page);
     }
 
-    /**
-     * 根据角色ID查询不是此角色用户分页数据
-     *
-     * @param params            分页数据
-     * @param userSearchVo 分页条件
-     * @return
-     */
     @Override
     public PageUtils<SysUserVo> getNotThisRoleUserPage(Map<String, Object> params, SysUserSearchVo userSearchVo) {
         IPage<SysUserVo> page = baseMapper.selectNotThisRoleUserPage(
@@ -55,12 +41,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
         return new PageUtils<>(page);
     }
 
-    /**
-     * 保存角色绑定用户的关系
-     *
-     * @param roleBindUserReqVo
-     * @return
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean saveRoleBindUser(SysRoleBindUserReqVo roleBindUserReqVo) {
@@ -70,12 +50,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
         return SqlHelper.retBool(baseMapper.insertUserRoles(userRoles));
     }
 
-    /**
-     * 按角色ID和用户ID删除
-     *
-     * @param roleBindUserReqVo
-     * @return
-     */
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteByRoleIdAndUserIds(SysRoleBindUserReqVo roleBindUserReqVo) {
@@ -87,13 +61,6 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleDao, SysUserR
         return baseMapper.selectRoleIdsByUserId(userId);
     }
 
-    /**
-     * 保存用户角色
-     *
-     * @param userId
-     * @param roleIds
-     * @return
-     */
     @Override
     public boolean saveUserRoles(Long userId, Set<Long> roleIds) {
         if (MzUtils.notEmpty(roleIds)) {

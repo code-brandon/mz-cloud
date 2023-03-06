@@ -1,6 +1,8 @@
 package com.mz.system.provider.controller;
 
 import com.mz.common.core.entity.R;
+import com.mz.common.log.annotation.MzLog;
+import com.mz.common.log.enums.BusinessType;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.entity.SysRoleEntity;
 import com.mz.system.model.vo.SysRoleVo;
@@ -38,16 +40,16 @@ public class SysRoleController {
     private final SysRoleService sysRoleService;
 
     /**
-     * 分页查询所有数据
+     * 分页查询角色信息
      *
-     * @param params 请求集合
-     * @return 所有数据
+     * @param params 分页参数
+     * @return 分页数据
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
             @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
     })
-    @ApiOperation("分页查询所有数据")
+    @ApiOperation("分页查询角色信息")
     @PreAuthorize("@pms.hasPermission('system:role:query')")
     @PostMapping("/page")
     public R<PageUtils<SysRoleEntity>> page(@ApiIgnore @RequestParam Map<String, Object> params, @RequestBody SysRoleSearchVo roleSearchVo) {
@@ -56,10 +58,11 @@ public class SysRoleController {
     }
 
     /**
-     * 查询所有数据
-     * @return 所有数据
+     * 查询所有角色信息
+     *
+     * @return 所有角色信息
      */
-    @ApiOperation("所有数据")
+    @ApiOperation("查询所有角色信息")
     @PostMapping("/list")
     @PreAuthorize("@pms.hasPermission('system:role:query')")
     public R<List<SysRoleEntity>> list() {
@@ -86,12 +89,13 @@ public class SysRoleController {
     }
 
     /**
-     * 保存数据
+     * 保存角色
      *
      * @param sysRoleVo 实体对象
      * @return 新增结果
      */
     @ApiOperation("保存数据")
+    @MzLog(title = "角色管理", businessType = BusinessType.SAVE)
     @PreAuthorize("@pms.hasPermission('system:role:save')")
     @PostMapping("/save")
     public R<Boolean> save(@RequestBody SysRoleVo sysRoleVo) {
@@ -100,12 +104,13 @@ public class SysRoleController {
     }
 
     /**
-     * 修改数据
+     * 修改角色
      *
      * @param sysRoleVo 实体对象
      * @return 修改结果
      */
-    @ApiOperation("修改数据")
+    @ApiOperation("修改角色")
+    @MzLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("@pms.hasPermission('system:role:update')")
     @PutMapping("/update")
     public R<Boolean> update(@RequestBody SysRoleVo sysRoleVo) {
@@ -114,12 +119,13 @@ public class SysRoleController {
     }
 
     /**
-     * 修改状态
+     * 修改角色状态
      *
      * @param idAndStatusReqVo 实体对象
      * @return 修改结果
      */
-    @ApiOperation("修改状态")
+    @ApiOperation("修改角色状态")
+    @MzLog(title = "角色管理", businessType = BusinessType.UPDATE)
     @PreAuthorize("@pms.hasPermission('system:role:update')")
     @PutMapping("/update/status")
     public R<Boolean> updateStatus(@Validated @RequestBody SysIdAndStatusReqVo idAndStatusReqVo) {
@@ -128,12 +134,13 @@ public class SysRoleController {
     }
 
     /**
-     * 删除数据
+     * 删除角色数据
      *
      * @param roleIds 集合/数组
      * @return 删除结果
      */
-    @ApiOperation("删除数据")
+    @ApiOperation("删除角色数据")
+    @MzLog(title = "角色管理", businessType = BusinessType.REMOVE)
     @PreAuthorize("@pms.hasPermission('system:role:delete')")
     @DeleteMapping("/delete")
     public R<Boolean> delete(@RequestBody @Validated @Size(min = 1) Long[] roleIds) {

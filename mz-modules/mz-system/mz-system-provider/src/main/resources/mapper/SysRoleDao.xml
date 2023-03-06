@@ -72,6 +72,7 @@
         </where>
     </sql>
 
+    <!--根据用户ID获取角色列表-->
     <select id = "getRolePermissions" resultType = "java.lang.String">
         select sr.role_key
         from sys_role sr
@@ -79,6 +80,7 @@
         where sur.user_id = #{userid}
     </select>
 
+    <!--根据用户ID和角色Key判断是否是当前角色-->
     <select id = "isRole" resultType = "java.lang.Boolean">
             select if ( count( 1 ) > 0, true, false ) as isRole
             from sys_role sr

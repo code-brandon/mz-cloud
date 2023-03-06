@@ -2,7 +2,6 @@ package com.mz.system.provider.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.dto.SysMenuDto;
 import com.mz.system.model.entity.SysMenuEntity;
 import com.mz.system.model.vo.MenuMenuVo;
@@ -11,7 +10,6 @@ import com.mz.system.model.vo.req.SysMenuReqVo;
 import com.mz.system.model.vo.res.MenuResVo;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 菜单权限表
@@ -22,14 +20,17 @@ import java.util.Map;
  */
 public interface SysMenuService extends IService<SysMenuEntity> {
 
-    PageUtils<SysMenuEntity> queryPage(Map<String, Object> params, SysMenuReqVo sysMenuVo);
-
     /**
-     * 菜单树
-     * @return
+     * 获取用户菜单树
+     * @return 用户所具有的菜单树
      */
     List<SysMenuDto> getUserMenuTree();
 
+
+    /**
+     * 获取菜单树
+     * @return
+     */
     List<Tree<Long>> getMenuTree();
 
     /**
@@ -49,19 +50,24 @@ public interface SysMenuService extends IService<SysMenuEntity> {
      */
     List<MenuResVo> buildMenus(List<SysMenuDto> menus);
 
+    /**
+     * 获取菜单列表树
+     * @param sysMenuVo 实体对象
+     * @return 菜单树列表
+     */
     List<SysMenuTree> getMenuListTree(SysMenuReqVo sysMenuVo);
 
     /**
      * 保存菜单信息
-     * @param menuMenuVo
-     * @return
+     * @param menuMenuVo 实体对象
+     * @return true：成功，false：失败
      */
     boolean saveMenu(MenuMenuVo menuMenuVo);
 
     /**
      * 修改菜单信息
-     * @param menuMenuVo
-     * @return
+     * @param menuMenuVo 实体对象
+     * @return true：成功，false：失败
      */
     boolean updateMenuById(MenuMenuVo menuMenuVo);
 }

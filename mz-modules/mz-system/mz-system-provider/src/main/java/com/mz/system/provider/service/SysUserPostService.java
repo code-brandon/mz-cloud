@@ -16,16 +16,16 @@ public interface SysUserPostService extends IService<SysUserPostEntity> {
 
     /**
      * 保存用户岗位
-     * @param userId
-     * @param postIds
-     * @return
+     * @param userId 用户ID
+     * @param postIds 岗位ID
+     * @return true：成功，false：失败
      */
     boolean saveUserPosts(Long userId, Set<Long> postIds);
 
     /**
      * 按用户 ID 获取岗位ID
-     * @param userId
-     * @return
+     * @param userId 用户ID
+     * @return true：成功，false：失败
      */
     Set<Long> getPostIdsByUserId(Long userId);
 }

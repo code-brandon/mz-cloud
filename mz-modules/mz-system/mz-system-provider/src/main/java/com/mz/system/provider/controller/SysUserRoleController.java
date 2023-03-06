@@ -2,6 +2,8 @@ package com.mz.system.provider.controller;
 
 import com.mz.common.constant.MzConstant;
 import com.mz.common.core.entity.R;
+import com.mz.common.log.annotation.MzLog;
+import com.mz.common.log.enums.BusinessType;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.system.model.vo.SysUserVo;
 import com.mz.system.model.vo.req.SysRoleBindUserReqVo;
@@ -39,7 +41,7 @@ public class SysUserRoleController {
      *
      * @param params       分页数据
      * @param userSearchVo 分页条件
-     * @return
+     * @return 分页信息
      */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
@@ -53,6 +55,13 @@ public class SysUserRoleController {
         return R.ok(userResVoPage);
     }
 
+    /**
+     * 根据角色ID查询不是此角色用户分页数据
+     *
+     * @param params       分页数据
+     * @param userSearchVo 分页条件
+     * @return 分页信息
+     */
     @ApiImplicitParams({
             @ApiImplicitParam(name = "page", value = "当前页码", dataTypeClass = String.class, paramType = "query", example = "1"),
             @ApiImplicitParam(name = "limit", value = "每页显示记录数", dataTypeClass = String.class, paramType = "query", example = "10")
@@ -69,25 +78,27 @@ public class SysUserRoleController {
      * 保存角色绑定用户的关系
      *
      * @param roleBindUserReqVo 角色绑定用户请求数据
-     * @return
+     * @return 保存结果
      */
     @ApiOperation(value = "保存角色绑定用户的关系", tags = "角色绑定用户")
+    @MzLog(title = "用户关联角色", businessType = BusinessType.SAVE)
     @RolesAllowed({MzConstant.ADMIN})
     @PostMapping("/save/roleBindUser")
     public R<Boolean> saveRoleBindUser(@Valid @RequestBody SysRoleBindUserReqVo roleBindUserReqVo) {
         boolean save = sysUserRoleService.saveRoleBindUser(roleBindUserReqVo);
-
         return R.okOrFail(save, "保存");
     }
 
 
     /**
-     * 删除数据
+     * 解除角色关联的用户
      *
      * @param roleBindUserReqVo 角色绑定用户请求数据
      * @return 删除结果
      */
     @ApiOperation("解除角色关联的用户")
+    @MzLog(title = "用户关联角色", businessType = BusinessType.REMOVE)
+    @RolesAllowed({MzConstant.ADMIN})
     @DeleteMapping("/delete")
     public R<Boolean> delete(@Valid @RequestBody SysRoleBindUserReqVo roleBindUserReqVo) {
         boolean delete = sysUserRoleService.deleteByRoleIdAndUserIds(roleBindUserReqVo);
