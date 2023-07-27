@@ -12,6 +12,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.config.annotation.builders.ClientDetailsServiceBuilder;
+import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
@@ -88,7 +90,9 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
     public void configure(AuthorizationServerSecurityConfigurer oauthServer) {
         // 允许客户端的表单身份验证
         oauthServer.allowFormAuthenticationForClients()
-                .checkTokenAccess("isAuthenticated()")
+                // .checkTokenAccess("isAuthenticated()")
+                .checkTokenAccess("permitAll()")
+                .passwordEncoder(passwordEncoder)
                 .tokenKeyAccess("isAuthenticated()");
 
     }
@@ -101,7 +105,7 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
      */
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-        clients.inMemory()
+        ClientDetailsServiceBuilder<InMemoryClientDetailsServiceBuilder>.ClientBuilder clientBuilder = clients.inMemory()
                 // 客户端ID
                 .withClient("mz_cloud")
                 // 默认使用加密校验
@@ -114,6 +118,8 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
                 .redirectUris("https://www.baidu.com")
                 // 配置申请权限范围
                 .scopes("all")
+                // false 跳转到授权页面手动点击授权，true 不用手动授权，直接响应授权码
+                .autoApprove(false)
                 // 配置授权类型
                 .authorizedGrantTypes("authorization_code", "password", "client_credentials", "implicit", "refresh_token", "custom_wxmini");
     }
@@ -145,6 +151,7 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
                 .userDetailsService(mzUserDetailsServiceImpl)
                 // token 存放规则
                 .tokenStore(tokenStore)
+                .reuseRefreshTokens(true)
                 // 访问令牌转换器
                 // .accessTokenConverter(mzJwtAccessTokenConverter)
                 // 允许的令牌端点请求方法

@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
@@ -51,6 +52,17 @@ public class MzOauthAspectj {
     public Object oauthAspectj(ProceedingJoinPoint joinPoint, RequestMapping requestMapping) throws Throwable {
         LocalDateTime nowTime = LocalDateTime.now();
 
+
+        HttpServletRequest request = MzWebUtils.getRequest();
+        // 路径
+        String[] paths = requestMapping.path();
+        String[] values = requestMapping.value();
+        String[] path = paths.length > 0 ? paths : values.length > 0 ? values : new String[]{request.getRequestURI()};
+        boolean match = Arrays.stream(path).allMatch("/oauth/token"::equalsIgnoreCase);
+        if (!match) {
+            return  joinPoint.proceed();
+        }
+
         // 参数列表
         Object[] args = joinPoint.getArgs();
         // 目标方法
@@ -60,16 +72,11 @@ public class MzOauthAspectj {
         String className = target.getClass().getName();
         // 方法名
         String methodName = signature.getName();
-        HttpServletRequest request = MzWebUtils.getRequest();
         String userAgent = request.getHeader("User-Agent");
         // IP地址
         String remoteAddr = MzWebUtils.getRemoteAddr(request);
         // 浏览器携带的信息
         Map<String, String> parseUserAgent = MzWebUtils.parseUserAgent(userAgent);
-        // 路径
-        String[] paths = requestMapping.path();
-        String[] values = requestMapping.value();
-        String[] path = paths.length > 0 ? paths : values.length > 0 ? values : new String[]{request.getRequestURI()};
         // 实例化计时器
         StopWatch stopWatch = new StopWatch();
         // 开始计时

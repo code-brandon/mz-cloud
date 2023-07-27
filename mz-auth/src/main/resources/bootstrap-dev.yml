@@ -4,7 +4,13 @@ spring:
       discovery:
         server-addr: ${NACOS_HOST:192.168.56.2}:8848
         metadata:
-          env: dev
+          #该实例在客户端上报心跳的间隔时间。（单位:毫秒）
+          preserved.heart.beat.interval: 1000
+          #该实例在不发送心跳后，从健康到不健康的时间。（单位:毫秒）
+          preserved.heart.beat.timeout: 3000
+          #该实例在不发送心跳后，被nacos下掉该实例的时间。（单位:毫秒）
+          preserved.ip.delete.timeout: 10000
+#          env: dev
       config:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml

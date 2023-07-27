@@ -6,6 +6,8 @@ import com.mz.auth.provider.MzAuthenticationProvider;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,14 +60,19 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 指定放行资源
                 .antMatchers("/oauth/**", "/login/**","/rsa/**")
                 .permitAll()
+                .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
+                .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
                 // 其他URL都需要认证
                 .anyRequest()
                 .authenticated()
                 .and()
                 // 表单认证放行
                 .formLogin()
-                .permitAll()
+                .loginPage("/oauth/login")
+                .loginProcessingUrl("/login")
+                .failureForwardUrl("/oauth/login")
                 .failureHandler(mzAuthenticationFailureHandler)
+                .permitAll()
                 .and()
                 // 默认为 /logout
                 .logout()
@@ -75,6 +82,7 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 // 清除身份验证
                 .clearAuthentication(true)
                 .permitAll();
+        // http.oauth2ResourceServer().opaqueToken();
     }
 
 

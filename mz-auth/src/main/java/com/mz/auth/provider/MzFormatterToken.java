@@ -59,15 +59,19 @@ public class MzFormatterToken implements HandlerMethodReturnValueHandler {
 
     /**
      * 获取到返回值然后使用 R对象统一包装
+     *
      * @param returnValue the value returned from the handler method
-     * @param returnType the type of the return value. This type must have
-     * previously been passed to {@link #supportsReturnType} which must
-     * have returned {@code true}.
-     * @param container the ModelAndViewContainer for the current request
-     * @param request the current request
+     * @param returnType  the type of the return value. This type must have
+     *                    previously been passed to {@link #supportsReturnType} which must
+     *                    have returned {@code true}.
+     * @param container   the ModelAndViewContainer for the current request
+     * @param request     the current request
      */
     @Override
     public void handleReturnValue(Object returnValue, MethodParameter returnType, ModelAndViewContainer container, NativeWebRequest request) {
+        // 不设置这一步，如果配置了模板解析器 如：JSP thymeleaf 就会进入到模板解析器里面
+        // 请求是否已在处理程序中完全处理，例如 @ResponseBody 方法，因此不需要视图解析。当控制器方法声明类型 ServletResponse 或 OutputStream的参数时，也可以设置此标志。默认值为 false。
+        container.setRequestHandled(true);
         if (MzUtils.isEmpty(returnValue)) {
             return;
         }

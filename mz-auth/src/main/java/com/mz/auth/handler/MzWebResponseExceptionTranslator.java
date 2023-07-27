@@ -7,10 +7,7 @@ import com.netflix.client.ClientException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
-import org.springframework.security.oauth2.common.exceptions.InvalidGrantException;
-import org.springframework.security.oauth2.common.exceptions.InvalidTokenException;
-import org.springframework.security.oauth2.common.exceptions.OAuth2Exception;
-import org.springframework.security.oauth2.common.exceptions.UnsupportedGrantTypeException;
+import org.springframework.security.oauth2.common.exceptions.*;
 import org.springframework.security.oauth2.provider.error.WebResponseExceptionTranslator;
 
 import javax.security.auth.message.AuthException;
@@ -56,6 +53,8 @@ public class MzWebResponseExceptionTranslator implements WebResponseExceptionTra
             oauthAuthException = MzErrorCodeEnum.OAUTH_TOKEN_EXCEPTION;
         } else if (e instanceof UnsupportedGrantTypeException) {
             oauthAuthException = MzErrorCodeEnum.OAUTH_GRANTTYPE_EXCEPTION;
+        }else if (e instanceof InvalidRequestException) {
+            oauthAuthException = null;
         }
         return ResponseEntity.ok(Objects.nonNull(oauthAuthException) ? R.fail(oauthAuthException) : R.fail(MzErrorCodeEnum.OAUTH_EXCEPTION.getCode(), e.getLocalizedMessage()));
     }
