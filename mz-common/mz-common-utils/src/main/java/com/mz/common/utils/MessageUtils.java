@@ -2,8 +2,8 @@ package com.mz.common.utils;
 
 
 import cn.hutool.extra.spring.SpringUtil;
-import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.context.support.MessageSourceAccessor;
 
 /**
  * 获取i18n资源文件
@@ -19,7 +19,20 @@ public class MessageUtils {
      * @return 获取国际化翻译值
      */
     public static String message(String code, Object... args) {
-        MessageSource messageSource = SpringUtil.getBean(MessageSource.class);
+        MessageSourceAccessor messageSource = SpringUtil.getBean(MessageSourceAccessor.class);
         return messageSource.getMessage(code, args, LocaleContextHolder.getLocale());
+    }
+
+    /**
+     * 根据消息键和参数 获取消息 委托给spring messageSource
+     *
+     * @param code 消息键
+     * @param args 参数
+     * @param defaultMessage 默认消息
+     * @return 获取国际化翻译值
+     */
+    public static String message(String code, String defaultMessage, Object... args) {
+        MessageSourceAccessor messageSource = SpringUtil.getBean(MessageSourceAccessor.class);
+        return messageSource.getMessage(code, args, defaultMessage, LocaleContextHolder.getLocale());
     }
 }

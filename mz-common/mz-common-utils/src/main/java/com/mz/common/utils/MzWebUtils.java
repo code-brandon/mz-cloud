@@ -187,7 +187,7 @@ public class MzWebUtils {
             if (ip.contains(",")) {
                 ip = ip.split(",")[0];
             }
-            ip = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
+            ip = ip.contains("0:0:0:0:0:0:0") ? "127.0.0.1" : ip;
             if (!isValidAddress(ip)) {
                 ip = null;
             }
@@ -232,7 +232,7 @@ public class MzWebUtils {
             if (ip.contains(",")) {
                 ip = ip.split(",")[0];
             }
-            ip = "0:0:0:0:0:0:0:1".equals(ip) ? "127.0.0.1" : ip;
+            ip = ip.contains("0:0:0:0:0:0:0") ? "127.0.0.1" : ip;
             if (!isValidAddress(ip)) {
                 ip = null;
             }
@@ -301,10 +301,14 @@ public class MzWebUtils {
      */
     public static Map<String, String> parseUserAgent(String userAgent) {
         LinkedHashMap<String, String> map = new LinkedHashMap<>(2);
-        String os = userAgent.substring(userAgent.indexOf('(') + 1, userAgent.indexOf(')'));
-        map.put("os", os);
-        String browser = userAgent.substring(userAgent.lastIndexOf(')') + 1);
-        map.put("browser", browser);
+        try {
+            String os = userAgent.substring(userAgent.indexOf('(') + 1, userAgent.indexOf(')'));
+            map.put("os", os);
+            String browser = userAgent.substring(userAgent.lastIndexOf(')') + 1);
+            map.put("browser", browser);
+        }catch (Exception e){
+            map.put("os", userAgent);
+        }
         return map;
     }
 
