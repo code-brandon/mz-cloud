@@ -25,6 +25,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.StandardEnvironment;
 
+import java.lang.management.ClassLoadingMXBean;
+import java.lang.management.ManagementFactory;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,6 +52,15 @@ class MzSystemProviderApplicationTests {
     void contextLoads() {
         Object appName = ((StandardEnvironment) environment).getSystemProperties().get("@appId");
         log.info("应用名称 = {}", appName);
+    }
+
+    @Test
+    void jvmMonitor(){
+        ClassLoadingMXBean classLoadingMXBean = ManagementFactory.getClassLoadingMXBean();
+        log.info("{}", classLoadingMXBean.getTotalLoadedClassCount());
+        log.info("{}", classLoadingMXBean.getLoadedClassCount());
+        log.info("{}", classLoadingMXBean.getUnloadedClassCount());
+        log.info("{}", classLoadingMXBean.isVerbose());
     }
 
 

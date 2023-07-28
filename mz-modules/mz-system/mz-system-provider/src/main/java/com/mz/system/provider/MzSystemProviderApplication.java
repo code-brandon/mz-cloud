@@ -2,11 +2,12 @@ package com.mz.system.provider;
 
 import com.mz.common.mybatis.annotation.EnableMzMybatisCustomizeConfig;
 import com.mz.common.redis.annotation.EnableMzRedisAutoConfigure;
+import com.mz.common.security.annotation.EnableMzResourceServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.oauth2.client.EnableOAuth2Sso;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 
 /**
  * What --
@@ -18,7 +19,8 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  * @ClassName: MzSystemProviderApplication
  * @CreateTime 2022/5/31 15:13
  */
-@EnableResourceServer
+@EnableOAuth2Sso
+@EnableMzResourceServer
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableMzRedisAutoConfigure
