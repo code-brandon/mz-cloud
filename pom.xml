@@ -16,6 +16,7 @@
         <spring-boot.version>2.3.12.RELEASE</spring-boot.version>
         <spring-cloud-alibaba.version>2.2.9.RELEASE</spring-cloud-alibaba.version>
         <spring-cloud.version>Hoxton.SR12</spring-cloud.version>
+        <spring-boot-admin.version>2.3.1</spring-boot-admin.version>
         <fastjson.version>1.2.83</fastjson.version>
         <mybatis-plus.version>3.5.3.1</mybatis-plus.version>
         <commons-io.version>2.10.0</commons-io.version>
@@ -40,6 +41,7 @@
         <maven.deploy.version>2.8.2</maven.deploy.version>
         <junit.version>4.13.2</junit.version>
         <logback.version>1.2.9</logback.version>
+        <oshi.version>6.4.0</oshi.version>
     </properties>
 
     <modules>
@@ -48,6 +50,7 @@
         <module>mz-gateway</module>
         <module>mz-auth</module>
         <module>mz-sentinel-dashboard</module>
+        <module>mz-monitor-admin</module>
     </modules>
 
     <dependencyManagement>
@@ -87,6 +90,19 @@
                 <artifactId>druid-spring-boot-starter</artifactId>
                 <version>${druid-spring.version}</version>
             </dependency>
+
+            <!--spring-boot-admin 服务监控-->
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-client</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>de.codecentric</groupId>
+                <artifactId>spring-boot-admin-starter-server</artifactId>
+                <version>${spring-boot-admin.version}</version>
+            </dependency>
+
             <!-- Mybatis-plus 依赖配置 -->
             <dependency>
                 <groupId>com.baomidou</groupId>
@@ -221,6 +237,13 @@
                 <version>${logback.version}</version>
             </dependency>
 
+            <!-- 获取系统信息 -->
+            <dependency>
+                <groupId>com.github.oshi</groupId>
+                <artifactId>oshi-core</artifactId>
+                <version>${oshi.version}</version>
+            </dependency>
+
             <!-- 切面 -->
             <dependency>
                 <groupId>org.aspectj</groupId>
@@ -266,6 +289,18 @@
                             <nonFilteredFileExtension>jks</nonFilteredFileExtension>
                         </nonFilteredFileExtensions>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-maven-plugin</artifactId>
+                    <executions>
+                        <execution>
+                            <id>build-info</id>
+                            <goals>
+                                <goal>build-info</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
