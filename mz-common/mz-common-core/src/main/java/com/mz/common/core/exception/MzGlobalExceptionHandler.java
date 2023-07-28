@@ -36,7 +36,7 @@ import java.util.Optional;
  * @CreateTime 2022/5/20 21:54
  */
 @Slf4j
-@RestControllerAdvice
+@RestControllerAdvice(basePackages = {MzConstant.PACKAGE_PRE_FIX})
 @Order(1)
 public class MzGlobalExceptionHandler {
 
@@ -50,8 +50,8 @@ public class MzGlobalExceptionHandler {
     public R<String> runtimeException(Exception e) {
         e.printStackTrace();
         String message = e.getMessage();
-        log.error("未知异常:{}",StringUtils.isEmpty(message) ? ConvertUtils.str(e.getCause().getMessage(), CharsetKitUtils.CHARSET_UTF_8) : message);
-        return R.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), StringUtils.isEmpty(message) ? ConvertUtils.str(e.getCause().getMessage(), CharsetKitUtils.CHARSET_UTF_8) : message,"未知异常");
+        log.error("未知异常:{}", StringUtils.isEmpty(message) ? ConvertUtils.str(e.getCause().getMessage(), CharsetKitUtils.CHARSET_UTF_8) : message);
+        return R.error(HttpStatus.INTERNAL_SERVER_ERROR.value(), StringUtils.isEmpty(message) ? ConvertUtils.str(e.getCause().getMessage(), CharsetKitUtils.CHARSET_UTF_8) : message, "未知异常");
     }
 
     /**
