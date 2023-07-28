@@ -3,6 +3,7 @@ package com.mz.common.security.aspect;
 import cn.hutool.core.util.StrUtil;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.security.annotation.Ignore;
+import com.mz.common.utils.MessageUtils;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -40,7 +41,7 @@ public class MzSecurityIgnoreAspect {
 		String header = request.getHeader(SecurityConstants.MZ_FROM);
 		if (ignore.value() && !StrUtil.equals(SecurityConstants.MZ_FROM_IN, header)) {
 			log.warn("访问接口 {} 没有权限", point.getSignature().getName());
-			throw new AccessDeniedException("Access is denied");
+			throw new AccessDeniedException(MessageUtils.message("mz.i18n.cloud", "Access is denied" ));
 		}
 		return point.proceed();
 	}

@@ -2,8 +2,10 @@ package com.mz.common.security.utils;
 
 
 import cn.hutool.core.util.StrUtil;
+import com.alibaba.fastjson.JSON;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
+import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -12,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * What -- 安全工具类
@@ -36,7 +39,14 @@ public class MzSecurityUtils {
 	/**
 	 * 获取用户
 	 */
+	@SneakyThrows
 	public MzUserDetailsSecurity getMzSysUserSecurity(Authentication authentication) {
+		Object principal = authentication.getPrincipal();
+		if ( principal instanceof Map) {
+			MzUserDetailsSecurity security = JSON.parseObject(JSON.toJSONString(principal), MzUserDetailsSecurity.class);
+			security.setAuthorities(authentication.getAuthorities());
+			return security;
+		}
 		return (MzUserDetailsSecurity) authentication.getPrincipal();
 	}
 

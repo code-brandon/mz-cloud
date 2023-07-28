@@ -1,7 +1,9 @@
 package com.mz.common.security.access;
 
 import cn.hutool.core.util.ArrayUtil;
+import cn.hutool.core.util.ObjectUtil;
 import com.mz.common.constant.MzConstant;
+import com.mz.common.constant.SecurityConstants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -10,7 +12,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
 import org.springframework.util.StringUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.stream.Collectors;
 
 /**
  * What -- mz 自定义权限访问
@@ -47,7 +51,7 @@ public class MzPermissionAccess {
 	 * @return {boolean}
 	 */
 	public boolean hasRole(String... role) {
-		return isMatch(SUPER_ADMIN, role);
+		return isMatch(SUPER_ADMIN, Arrays.stream(role).map(SecurityConstants.MZ_ROLE::concat).collect(Collectors.toList()).toArray(new String[role.length]));
 	}
 
 	private boolean isMatch(String str, String... patterns) {
@@ -55,7 +59,7 @@ public class MzPermissionAccess {
 			return false;
 		}
 		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication == null) {
+		if (ObjectUtil.isEmpty(authentication)) {
 			return false;
 		}
 

@@ -4,6 +4,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.mz.common.constant.MzConstant;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -213,11 +214,11 @@ public class MzUserDetailsSecurity implements UserDetails, Serializable {
     }
 
     /**
-     * 用户被禁用
+     * 用户是否禁用
      * @return
      */
     @Override
     public boolean isEnabled() {
-        return this.enabled;
+        return !MzConstant.USER_DISABLE.equals(this.status);
     }
 }

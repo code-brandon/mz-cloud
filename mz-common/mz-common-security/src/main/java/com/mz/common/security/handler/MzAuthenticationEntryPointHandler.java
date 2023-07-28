@@ -3,6 +3,7 @@ package com.mz.common.security.handler;
 import com.mz.common.constant.enums.MzErrorCodeEnum;
 import com.mz.common.core.entity.R;
 import com.mz.common.utils.MzWebUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.oauth2.provider.error.OAuth2AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
@@ -22,9 +23,11 @@ import javax.servlet.http.HttpServletResponse;
  * @CreateTime: 2022/6/7 17:42
  */
 @Component
+@Slf4j
 public class MzAuthenticationEntryPointHandler extends OAuth2AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        MzWebUtils.renderJson(response, R.error(MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(), MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getMsg() + authException.getMessage()));
+        log.error("{}", authException.getMessage());
+        MzWebUtils.renderJson(response, R.error(MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getCode(), MzErrorCodeEnum.OAUTH_AUTH_EXCEPTION.getMsg()));
     }
 }
