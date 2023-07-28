@@ -28,5 +28,6 @@
         <module>mz-common-constant</module>
         <module>mz-common-utils</module>
         <module>mz-common-log</module>
+        <module>mz-common-monitor</module>
     </modules>
 </project>
