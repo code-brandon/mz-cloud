@@ -125,7 +125,12 @@
         <dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-redis</artifactId>
-            <version>1.7.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.mz.common</groupId>
+            <artifactId>mz-common-monitor</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
 
         <dependency>

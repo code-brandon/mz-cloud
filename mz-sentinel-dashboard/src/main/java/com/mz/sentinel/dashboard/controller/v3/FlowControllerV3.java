@@ -27,7 +27,6 @@ import com.mz.sentinel.dashboard.domain.Result;
 import com.mz.sentinel.dashboard.repository.rule.InMemoryRuleRepositoryAdapter;
 import com.mz.sentinel.dashboard.rule.DynamicRuleProvider;
 import com.mz.sentinel.dashboard.rule.DynamicRulePublisher;
-import com.mz.sentinel.dashboard.util.AsyncUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,7 +37,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * What -- Flow rule controller (v3).
@@ -154,7 +152,7 @@ public class FlowControllerV3 {
         entity.setResource(entity.getResource().trim());
         try {
             entity = repository.save(entity);
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+            publishRules(entity.getApp());
         } catch (Throwable throwable) {
             logger.error("Failed to add flow rule", throwable);
             return Result.ofThrowable(-1, throwable);
@@ -191,7 +189,7 @@ public class FlowControllerV3 {
             if (entity == null) {
                 return Result.ofFail(-1, "save entity fail");
             }
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+            publishRules(entity.getApp());
         } catch (Throwable throwable) {
             logger.error("Failed to update flow rule", throwable);
             return Result.ofThrowable(-1, throwable);
@@ -212,7 +210,7 @@ public class FlowControllerV3 {
 
         try {
             repository.delete(id);
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort());
+            publishRules(entity.getApp());
         } catch (Exception e) {
             return Result.ofFail(-1, e.getMessage());
         }
@@ -289,7 +287,7 @@ public class FlowControllerV3 {
                 return Result.ofFail(-1, "save entity fail: null");
             }
 
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(15000, TimeUnit.MILLISECONDS);
+            publishRules(entity.getApp());
             return Result.ofSuccess(entity);
         } catch (Throwable t) {
             Throwable e = t instanceof ExecutionException ? t.getCause() : t;
@@ -317,7 +315,7 @@ public class FlowControllerV3 {
             return Result.ofFail(-1, e.getMessage());
         }
         try {
-            publishRules(entity.getApp(), entity.getIp(), entity.getPort()).get(5000, TimeUnit.MILLISECONDS);
+            publishRules(entity.getApp());
             return Result.ofSuccess(id);
         } catch (Throwable t) {
             Throwable e = t instanceof ExecutionException ? t.getCause() : t;
@@ -330,10 +328,15 @@ public class FlowControllerV3 {
     // old publishRules
     private CompletableFuture<Void> publishRules_back(String app, String ip, Integer port) {
         List<FlowRuleEntity> rules = repository.findAllByMachine(MachineInfo.of(app, ip, port));
+        //核心代码，sentinel-dashboard通过http的形式进行数据推送，客户端接收后将规则保存在本地内存中
         return sentinelApiClient.setFlowRuleOfMachineAsync(app, ip, port, rules);
     }
-    //修改publishRules
-    private CompletableFuture<Void> publishRules(String app, String ip, Integer port)
+
+    /**
+     * 修改publishRules
+     * @param app 推送应用名称
+     */
+    private void publishRules(String app)
     {
         List<FlowRuleEntity> rules = repository.findAllByApp(app);
         try {
@@ -343,9 +346,7 @@ public class FlowControllerV3 {
         } catch (Exception e) {
             e.printStackTrace();
             logger.warn("publishRules failed", e);
-            return AsyncUtils.newFailedFuture(new CommandFailedException("Sentinel 推送规则到Redis失败"));
+            throw new CommandFailedException("Sentinel 推送规则到Redis失败");
         }
-        //核心代码，sentinel-dashboard通过http的形式进行数据推送，客户端接收后将规则保存在本地内存中
-        return sentinelApiClient.setFlowRuleOfMachineAsync(app, ip, port, rules);
     }
 }

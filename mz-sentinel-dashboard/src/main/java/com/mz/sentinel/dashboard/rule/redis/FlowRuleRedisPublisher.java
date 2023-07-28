@@ -12,9 +12,10 @@ import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -30,8 +31,11 @@ import java.util.List;
 @Component("flowRuleRedisPublisher")
 public class FlowRuleRedisPublisher implements DynamicRulePublisher<List<FlowRuleEntity>> {
     private final Logger logger = LoggerFactory.getLogger(FlowRuleRedisPublisher.class);
-    @Autowired
+    @Resource
     private SentinelProperties sentinelProperties;
+
+    @Value("${spring.application.name}")
+    private String appName;
 
     @Override
     public void publish(String app, List<FlowRuleEntity> rules) throws Exception {
@@ -54,8 +58,8 @@ public class FlowRuleRedisPublisher implements DynamicRulePublisher<List<FlowRul
             return;
         }
         subCommands.multi();
-        subCommands.set(redisDataSourceProperties.getRuleKey()+app, JSONObject.toJSONString(rules));
-        subCommands.publish(redisDataSourceProperties.getChannel()+app,JSONObject.toJSONString(rules));
+        subCommands.set(redisDataSourceProperties.getRuleKey().replace(appName, app), JSONObject.toJSONString(rules));
+        subCommands.publish(redisDataSourceProperties.getChannel().replace(appName, app),JSONObject.toJSONString(rules));
         subCommands.exec();
         logger.info("Sentinel 向Redis推送流控规则 end");
     }

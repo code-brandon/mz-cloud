@@ -50,9 +50,10 @@
 
 
           <li ui-sref-active = "active" ng-if = "entry.appType==0">
-            <a ui-sref = "dashboard.flow({app: entry.app})">
+            <a ui-sref = "dashboard.flowV1({app: entry.app})">
               <i class = "glyphicon glyphicon-filter"></i>流控规则 V1</a>
           </li>
+          <!--TODO 修改流控菜单-->
 
           <li ui-sref-active="active" ng-if="!entry.isGateway">
             <a ui-sref="dashboard.flowV3({app: entry.app})">

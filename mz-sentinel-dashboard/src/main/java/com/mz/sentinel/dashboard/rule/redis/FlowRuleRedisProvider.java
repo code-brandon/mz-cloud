@@ -12,10 +12,11 @@ import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
 import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,11 +33,14 @@ import java.util.List;
 @Component("flowRuleRedisProvider")
 public class FlowRuleRedisProvider implements DynamicRuleProvider<List<FlowRuleEntity>> {
     private final Logger logger = LoggerFactory.getLogger(FlowRuleRedisProvider.class);
-    @Autowired
+    @Resource
     private SentinelProperties sentinelProperties;
 
+    @Value("${spring.application.name}")
+    private String appName;
+
     @Override
-    public List<FlowRuleEntity> getRules(String appName) throws Exception {
+    public List<FlowRuleEntity> getRules(String app) throws Exception {
 
         DataSourcePropertiesConfiguration dataSource = sentinelProperties.getDatasource().get("redis");
         RedisDataSourceProperties redisDataSourceProperties = dataSource.getRedis();
@@ -51,7 +55,7 @@ public class FlowRuleRedisProvider implements DynamicRuleProvider<List<FlowRuleE
         StatefulRedisPubSubConnection<String, String> connection = redisClient.connectPubSub();
         RedisPubSubCommands<String, String> subCommands = connection.sync();
         logger.info("Sentinel 从Redis拉取流控规则 begin");
-        String value = (String) subCommands.get(redisDataSourceProperties.getRuleKey() + appName);
+        String value = (String) subCommands.get(redisDataSourceProperties.getRuleKey().replace(appName, app));
         if (StringUtils.isEmpty(value)){
             return new ArrayList<>();
         }
