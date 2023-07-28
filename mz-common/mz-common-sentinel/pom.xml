@@ -26,9 +26,14 @@
             <groupId>com.alibaba.cloud</groupId>
             <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
         </dependency>
-        <dependency>
+        <!--<dependency>
             <groupId>com.alibaba.csp</groupId>
             <artifactId>sentinel-datasource-redis</artifactId>
+        </dependency>-->
+        <dependency>
+            <groupId>com.mz.extend.sentinel</groupId>
+            <artifactId>sentinel-datasource-redis</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba.csp</groupId>
