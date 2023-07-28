@@ -7,6 +7,7 @@ spring:
         server-addr: ${spring.cloud.nacos.discovery.server-addr}
         file-extension: yml
         shared-configs:
+          - application.${spring.cloud.nacos.config.file-extension}
           - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
     gateway:
       # 启用网关功能。
@@ -24,3 +25,16 @@ spring:
 ribbon:
   # 仅仅修改nacos的配置，还是不能保证能及时的进行服务上下线，需要设置ribbon.ServerListRefreshInterval，增加拉取nacos中最新服务实例的频率
   ServerListRefreshInterval: 1000
+
+# 可控点Api开启
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: 127.0.0.1
+      exposure:
+        include: '*'
+  # 网关可控点
+  endpoint:
+    health:
+      show-details: always

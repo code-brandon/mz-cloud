@@ -73,6 +73,32 @@ POST 127.0.0.1:88/actuator/gateway/routes/{路由ID}
 }
 ```
 
+```json
+{
+	"id": "mz-auth",
+	"predicates": [
+		{
+			"name": "Path",
+			"args": {
+				"_genkey_0": "/api/auth/**"
+			}
+		}
+	],
+	"filters": [
+		{
+			"name": "RewritePath",
+			"args": {
+				"_genkey_0": "/api/auth/(?<segment>.*)",
+				"_genkey_1": "/$\\{segment}"
+			}
+		}
+	],
+	"uri": "lb://mz-auth",
+	"metadata": {},
+	"order": 0
+}
+```
+
 #### 返回结果
 ```json
 {
