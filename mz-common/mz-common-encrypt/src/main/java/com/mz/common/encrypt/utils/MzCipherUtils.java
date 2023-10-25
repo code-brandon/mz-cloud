@@ -12,6 +12,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.security.*;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
@@ -1006,6 +1008,17 @@ public class MzCipherUtils {
         return null;
     }
 
+    public static KeyStore getKeyStore(InputStream keyStoreIs, String password) {
+        try {
+            KeyStore ks = KeyStore.getInstance(KEY_STORE);
+            ks.load(keyStoreIs, password.toCharArray());
+            return ks;
+        } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException | IOException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("加载密钥仓库失败");
+    }
+
     /**
      * 加载KeyStore文件
      *
@@ -1014,7 +1027,7 @@ public class MzCipherUtils {
      * @return 返回KeyStore
      */
     public static KeyStore getKeyStore(URL keyStorePath, String password) {
-        try(InputStream is = keyStorePath.openStream()) {
+        try(InputStream is = Files.newInputStream(Paths.get(keyStorePath.getFile()))) {
             KeyStore ks = KeyStore.getInstance(KEY_STORE);
             ks.load(is, password.toCharArray());
             return ks;
@@ -1341,6 +1354,17 @@ public class MzCipherUtils {
     public static KeyPair getKeyPair(URL keyStorePath, String alias, String password) {
         try {
             RSAPrivateCrtKey key = (RSAPrivateCrtKey) getStore(keyStorePath, password).getKey(alias, password.toCharArray());
+            RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
+            PublicKey publicKey = KeyFactory.getInstance( KEY_ALGORITHM).generatePublic(spec);
+            return new KeyPair(publicKey, key);
+        }
+        catch (Exception e) {
+            throw new IllegalStateException("Cannot load keys from store: ", e);
+        }
+    }
+    public static KeyPair getKeyPair(InputStream keyStoreIs, String alias, String password) {
+        try {
+            RSAPrivateCrtKey key = (RSAPrivateCrtKey) getKeyStore(keyStoreIs, password).getKey(alias, password.toCharArray());
             RSAPublicKeySpec spec = new RSAPublicKeySpec(key.getModulus(), key.getPublicExponent());
             PublicKey publicKey = KeyFactory.getInstance( KEY_ALGORITHM).generatePublic(spec);
             return new KeyPair(publicKey, key);
