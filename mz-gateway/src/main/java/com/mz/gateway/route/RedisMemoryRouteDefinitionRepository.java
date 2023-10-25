@@ -12,7 +12,6 @@ import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
-import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
@@ -32,7 +31,7 @@ import java.util.List;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/5/27 15:39
  */
-@Component
+// @Component
 @AllArgsConstructor
 @Slf4j
 public class RedisMemoryRouteDefinitionRepository implements RouteDefinitionRepository, ApplicationEventPublisherAware {

@@ -1,0 +1,102 @@
+[
+  "org.springframework.cloud.gateway.route.RouteDefinition",
+  {
+    "id": "mz-auth",
+    "predicates": [
+      "java.util.ArrayList",
+      [
+        [
+          "org.springframework.cloud.gateway.handler.predicate.PredicateDefinition",
+          {
+            "name": "Path",
+            "args": [
+              "java.util.LinkedHashMap",
+              {
+                "_genkey_0": "/api/auth/**"
+              }
+            ]
+          }
+        ]
+      ]
+    ],
+    "filters": [
+      "java.util.ArrayList",
+      [
+        [
+          "org.springframework.cloud.gateway.filter.FilterDefinition",
+          {
+            "name": "RewritePath",
+            "args": [
+              "java.util.LinkedHashMap",
+              {
+                "_genkey_0": "/api/auth/(?<segment>.*)",
+                "_genkey_1": "/$\\{segment}"
+              }
+            ]
+          }
+        ]
+      ]
+    ],
+    "uri": "lb://mz-auth",
+    "metadata": [
+      "java.util.LinkedHashMap",
+      {
+
+      }
+    ],
+    "order": 0
+  }
+]
+
+[
+  "org.springframework.cloud.gateway.route.RouteDefinition",
+  {
+    "id": "mz-system-provider",
+    "predicates": [
+      "java.util.ArrayList",
+      [
+        [
+          "org.springframework.cloud.gateway.handler.predicate.PredicateDefinition",
+          {
+            "name": "Path",
+            "args": [
+              "java.util.LinkedHashMap",
+              {
+                "_genkey_0": "/api/system/**"
+              }
+            ]
+          }
+        ]
+      ]
+    ],
+    "filters": [
+      "java.util.ArrayList",
+      [
+        [
+          "org.springframework.cloud.gateway.filter.FilterDefinition",
+          {
+            "name": "RewritePath",
+            "args": [
+              "java.util.LinkedHashMap",
+              {
+                "_genkey_0": "/api/system/(?<segment>.*)",
+                "_genkey_1": "/$\\{segment}"
+              }
+            ]
+          }
+        ]
+      ]
+    ],
+    "uri": "lb://mz-system-provider",
+    "metadata": [
+      "java.util.LinkedHashMap",
+      {
+
+      }
+    ],
+    "order": 0
+  }
+]
+
+
+

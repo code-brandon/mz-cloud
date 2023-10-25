@@ -50,7 +50,7 @@ public class MzRequestFilter implements GlobalFilter, Ordered {
         HttpHeaders headers = request.getHeaders();
         // 3.获取有用的Headers参数
         JSONObject jsonHeaders = new JSONObject();
-        jsonHeaders.put("host", headers.getHost().toString());
+        jsonHeaders.put("host", headers.getHost());
         jsonHeaders.put("sec-ch-ua", headers.getFirst("sec-ch-ua"));
         jsonHeaders.put("user-agent", headers.getFirst("User-Agent"));
         jsonHeaders.put("ip", MzWebUtils.getRemoteAddr(request));
