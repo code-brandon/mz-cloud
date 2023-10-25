@@ -187,8 +187,7 @@ public class MzWebUtils {
             if (ip.contains(",")) {
                 ip = ip.split(",")[0];
             }
-            ip = ip.contains("0:0:0:0:0:0:0") ? "127.0.0.1" : ip;
-            if (!isValidAddress(ip)) {
+            if (ip != null && !isValidAddress(ip)) {
                 ip = null;
             }
         }
@@ -221,6 +220,10 @@ public class MzWebUtils {
             }
         }
 
+        if (ip != null) {
+            ip = ip.contains("0:0:0:0") ? "127.0.0.1" : ip;
+        }
+
         return ip;
     }
 
@@ -232,8 +235,7 @@ public class MzWebUtils {
             if (ip.contains(",")) {
                 ip = ip.split(",")[0];
             }
-            ip = ip.contains("0:0:0:0:0:0:0") ? "127.0.0.1" : ip;
-            if (!isValidAddress(ip)) {
+            if (ip != null && !isValidAddress(ip)) {
                 ip = null;
             }
         }
@@ -264,6 +266,11 @@ public class MzWebUtils {
             if (ip != null && !isValidAddress(ip)) {
                 ip = null;
             }
+        }
+
+
+        if (ip != null) {
+            ip = ip.contains("0:0:0:0") ? "127.0.0.1" : ip;
         }
 
         return ip;
