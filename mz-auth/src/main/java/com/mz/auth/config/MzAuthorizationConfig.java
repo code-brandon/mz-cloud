@@ -16,6 +16,7 @@ import org.springframework.security.oauth2.config.annotation.builders.ClientDeta
 import org.springframework.security.oauth2.config.annotation.builders.InMemoryClientDetailsServiceBuilder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.CompositeTokenGranter;
@@ -32,7 +33,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 /**
  * What -- 配置 OAUth2 授权服务器
  * <br>
@@ -44,8 +44,9 @@ import java.util.List;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/5/29 17:21
  */
-@Configuration
 @Slf4j
+@Configuration
+@EnableAuthorizationServer
 public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter {
 
     @Value("${mz.token.is-jwt-token-enhance:false}")
@@ -151,6 +152,7 @@ public class MzAuthorizationConfig extends AuthorizationServerConfigurerAdapter 
                 .userDetailsService(mzUserDetailsServiceImpl)
                 // token 存放规则
                 .tokenStore(tokenStore)
+                // 重复使用刷新令牌
                 .reuseRefreshTokens(true)
                 // 访问令牌转换器
                 // .accessTokenConverter(mzJwtAccessTokenConverter)

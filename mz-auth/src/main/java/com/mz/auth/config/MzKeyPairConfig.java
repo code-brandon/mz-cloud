@@ -1,13 +1,13 @@
 package com.mz.auth.config;
 
-import com.mz.common.encrypt.utils.MzCipherUtils;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.rsa.crypto.KeyStoreKeyFactory;
 
-import java.net.URL;
 import java.security.KeyPair;
 
 /**
@@ -29,18 +29,26 @@ import java.security.KeyPair;
  * @Author: 小政同学    QQ:xiaozheng666888@qq.com
  * @CreateTime: 2022/8/29 19:54
  */
+@Slf4j
 @Configuration
 public class MzKeyPairConfig {
 
     @SneakyThrows
     @Bean("mzKeyPair")
     public KeyPair keyPair() {
+
+
+        // fix:通过自己实现的获取证书 有各种问题 换用 springSecurity
+        KeyStoreKeyFactory keyStoreKeyFactory = new KeyStoreKeyFactory(new ClassPathResource("key/jwt.jks"),
+                "mz_cloud".toCharArray());
+        return keyStoreKeyFactory.getKeyPair("jwt", "mz_cloud".toCharArray());
+
+
         //从classpath下的证书中获取秘钥对
         // 秘钥位置
-        URL jksPath = new ClassPathResource("key/jwt.jks").getURL();
-
-        // 基于工厂拿到私钥
-        return MzCipherUtils.getKeyPair(jksPath, "jwt", "mz_cloud");
+        // ClassPathResource jksPath = new ClassPathResource("key/jwt.jks");
+        // // 基于工厂拿到私钥
+        // return MzCipherUtils.getKeyPair(jksPath.getInputStream(), "jwt", "mz_cloud");
     }
 
     /**

@@ -1,8 +1,8 @@
 package com.mz.auth.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.nacos.common.utils.JacksonUtils;
 import com.mz.common.core.entity.R;
+import com.mz.common.utils.MzJacksonUtils;
 import com.mz.common.utils.MzUtils;
 import com.mz.common.utils.MzWebUtils;
 import org.springframework.core.MethodParameter;
@@ -81,7 +81,7 @@ public class MzFormatterToken implements HandlerMethodReturnValueHandler {
         HttpServletResponse response = request.getNativeResponse(HttpServletResponse.class);
         assert response != null;
         // TODO JSON.parse(JacksonUtils.toJson(body))) 原因：使其转换为JSON时符合原有格式，否则格式与包装前data中的格式不能对应
-        MzWebUtils.renderJson(response, R.ok(JSON.parse(JacksonUtils.toJson(body))));
+        MzWebUtils.renderJson(response, R.ok(JSON.parse(MzJacksonUtils.toJson(body))));
     }
 
 

@@ -18,7 +18,7 @@ import java.util.Objects;
 /**
  * What -- Mz 抽象令牌授予者
  * <br>
- * Describe --
+ * Describe -- 访问令牌授予者的接口。规范中定义了各种授权类型，每种授权类型都有一个实现，从而为根据需要扩展规范留出了空间
  * <br>
  *
  * @Package: com.mz.auth.provider
