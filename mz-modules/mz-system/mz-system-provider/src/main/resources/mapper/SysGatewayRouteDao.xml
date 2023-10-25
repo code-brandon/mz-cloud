@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.mz.system.provider.dao.SysGatewayRouteDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="com.mz.system.model.entity.SysGatewayRouteEntity" id="sysGatewayRouteMap">
+        <id property="routeId" column="route_id"/>
+        <result property="routeName" column="route_name"/>
+        <result property="predicates" column="predicates"/>
+        <result property="filters" column="filters"/>
+        <result property="routeUri" column="route_uri"/>
+        <result property="status" column="status"/>
+        <result property="delFlag" column="del_flag"/>
+        <result property="createBy" column="create_by"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
+        <result property="orderNum" column="order_num"/>
+    </resultMap>
+
+    <sql id = "fromHead">
+        `route_id`,`route_name`,`predicates`,`filters`,`route_uri`,`status`,`del_flag`,`create_by`,`create_time`,`update_by`,`update_time`,`remark`,`order_num`
+    </sql>
+
+    <sql id="whereSelect">
+        <where>
+            <if test = "data.routeId != null and data.routeId.toString() != ''">
+                and t.route_id = #{data.routeId}
+            </if>
+            <if test = "data.routeName != null and data.routeName.toString() != ''">
+                and t.route_name = #{data.routeName}
+            </if>
+            <if test = "data.predicates != null and data.predicates.toString() != ''">
+                and t.predicates = #{data.predicates}
+            </if>
+            <if test = "data.filters != null and data.filters.toString() != ''">
+                and t.filters = #{data.filters}
+            </if>
+            <if test = "data.uri != null and data.uri.toString() != ''">
+                and t.route_uri = #{data.routeUri}
+            </if>
+            <if test = "data.status != null and data.status.toString() != ''">
+                and t.status = #{data.status}
+            </if>
+            <if test = "data.delFlag != null and data.delFlag.toString() != ''">
+                and t.del_flag = #{data.delFlag}
+            </if>
+            <if test = "data.createBy != null and data.createBy.toString() != ''">
+                and t.create_by = #{data.createBy}
+            </if>
+            <if test = "data.createTime != null and data.createTime.toString() != ''">
+                and t.create_time = #{data.createTime}
+            </if>
+            <if test = "data.updateBy != null and data.updateBy.toString() != ''">
+                and t.update_by = #{data.updateBy}
+            </if>
+            <if test = "data.updateTime != null and data.updateTime.toString() != ''">
+                and t.update_time = #{data.updateTime}
+            </if>
+            <if test = "data.remark != null and data.remark.toString() != ''">
+                and t.remark = #{data.remark}
+            </if>
+            <if test = "data.order != null and data.order.toString() != '0'">
+                and t.order_num = #{data.orderNum}
+            </if>
+        </where>
+    </sql>
+
+</mapper>

@@ -30,7 +30,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 
@@ -71,22 +74,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
 
     @Override
     public List<SysMenuTree> getMenuListTree(SysMenuReqVo sysMenuVo) {
-
-
         List<SysMenuTree> allMenu = baseMapper.getAllByMenuNameAndStatus(sysMenuVo.getMenuName(), sysMenuVo.getStatus());
-        /*List<SysMenuEntity> entities = list(Wrappers.<SysMenuEntity> lambdaQuery()
-                .eq(StringUtils.isNotEmpty(sysMenuVo.getStatus()),SysMenuEntity::getStatus, sysMenuVo.getStatus())
-                .like(StringUtils.isNotEmpty(sysMenuVo.getMenuName()),SysMenuEntity::getMenuName, sysMenuVo.getMenuName()));
-
-        List<TreeNode<Long>> nodeList = entities.stream().map(m -> {
-            TreeNode<Long> objectTreeNode = new TreeNode<>();
-            objectTreeNode.setId(m.getMenuId());
-            objectTreeNode.setWeight(m.getOrderNum());
-            objectTreeNode.setExtra(BeanMapUtils.beanToMap(m));
-            return objectTreeNode;
-        }).collect(Collectors.toList());
-        List<Tree<Long>> build = TreeUtil.build(nodeList, MzConstant.ROOT_NODE);*/
-
         List<SysMenuTree> trees = TreeUtils.generateTrees(allMenu, false);
         return CollectionUtils.isEmpty(trees) ? Collections.emptyList() : trees;
     }
@@ -177,8 +165,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
     @Override
     public List<SysMenuDto> getChildPerms(List<SysMenuDto> list, Long parentId) {
         List<SysMenuDto> returnList = new ArrayList<>();
-        for (Iterator<SysMenuDto> iterator = list.iterator(); iterator.hasNext(); ) {
-            SysMenuDto t = iterator.next();
+        for (SysMenuDto t : list) {
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
             if (t.getParentId().equals(parentId)) {
                 recursionFn(list, t);
@@ -210,9 +197,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuDao, SysMenuEntity> i
      */
     private List<SysMenuDto> getChildList(List<SysMenuDto> list, SysMenuDto t) {
         List<SysMenuDto> tlist = new ArrayList<>();
-        Iterator<SysMenuDto> it = list.iterator();
-        while (it.hasNext()) {
-            SysMenuDto n = it.next();
+        for (SysMenuDto n : list) {
             if (n.getParentId().longValue() == t.getMenuId().longValue()) {
                 tlist.add(n);
             }
