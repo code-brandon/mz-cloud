@@ -29,5 +29,6 @@
         <module>mz-common-utils</module>
         <module>mz-common-log</module>
         <module>mz-common-monitor</module>
+        <module>mz-common-gateway</module>
     </modules>
 </project>
