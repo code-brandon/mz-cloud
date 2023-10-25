@@ -1,0 +1,101 @@
+version: '2.4'
+networks:
+  app_start:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.18.0.0/16 #CIDR 格式的子网，代表一个网段
+          ip_range: 172.18.0.0/24 #分配容器 IP 的 IP 范围
+          gateway: 172.18.0.1 #主子网的 IPv4 或 IPv6 网关
+services:
+  redis:
+    restart: always
+    image: redis
+    container_name: redis
+    volumes:
+      - "/root/docker/redis/data:/data"
+      - "/root/docker/redis/conf:/usr/local/etc/redis"
+      - "/root/docker/redis/logs:/logs"
+    command:
+      # 两个写入操作 只是为了解决启动后警告 可以去掉
+      redis-server /usr/local/etc/redis/redis.conf --appendonly yes
+    ports:
+      - 6379:6379
+    environment:
+      - TZ=Asia/Shanghai
+    networks:
+      app_start:
+        ipv4_address: 172.18.0.4
+  # docker-compose build 启动的名称
+  mz-auth:
+    # 构建DockerFile镜像
+    build:
+      # 指定DockerFile文件位置
+      context: /root/docker/mz-auth
+    # 配置Docker启动自动启动
+    restart: always
+    # 镜像启动后 容器名称
+    container_name: mz-auth
+    # 镜像名称
+    image: mz-auth
+    environment:
+      - REDIS_HOME=172.18.0.4
+    # 端口映射 宿主机端口:容器端口
+    ports:
+      - "8888:9000"
+    # 文件挂载，主要将Jar产生的日志映射到宿主机上
+    volumes:
+      - "/root/docker/mz-auth/logs:/app/logs/"
+    networks:
+      app_start:
+        ipv4_address: 172.18.0.10
+
+  # docker-compose build 启动的名称
+  mz-gateway:
+    # 构建DockerFile镜像
+    build:
+      # 指定DockerFile文件位置
+      context: /root/docker/mz-gateway
+    # 配置Docker启动自动启动
+    restart: always
+    # 镜像启动后 容器名称
+    container_name: mz-gateway
+    # 镜像名称
+    image: mz-gateway
+    environment:
+      - REDIS_HOME=172.18.0.4
+    # 端口映射 宿主机端口:容器端口
+    ports:
+      - "88:88"
+    # 文件挂载，主要将Jar产生的日志映射到宿主机上
+    volumes:
+      - "/root/docker/mz-gateway/logs:/app/logs/"
+    networks:
+      app_start:
+        ipv4_address: 172.18.0.11
+
+  # docker-compose build 启动的名称
+  mz-system:
+    # 构建DockerFile镜像
+    build:
+      # 指定DockerFile文件位置
+      context: /root/docker/mz-system
+    # 配置Docker启动自动启动
+    restart: always
+    # 镜像启动后 容器名称
+    container_name: mz-system
+    # 镜像名称
+    image: mz-gateway
+    environment:
+      - REDIS_HOME=172.18.0.4
+      - SYSTEM_MYSQL=124.222.105.179
+      - MZ_CLOUD_AUTH=http://172.18.0.10:9000
+    # 端口映射 宿主机端口:容器端口
+    ports:
+      - "9100:9100"
+    # 文件挂载，主要将Jar产生的日志映射到宿主机上
+    volumes:
+      - "/root/docker/mz-system/logs:/app/logs/"
+    networks:
+      app_start:
+        ipv4_address: 172.18.0.12

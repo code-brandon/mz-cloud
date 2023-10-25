@@ -33,3 +33,4 @@ build/
 **/logs/**
 /node_modules/
 /mz-dms/
+/nacos/

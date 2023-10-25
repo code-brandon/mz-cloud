@@ -49,8 +49,11 @@
         <module>mz-common</module>
         <module>mz-gateway</module>
         <module>mz-auth</module>
+        <module>mz-oss</module>
+        <module>mz-extend-jar</module>
         <module>mz-sentinel-dashboard</module>
         <module>mz-monitor-admin</module>
+        <module>mz-nacos</module>
     </modules>
 
     <dependencyManagement>
@@ -365,6 +368,20 @@
             <id>test</id>
             <properties>
                 <profiles.active>test</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <!-- 测试环境 -->
+            <id>frp</id>
+            <properties>
+                <profiles.active>frp</profiles.active>
+            </properties>
+        </profile>
+        <profile>
+            <!-- 测试环境 -->
+            <id>docker</id>
+            <properties>
+                <profiles.active>docker</profiles.active>
             </properties>
         </profile>
     </profiles>
