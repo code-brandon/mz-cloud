@@ -261,6 +261,11 @@ public class MzConstant {
     public static final String ROUTE_KEY = "mz_cloud_route";
 
     /**
+     * 网关路由 channel key
+     */
+    public static final String ROUTE_CHANNEL_KEY = "mz_cloud_route_channel";
+
+    /**
      * 认证中心 cache key
      */
     public static final String OAUTH_KEY = "mz_cloud_oauth:";
