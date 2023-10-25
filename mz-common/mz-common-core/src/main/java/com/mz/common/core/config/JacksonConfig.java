@@ -1,7 +1,10 @@
 package com.mz.common.core.config;
 
 import cn.hutool.core.date.DatePattern;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.PropertyAccessor;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.cfg.PackageVersion;
 import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.databind.ser.std.ToStringSerializer;
@@ -71,6 +74,7 @@ public class JacksonConfig {
 	 * @return
 	 */
 	@Bean
+	@Primary
 	@ConditionalOnMissingBean(Jackson2ObjectMapperBuilder.class)
 	public ObjectMapper jacksonObjectMapper(Jackson2ObjectMapperBuilder builder) {
 		ObjectMapper objectMapper = builder.createXmlMapper(false).build();
@@ -80,6 +84,35 @@ public class JacksonConfig {
 		objectMapper.getSerializerProvider().setNullValueSerializer(new MzCustomNullJsonSerializers.NullObjectJsonSerializer());
 		// 添加 自定义 项目注解内省器
 		objectMapper.setAnnotationIntrospector(new MzJacksonAnnotationIntrospector());
+		// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
+		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+		objectMapper.registerModules(new MzJavaTimeModule());
+		return objectMapper;
+	}
+
+	/**
+	 * 自定义 Jackson 的Mz项目框架
+	 * 会携带类似@class类型标记的 JSON 串，如在 序列化到 redis 中快速映射到实体类
+	 * @param builder
+	 * @return
+	 */
+	@Bean("mzObjectMapper")
+	@ConditionalOnMissingBean(Jackson2ObjectMapperBuilder.class)
+	public ObjectMapper mzObjectMapper(Jackson2ObjectMapperBuilder builder) {
+		ObjectMapper objectMapper = builder.createXmlMapper(false).build();
+		// 解决序列化 空字段为Null
+		objectMapper.setSerializerFactory(objectMapper.getSerializerFactory().withSerializerModifier(new MzCustomBeanSerializerModifier()));
+		// 该序列化程序将用于写入与 Java 空值匹配的 JSON 值，而不是默认值（它只是写入 JSON 空值）。
+		objectMapper.getSerializerProvider().setNullValueSerializer(new MzCustomNullJsonSerializers.NullObjectJsonSerializer());
+		// 添加 自定义 项目注解内省器
+		objectMapper.setAnnotationIntrospector(new MzJacksonAnnotationIntrospector());
+		// 指定要序列化的域，field,get和set,以及修饰符范围，ANY是都有包括private和public
+		objectMapper.setVisibility(PropertyAccessor.ALL, JsonAutoDetect.Visibility.ANY);
+		// 指定序列化输入的类型，类必须是非final修饰的，final修饰的类，比如String,Integer等会跑出异常
+		// objectMapper.enableDefaultTyping(ObjectMapper.DefaultTyping.NON_FINAL);
+		objectMapper.activateDefaultTyping(objectMapper.getPolymorphicTypeValidator(), ObjectMapper.DefaultTyping.NON_FINAL);
+		objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+		objectMapper.registerModules(new MzJavaTimeModule());
 		return objectMapper;
 	}
 
