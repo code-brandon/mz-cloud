@@ -1345,6 +1345,15 @@ public class MzRedisUtil {
         return redisTemplate.opsForZSet().scan(key, options);
     }
 
+    /**
+     * @param key
+     * @param options
+     * @return
+     */
+    public void convertAndSend(String channel, Object message) {
+        redisTemplate.convertAndSend(channel, message);
+    }
+
     //endregion
 
     /**
