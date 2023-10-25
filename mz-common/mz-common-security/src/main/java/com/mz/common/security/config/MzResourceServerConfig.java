@@ -2,6 +2,7 @@ package com.mz.common.security.config;
 
 import com.mz.common.security.handler.MzAccessDeniedHandler;
 import com.mz.common.security.handler.MzAuthenticationEntryPointHandler;
+import com.mz.common.security.opaquetoken.MzUserAuthenticationConverter;
 import com.mz.common.security.resource.IgnoreAllUrlProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
@@ -15,6 +16,8 @@ import org.springframework.security.config.annotation.web.configurers.Expression
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
+import org.springframework.security.oauth2.provider.token.DefaultAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.web.firewall.HttpFirewall;
 import org.springframework.security.web.firewall.StrictHttpFirewall;
 
@@ -70,6 +73,7 @@ public class MzResourceServerConfig extends ResourceServerConfigurerAdapter {
                 // .tokenStore(tokenStore)//令牌策略
                 .authenticationEntryPoint(mzAuthenticationEntryPointHandler)//token异常类重写
                 .accessDeniedHandler(mzAccessDeniedHandler);//权限不足异常类重写
+        resources.tokenServices(remoteTokenServices());
     }
 
     @Bean
@@ -77,5 +81,22 @@ public class MzResourceServerConfig extends ResourceServerConfigurerAdapter {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
         firewall.setAllowUrlEncodedDoubleSlash(true);
         return firewall;
+    }
+
+    /**
+     * 远程令牌服务
+     */
+    @Autowired
+    private RemoteTokenServices remoteTokenServices;
+
+    /**
+     * 远程请求 获取登录用户信息
+     * @return
+     */
+    public RemoteTokenServices remoteTokenServices() {
+        DefaultAccessTokenConverter tokenConverter = new DefaultAccessTokenConverter();
+        tokenConverter.setUserTokenConverter(new MzUserAuthenticationConverter());
+        remoteTokenServices.setAccessTokenConverter(tokenConverter);
+        return remoteTokenServices;
     }
 }

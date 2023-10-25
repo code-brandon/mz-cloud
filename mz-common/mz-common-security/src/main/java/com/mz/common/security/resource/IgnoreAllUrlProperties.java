@@ -59,12 +59,12 @@ public class IgnoreAllUrlProperties implements InitializingBean {
 			// 获取方法上边的注解 替代path variable 为 *
 			Ignore method = AnnotationUtils.findAnnotation(handlerMethod.getMethod(), Ignore.class);
 			Optional.ofNullable(method).ifPresent(inner -> info.getPatternsCondition().getPatterns()
-					.forEach(url -> ignoreUrls.add(ReUtil.replaceAll(url, PATTERN, "*"))));
+					.forEach(url -> ignoreUrls.add(ReUtil.replaceAll((CharSequence) url, PATTERN, "*"))));
 
 			// 获取类上边的注解, 替代path variable 为 *
 			Ignore clazz = AnnotationUtils.findAnnotation(handlerMethod.getBeanType(), Ignore.class);
 			Optional.ofNullable(clazz).ifPresent(inner -> info.getPatternsCondition().getPatterns()
-					.forEach(url -> ignoreUrls.add(ReUtil.replaceAll(url, PATTERN, "*"))));
+					.forEach(url -> ignoreUrls.add(ReUtil.replaceAll((CharSequence) url, PATTERN, "*"))));
 		});
 		log.info("当前应用所忽略的APi地址为：{}",ignoreUrls);
 	}
