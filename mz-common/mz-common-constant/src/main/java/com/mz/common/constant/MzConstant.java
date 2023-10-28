@@ -15,6 +15,11 @@ public class MzConstant {
 	public static final String ADMIN = "admin";
 
     /**
+     * 请求头 客户端名称
+     */
+    public static final String REQ_CLIENT_NAME = "mz-cloud:1911298402@qq.com";
+
+    /**
      * What -- 菜单类型
      * <br>
      * Describe --
