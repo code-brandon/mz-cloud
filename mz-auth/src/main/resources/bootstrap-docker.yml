@@ -1,0 +1,24 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 124.222.105.179:8848
+        metadata:
+          #该实例在客户端上报心跳的间隔时间。（单位:毫秒）
+          preserved.heart.beat.interval: 1000
+          #该实例在不发送心跳后，从健康到不健康的时间。（单位:毫秒）
+          preserved.heart.beat.timeout: 3000
+          #该实例在不发送心跳后，被nacos下掉该实例的时间。（单位:毫秒）
+          preserved.ip.delete.timeout: 10000
+          env: dev
+        namespace: b0fa6d0b-8839-429c-91ec-6f0c22ef6857
+        ip: 172.18.0.10
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+mz:
+  token:
+    is-jwt-token-enhance: false

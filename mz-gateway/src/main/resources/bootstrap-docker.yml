@@ -1,0 +1,50 @@
+spring:
+  cloud:
+    nacos:
+      discovery:
+        server-addr: 172.18.0.6:8848
+        metadata:
+          #该实例在客户端上报心跳的间隔时间。（单位:毫秒）
+          preserved.heart.beat.interval: 1000
+          #该实例在不发送心跳后，从健康到不健康的时间。（单位:毫秒）
+          preserved.heart.beat.timeout: 3000
+          #该实例在不发送心跳后，被nacos下掉该实例的时间。（单位:毫秒）
+          preserved.ip.delete.timeout: 10000
+          env: dev
+        namespace: b0fa6d0b-8839-429c-91ec-6f0c22ef6857
+        ip: 172.18.0.11
+      config:
+        server-addr: ${spring.cloud.nacos.discovery.server-addr}
+        file-extension: yml
+        shared-configs:
+          - application-${spring.profiles.active}.${spring.cloud.nacos.config.file-extension}
+        namespace: ${spring.cloud.nacos.discovery.namespace}
+    gateway:
+      # 启用网关功能。
+      enabled: true
+      discovery:
+        locator:
+          #开启从注册中心动态创建路由的功能
+          enabled: false
+          #使用小写服务名，默认是大写
+          lower-case-service-id: true
+      # 是否启用新端点
+      actuator:
+        verbose:
+          enabled: false
+ribbon:
+  # 仅仅修改nacos的配置，还是不能保证能及时的进行服务上下线，需要设置ribbon.ServerListRefreshInterval，增加拉取nacos中最新服务实例的频率
+  ServerListRefreshInterval: 1000
+
+# 可控点Api开启
+management:
+  endpoints:
+    web:
+      cors:
+        allowed-origins: 127.0.0.1,172.18.0.1
+      exposure:
+        include: '*'
+  # 网关可控点
+  endpoint:
+    health:
+      show-details: always

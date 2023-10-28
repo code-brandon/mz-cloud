@@ -1,0 +1,15 @@
+security:
+  oauth2:
+    client:
+      client-id: mz_cloud
+      client-secret: 1911298402
+      user-authorization-uri: http://172.18.0.10:9000/oauth/authorize
+      access-token-uri: http://172.18.0.10:9000/oauth/token
+    resource:
+      token-info-uri: http://172.18.0.10:9000/oauth/check_token
+
+server:
+  servlet:
+    session:
+      cookie:
+        name: MZ_CLOUD_SESSION_SYS
