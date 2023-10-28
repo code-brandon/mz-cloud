@@ -2,11 +2,16 @@ package com.mz.common.feign.config;
 
 import com.mz.common.constant.MzConstant;
 import com.mz.common.feign.exception.MzFeignExceptionHandler;
+import com.mz.common.feign.filter.MzFeignFilter;
+import com.mz.common.feign.ribbon.MzFeignRule;
+import com.netflix.loadbalancer.IRule;
 import feign.Contract;
 import feign.Logger;
 import feign.RequestInterceptor;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -24,6 +29,7 @@ import java.util.Objects;
  * @CreateTime 2022/6/6 10:05
  */
 @Configuration
+@Import(MzFeignFilter.class)
 public class MzFeignConfiguration {
  
     /**
@@ -35,6 +41,10 @@ public class MzFeignConfiguration {
         return Logger.Level.FULL;
     }
 
+    /**
+     * Request feign 请求拦截器
+     * @return
+     */
     @Bean("requestInterceptor")
     public RequestInterceptor requestInterceptor() {
         return template -> {
@@ -45,13 +55,18 @@ public class MzFeignConfiguration {
                 HttpServletRequest request = requestAttributes.getRequest();
                 // 同步请求头  给新请求同步了老请求的cookie
                 template.header("Cookie", request.getHeader("Cookie"));
+                template.header("user-agent",MzConstant.REQ_CLIENT_NAME);
                 String env = request.getHeader(MzConstant.GATEWAY_ENV);
-                if ("".equals(env)) {
-                    // 灰度环境标识
-                    template.header(MzConstant.GATEWAY_ENV, env);
-                }
+                // 灰度环境标识
+                template.header(MzConstant.GATEWAY_ENV, env);
             }
         };
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public IRule iRule(){
+        return new MzFeignRule();
     }
 
     /**
