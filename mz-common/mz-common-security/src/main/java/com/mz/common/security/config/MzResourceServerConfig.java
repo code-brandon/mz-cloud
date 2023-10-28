@@ -5,7 +5,7 @@ import com.mz.common.security.handler.MzAccessDeniedHandler;
 import com.mz.common.security.handler.MzAuthenticationEntryPointHandler;
 import com.mz.common.security.opaquetoken.MzUserAuthenticationConverter;
 import com.mz.common.security.resource.IgnoreAllUrlProperties;
-import com.mz.common.utils.SpringContextHolderUtils;
+import com.mz.common.utils.MzWebUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -103,9 +103,9 @@ public class MzResourceServerConfig extends ResourceServerConfigurerAdapter {
         RestTemplate restTemplate = new RestTemplate();
         // fix:通过拦截器携带自定义 Header 信息
         restTemplate.getInterceptors().add((httpRequest, bytes, execution) -> {
-            HttpServletRequest request = SpringContextHolderUtils.getRequest();
+            HttpServletRequest request = MzWebUtils.getRequest();
             httpRequest.getHeaders().set(MzConstant.GATEWAY_ENV, request.getHeader(MzConstant.GATEWAY_ENV));
-            httpRequest.getHeaders().set("user-agent","Mozilla/5.0 (Macintosh; Intel Mac OS X 10_11_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.97 Safari/537.36");
+            httpRequest.getHeaders().set("user-agent",MzConstant.REQ_CLIENT_NAME);
             httpRequest.getHeaders().set("cookie", request.getHeader("cookie"));
             return execution.execute(httpRequest, bytes);
         });
