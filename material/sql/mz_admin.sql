@@ -701,4 +701,31 @@ CREATE TABLE `sys_user_role`  (
 INSERT INTO `sys_user_role` VALUES (1, 1);
 INSERT INTO `sys_user_role` VALUES (2, 2);
 
+-- ----------------------------
+-- Table structure for sys_gateway_route
+-- ----------------------------
+CREATE TABLE `sys_gateway_route` (
+    `route_id` varchar(60) COLLATE utf8mb4_general_ci NOT NULL COMMENT '路由ID',
+    `route_name` varchar(30) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '路由名称',
+    `predicates` json DEFAULT NULL COMMENT '谓词定义',
+    `filters` json DEFAULT NULL COMMENT '过滤器配置',
+    `metadata` json DEFAULT NULL COMMENT '额外信息',
+    `route_uri` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '路由路径配置',
+    `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '0' COMMENT '路由状态（0正常 1停用）',
+    `del_flag` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '0' COMMENT '删除标志（0代表存在 2代表删除）',
+    `create_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '创建者',
+    `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+    `update_by` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT '' COMMENT '更新者',
+    `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+    `remark` varchar(500) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '备注',
+    `order_num` int DEFAULT NULL COMMENT '排序',
+    PRIMARY KEY (`route_id`) USING BTREE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='网关路由表' ROW_FORMAT = Dynamic;
+-- ----------------------------
+-- Records of sys_gateway_route
+-- ----------------------------
+INSERT INTO `sys_gateway_route` (`route_id`, `route_name`, `predicates`, `filters`, `metadata`, `route_uri`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `order_num`) VALUES ('mz-auth', 'MZ认证授权', '[{\"args\": {\"_genkey_0\": \"/api/auth/**\"}, \"name\": \"Path\"}]', '[{\"args\": {\"_genkey_0\": \"/api/auth/(?<segment>.*)\", \"_genkey_1\": \"/$\\\\{segment}\"}, \"name\": \"RewritePath\"}]', '{}', 'lb://mz-auth', '0', '0', 'test', '2023-10-08 23:09:59', 'test', '2023-10-08 23:09:59', NULL, 0);
+INSERT INTO `sys_gateway_route` (`route_id`, `route_name`, `predicates`, `filters`, `metadata`, `route_uri`, `status`, `del_flag`, `create_by`, `create_time`, `update_by`, `update_time`, `remark`, `order_num`) VALUES ('mz-system-provider', 'MZ后台服务', '[{\"args\": {\"_genkey_0\": \"/api/system/**\"}, \"name\": \"Path\"}]', '[{\"args\": {\"_genkey_0\": \"/api/system/(?<segment>.*)\", \"_genkey_1\": \"/$\\\\{segment}\"}, \"name\": \"RewritePath\"}]', '{}', 'lb://mz-system-provider', '0', '0', 'test', '2023-10-08 22:24:44', 'test', '2023-10-08 22:24:44', NULL, 0);
+
+
 SET FOREIGN_KEY_CHECKS = 1;
