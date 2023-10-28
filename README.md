@@ -25,7 +25,7 @@
 
 ### 部分主要功能Api (密码：1911298402)
 ```http 
-https://console-docs.apipost.cn/preview/8b34795e0baff634/4568002cadae4682
+https://apifox.com/apidoc/shared-0a1cd98b-52cd-4a5d-baf6-efb4ed1f4fbc?pwd=1911298402
 ```
 
 ## 公共yml （Nacos）
