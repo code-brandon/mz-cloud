@@ -5,8 +5,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ApplicationEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,30 +94,6 @@ public class SpringContextHolderUtils implements ApplicationContextAware {
             return;
         }
         applicationContext.publishEvent(event);
-    }
-
-    /**
-     * 获取请求
-     * @return
-     */
-    public static HttpServletRequest getRequest() {
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (MzUtils.isEmpty(servletRequestAttributes)){
-            throw new IllegalStateException("ServletRequestAttributes is empty");
-        }
-        return servletRequestAttributes.getRequest();
-    }
-
-    /**
-     * 获取相应
-     * @return
-     */
-    public static HttpServletResponse getResponse() {
-        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        if (MzUtils.isEmpty(servletRequestAttributes)){
-            throw new IllegalStateException("ServletRequestAttributes is empty");
-        }
-        return servletRequestAttributes.getResponse();
     }
 
 

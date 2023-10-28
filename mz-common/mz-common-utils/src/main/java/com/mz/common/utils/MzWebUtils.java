@@ -8,6 +8,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.util.WebUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,7 +29,7 @@ import java.util.Map;
  * @CreateTime 2022/5/20 21:55
  */
 
-public class MzWebUtils {
+public class MzWebUtils extends WebUtils {
     /**
      * 获取String参数
      */
@@ -78,6 +79,20 @@ public class MzWebUtils {
         return getRequestAttributes().getRequest();
     }
 
+
+
+    public static HttpServletRequest getCurrentRequest() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        return servletRequestAttributes.getRequest();
+    }
+
+
+
+    public static HttpServletResponse getCurrentResponse() {
+        ServletRequestAttributes servletRequestAttributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        return servletRequestAttributes.getResponse();
+    }
+
     /**
      * 获取response
      */
@@ -94,6 +109,9 @@ public class MzWebUtils {
 
     public static ServletRequestAttributes getRequestAttributes() {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
+        if (MzUtils.isEmpty(attributes)){
+            throw new IllegalStateException("ServletRequestAttributes is empty");
+        }
         return (ServletRequestAttributes) attributes;
     }
 
