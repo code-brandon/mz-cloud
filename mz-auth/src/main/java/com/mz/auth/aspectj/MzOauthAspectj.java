@@ -4,6 +4,7 @@ import com.mz.auth.handler.MzWebResponseExceptionTranslator;
 import com.mz.common.constant.MzConstant;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.mz.common.core.entity.R;
+import com.mz.common.feign.context.MzFeignContextHolder;
 import com.mz.common.security.entity.MzUserDetailsSecurity;
 import com.mz.common.utils.IPSearcherUtils;
 import com.mz.common.utils.MzWebUtils;
@@ -54,6 +55,7 @@ public class MzOauthAspectj {
 
 
         HttpServletRequest request = MzWebUtils.getRequest();
+        String gatewayEnv = request.getHeader(MzConstant.GATEWAY_ENV);
         // 路径
         String[] paths = requestMapping.path();
         String[] values = requestMapping.value();
@@ -96,6 +98,7 @@ public class MzOauthAspectj {
             }
         }
         Object proceed = null;
+
         try {
             proceed = joinPoint.proceed();
             logininfor.setStatus(MzConstant.SUCCESS.toString());
@@ -103,8 +106,11 @@ public class MzOauthAspectj {
             MzUserDetailsSecurity userSecurity = (MzUserDetailsSecurity) MzDefaultContextHolder.CONTEXT_HOLDER.get().get("user");
             // 异步发送用户登录记录更新请求
             CompletableFuture.runAsync(() -> {
-                SysUserLoginLogDto userLogDto = new SysUserLoginLogDto(userSecurity.getUserId(), null, remoteAddr, nowTime);
+                // fix：feign 异步调用 请求参数传递
+                MzFeignContextHolder.CONTEXT_HOLDER.get().put(MzConstant.GATEWAY_ENV,gatewayEnv);
+                SysUserLoginLogDto userLogDto = new SysUserLoginLogDto(userSecurity.getUserId(), userSecurity.getUsername(), remoteAddr, nowTime);
                 mzSysUserApi.updateLoginLog(userLogDto);
+                MzFeignContextHolder.CONTEXT_HOLDER.remove();
             });
         } catch (Throwable e) {
             ResponseEntity<R<Object>> exTranslation = MzWebResponseExceptionTranslator.getrResponseEntity(e);
@@ -116,8 +122,10 @@ public class MzOauthAspectj {
             long totalTimeMillis = stopWatch.getTotalTimeMillis();
             // 异步发送系统登录记录请求
             CompletableFuture.runAsync(() -> {
+                MzFeignContextHolder.CONTEXT_HOLDER.get().put(MzConstant.GATEWAY_ENV,gatewayEnv);
                 logininfor.setLoginLocation(IPSearcherUtils.searcher(logininfor.getIpaddr()));
                 mzSysLogininforApi.save(logininfor);
+                MzFeignContextHolder.CONTEXT_HOLDER.remove();
                 log.debug("类名：{},方法名：{},IP地址：{},路径：{},耗时：{}", className, methodName, remoteAddr,path, totalTimeMillis);
             });
             MzDefaultContextHolder.CONTEXT_HOLDER.remove();
