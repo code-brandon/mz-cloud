@@ -6,6 +6,7 @@ import com.mz.common.constant.MzConstant;
 import com.mz.common.constant.SecurityConstants;
 import com.mz.common.core.context.MzDefaultContextHolder;
 import com.mz.common.utils.IPSearcherUtils;
+import com.mz.common.utils.MzUtils;
 import com.mz.common.utils.MzWebUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -58,7 +59,7 @@ public class MzRequestFilter implements GlobalFilter, Ordered {
         jsonHeaders.put("accept-language", headers.getFirst("Accept-Language"));
         log.info("网关拦截到请求，headers：{}", jsonHeaders.toJSONString());
 
-        boolean isEnv = headers.containsKey(MzConstant.GATEWAY_ENV);
+        boolean isEnv = MzUtils.notEmpty(headers.get(MzConstant.GATEWAY_ENV));
         if (isEnv) {
             MzDefaultContextHolder.CONTEXT_HOLDER.get().put(MzConstant.GATEWAY_ENV, headers.get(MzConstant.GATEWAY_ENV));
         }

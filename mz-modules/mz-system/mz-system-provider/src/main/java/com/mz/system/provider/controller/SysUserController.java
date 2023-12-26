@@ -115,13 +115,13 @@ public class SysUserController {
      * @return 单条数据
      */
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "username", value = "用户名", dataTypeClass = String.class, paramType = "path", example = "张三")
+            @ApiImplicitParam(name = "userName", value = "用户名", dataTypeClass = String.class, paramType = "path", example = "张三")
     })
     @ApiOperation(value = "按用户名获取用户信息", tags = "登录暴漏接口")
     @PostMapping("/getUserInfoByUserName")
     @Ignore
     @MzIgnoreDataAuth
-    public R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "username") @NotBlank String userName) {
+    public R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "userName") @NotBlank String userName) {
         SysUserDto sysUserDto = sysUserService.loadUserByUserName(userName);
         return R.ok(sysUserDto);
     }

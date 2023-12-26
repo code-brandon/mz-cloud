@@ -20,7 +20,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -38,87 +37,76 @@ import java.util.stream.Collectors;
  */
 public class MzNacosRule extends AbstractLoadBalancerRule {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(MzNacosRule.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(MzNacosRule.class);
 
-	@Resource
-	private NacosDiscoveryProperties nacosDiscoveryProperties;
+    @Resource
+    private NacosDiscoveryProperties nacosDiscoveryProperties;
 
-	@Resource
-	private NacosServiceManager nacosServiceManager;
+    @Resource
+    private NacosServiceManager nacosServiceManager;
 
-	@Override
-	public Server choose(Object key) {
-		try {
-			// 集群名称
-			String clusterName = this.nacosDiscoveryProperties.getClusterName();
+    @Override
+    public Server choose(Object key) {
+        try {
+            // 集群名称
+            String clusterName = this.nacosDiscoveryProperties.getClusterName();
 
-			// 集群分组
-			String group = this.nacosDiscoveryProperties.getGroup();
+            // 集群分组
+            String group = this.nacosDiscoveryProperties.getGroup();
 
-			// 负载均衡器
-			DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
+            // 负载均衡器
+            DynamicServerListLoadBalancer loadBalancer = (DynamicServerListLoadBalancer) getLoadBalancer();
 
-			// 均衡器名称
-			String name = loadBalancer.getName();
+            // 均衡器名称
+            String name = loadBalancer.getName();
 
-			// 根据名称获取服务
-			NamingService namingService = nacosServiceManager.getNamingService();
+            // 根据名称获取服务
+            NamingService namingService = nacosServiceManager.getNamingService();
 
-			// 根据均衡器名称，集群分组 获取实例
-			List<Instance> instances = namingService.selectInstances(name, group, true);
-			if (CollectionUtils.isEmpty(instances)) {
-				LOGGER.warn("no instance in service {}", name);
-				return null;
-			}
+            // 根据均衡器名称，集群分组 获取实例
+            List<Instance> instances = namingService.selectInstances(name, group, true);
+            if (CollectionUtils.isEmpty(instances)) {
+                LOGGER.warn("no instance in service {}", name);
+                return null;
+            }
 
-			// 从线程变量中获取请求头携带的环境信息
-			List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get(MzConstant.GATEWAY_ENV);
-			List<Instance> instancesToChoose = instances;
+            // 从线程变量中获取请求头携带的环境信息
+            List<String> envs = (List<String>) MzDefaultContextHolder.CONTEXT_HOLDER.get().get(MzConstant.GATEWAY_ENV);
+            List<Instance> instancesToChoose = instances;
 
-			if (StringUtils.isNotBlank(clusterName)) {
-				List<Instance> sameClusterInstances = instances.stream()
-						.filter(instance -> Objects.equals(clusterName, instance.getClusterName()))
-						.collect(Collectors.toList());
-				if (!CollectionUtils.isEmpty(sameClusterInstances)) {
-					if (!CollectionUtils.isEmpty(envs)) {
-						Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(MzConstant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(MzConstant.GATEWAY_ENV)));
-						LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
+            if (StringUtils.isNotBlank(clusterName)) {
+                List<Instance> sameClusterInstances = instances.stream()
+                        .filter(instance -> Objects.equals(clusterName, instance.getClusterName()))
+                        .collect(Collectors.toList());
+                if (!CollectionUtils.isEmpty(sameClusterInstances)) {
+                    if (!CollectionUtils.isEmpty(envs)) {
+                        Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(MzConstant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(MzConstant.GATEWAY_ENV)));
+                        LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
-						if (MapUtil.isNotEmpty(envInstanceMap)) {
-							instancesToChoose = envInstanceMap.get((envs).get(0));
-						} else {
-							instancesToChoose = new ArrayList<>();
-						}
+                        if (MapUtil.isNotEmpty(envInstanceMap)) {
+                            instancesToChoose = envInstanceMap.get((envs).get(0));
+                        }
 
-					} else {
-						List<Instance> envInstances = sameClusterInstances.stream().filter(f -> {
-							return MapUtil.isNotEmpty(f.getMetadata()) && Objects.isNull(f.getMetadata().get(MzConstant.GATEWAY_ENV));
-						}).collect(Collectors.toList());
-						instancesToChoose = envInstances;
-					}
+                    }
+                } else {
+                    LOGGER.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}", name, clusterName, instances);
+                }
+            }
 
-				}
-				else {
-					LOGGER.warn("A cross-cluster call occurs，name = {}, clusterName = {}, instance = {}", name, clusterName, instances);
-				}
-			}
+            Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
 
-			Instance instance = ExtendBalancer.getHostByRandomWeight2(instancesToChoose);
+            return new NacosServer(instance);
+        } catch (Exception e) {
+            LOGGER.warn("MzNacosRule error", e);
+            return null;
+        }
+    }
 
-			return new NacosServer(instance);
-		}
-		catch (Exception e) {
-			LOGGER.warn("MzNacosRule error", e);
-			return null;
-		}
-	}
-
-	/**
-	 *
-	 * @param iClientConfig
-	 */
-	@Override
-	public void initWithNiwsConfig(IClientConfig iClientConfig) {
-	}
+    /**
+     * @param iClientConfig
+     */
+    @Override
+    public void initWithNiwsConfig(IClientConfig iClientConfig) {
+    }
 
 }

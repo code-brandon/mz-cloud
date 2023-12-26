@@ -58,7 +58,7 @@ public class SwaggerProviderConfig implements SwaggerResourcesProvider{
                 .forEach(routeDefinition -> routeDefinition.getPredicates().stream()
                         .filter(predicateDefinition -> "Path".equalsIgnoreCase(predicateDefinition.getName()))
                         //授权不维护到swagger
-                        .filter(predicateDefinition -> !"mz-auth".equalsIgnoreCase(routeDefinition.getId()))
+                        // .filter(predicateDefinition -> !"mz-auth".equalsIgnoreCase(routeDefinition.getId()))
                         .peek(predicateDefinition -> log.debug("路由配置参数：{}", predicateDefinition.getArgs()))
                         .forEach(predicateDefinition -> resourceList
                                 .add(swaggerResource(routeDefinition.getId(),

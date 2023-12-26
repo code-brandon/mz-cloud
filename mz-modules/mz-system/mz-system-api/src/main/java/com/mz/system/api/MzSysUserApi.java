@@ -34,7 +34,7 @@ public interface MzSysUserApi {
      * @return 单条数据
      */
     @PostMapping(value = "/admin/sysuser/getUserInfoByUserName", headers = SecurityConstants.MZ_FROM_KV)
-    R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "username") @NotBlank String userName);
+    R<SysUserDto> loadUserByUserName(@Valid @RequestParam(value = "userName") @NotBlank String userName);
 
     /**
      * 修改登录记录

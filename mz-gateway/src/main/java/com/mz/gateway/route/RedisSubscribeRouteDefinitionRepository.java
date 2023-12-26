@@ -12,6 +12,7 @@ import com.mz.gateway.utils.RouteConvert;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.cloud.gateway.config.GatewayProperties;
 import org.springframework.cloud.gateway.event.RefreshRoutesEvent;
 import org.springframework.cloud.gateway.route.RouteDefinition;
 import org.springframework.cloud.gateway.route.RouteDefinitionRepository;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +51,8 @@ public class RedisSubscribeRouteDefinitionRepository extends MessageListenerAdap
     private ApplicationEventPublisher publisher;
     @Qualifier("mzObjectMapper")
     private ObjectMapper objectMapper;
+
+    private final GatewayProperties gatewayProperties;
     private final Map<String, RouteDefinition> routes = synchronizedMap(new LinkedHashMap<>());
 
     /**
@@ -97,6 +101,7 @@ public class RedisSubscribeRouteDefinitionRepository extends MessageListenerAdap
                     }
                 }
             });
+            gatewayProperties.setRoutes(Arrays.asList(routes.values().toArray(new RouteDefinition[0])));
             if (MzUtils.notEmpty(routes)){
                 IS_UPDATE = false;
             }

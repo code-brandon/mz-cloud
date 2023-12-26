@@ -9,7 +9,6 @@ import com.mz.common.gateway.utils.MzRouteNameUtils;
 import com.mz.common.mybatis.utils.PageUtils;
 import com.mz.common.mybatis.utils.Query;
 import com.mz.common.redis.utils.MzRedisUtil;
-import com.mz.common.utils.JsonFormatUtils;
 import com.mz.common.utils.MzJacksonUtils;
 import com.mz.system.model.entity.SysGatewayRouteEntity;
 import com.mz.system.provider.dao.SysGatewayRouteDao;
@@ -90,7 +89,6 @@ public class SysGatewayRouteServiceImpl extends ServiceImpl<SysGatewayRouteDao, 
     public boolean saveOrUpdateGatewayRoute(List<MzGatewayRoute> gatewayRoutes) {
         MzRouteNameUtils.renameRouteArgs(gatewayRoutes);
         List<SysGatewayRouteEntity> sysGatewayRoutes = gatewayRoutes.parallelStream().map(this::getSysGatewayRouteEntity).collect(Collectors.toList());
-        log.info("张三: \n{}", JsonFormatUtils.formatJson(MzJacksonUtils.toJson(sysGatewayRoutes)));
         return saveOrUpdateBatch(sysGatewayRoutes);
     }
 
