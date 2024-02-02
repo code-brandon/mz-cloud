@@ -81,7 +81,7 @@ public class MzNacosRule extends AbstractLoadBalancerRule {
                 if (!CollectionUtils.isEmpty(sameClusterInstances)) {
                     if (!CollectionUtils.isEmpty(envs)) {
                         Map<String, List<Instance>> envInstanceMap = sameClusterInstances.stream().filter(f -> MapUtil.isNotEmpty(f.getMetadata()) && Objects.nonNull(f.getMetadata().get(MzConstant.GATEWAY_ENV))).collect(Collectors.groupingBy(b -> b.getMetadata().get(MzConstant.GATEWAY_ENV)));
-                        LOGGER.warn("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
+                        LOGGER.debug("环境实例分组：{}", JSON.toJSONString(envInstanceMap));
 
                         if (MapUtil.isNotEmpty(envInstanceMap)) {
                             instancesToChoose = envInstanceMap.get((envs).get(0));

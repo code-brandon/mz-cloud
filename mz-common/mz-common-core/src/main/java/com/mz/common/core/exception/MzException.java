@@ -53,7 +53,7 @@ public class MzException extends RuntimeException {
 		this.code = code;
 	}
 
-	public MzException(MzErrorCodeEnum codeEnum, Object[] args) {
+	public MzException(MzErrorCodeEnum codeEnum, Object...  args) {
 		this.codeEnum = codeEnum;
 		this.args = args;
 	}

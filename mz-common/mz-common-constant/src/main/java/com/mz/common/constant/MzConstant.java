@@ -371,6 +371,20 @@ public class MzConstant {
     public final static String INNER_LINK = "InnerLink";
 
     /**
+     * 验证码匹配路径
+     */
+    public static final String CAPTCHA_PATH = "/captcha/**";
+    /**
+     * 验证码ID
+     */
+    public static final String CAPTCHA_ID = "captchaId";
+    public static final String CAPTCHA_PREFIX = "captcha";
+    /**
+     * 滑块验证成功
+     */
+    public static final String CAPTCHA_OK_KEY = ":check_ok:";
+
+    /**
      * 用户名长度限制
      */
     public static final int USERNAME_MIN_LENGTH = 2;

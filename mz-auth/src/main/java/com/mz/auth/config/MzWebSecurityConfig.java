@@ -58,7 +58,7 @@ public class MzWebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //对每个 URL 进行身份验证，并将授予用户“admin”和“user”的访问权限。
                 .authorizeRequests()
                 // 指定放行资源
-                .antMatchers("/oauth/**", "/login/**","/rsa/**")
+                .antMatchers("/oauth/**", "/login/**","/rsa/**","/captcha/**")
                 .permitAll()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll()
                 .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()

@@ -29,6 +29,9 @@ public class MzResponseFilter implements GlobalFilter , Ordered {
 
         // 请求结束，开始返回销毁局部线程
         MzDefaultContextHolder.CONTEXT_HOLDER.remove();
+
+        log.debug("请求结束:{}",exchange.getRequest().getURI());
+
         // 放行
         return chain.filter(exchange.mutate().response(response).build());
     }

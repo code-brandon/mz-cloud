@@ -37,8 +37,8 @@ public class MzGatewayExceptionHandler implements ErrorWebExceptionHandler, Orde
 
 	@Override
 	public Mono<Void> handle(ServerWebExchange exchange, Throwable ex) {
+		log.error(null,ex);
 		ServerHttpResponse response = exchange.getResponse();
-
 		if (response.isCommitted()) {
 			return Mono.error(ex);
 		}
