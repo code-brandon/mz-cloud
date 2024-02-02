@@ -30,5 +30,6 @@
         <module>mz-common-log</module>
         <module>mz-common-monitor</module>
         <module>mz-common-gateway</module>
+        <module>mz-common-captcha</module>
     </modules>
 </project>

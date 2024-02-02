@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+    <style>
+        ul li {
+            list-style: none;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .top{
+            overflow: auto;
+        }
+        .top li:hover{
+            cursor: pointer;
+        }
+        .top li{
+            float: left;
+            height: 40px;
+            width: 120px;
+            margin-right: 5px;
+            line-height: 40px;
+            text-align: center;
+            background-color: #409eff;
+            color: #fff;
+            font-size: 15px;
+            box-sizing: border-box;
+            border: 1px solid #409eff;
+        }
+        .captcha-iframe {
+            width: 300px;
+            height: 320px;
+            border: none;
+        }
+        .after {
+            color: #88949d;
+        }
+    </style>
+</head>
+
+<body>
+<div>
+    <ul class="top">
+        <li onclick="toggle('/slider')">滑块验证码</li>
+        <li onclick="toggle('/rotate')">旋转验证码</li>
+        <li onclick="toggle('/concat')">滑动还原验证码</li>
+        <li onclick="toggle('/word-click')">点选验证码</li>
+        <li onclick="toggle('/bt-image')">图片验证码</li>
+    </ul>
+    <iframe id="captcha-iframe" class="captcha-iframe" src="/bt-image"></iframe>
+</div>
+<script>
+    function toggle(url) {
+        $("#captcha-iframe").attr("src", url);
+    }
+</script>
+</body>
+</html>
