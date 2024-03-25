@@ -3,6 +3,7 @@ package com.mz.system.provider.controller;
 
 import cn.hutool.core.date.DateUtil;
 import com.mz.common.core.entity.R;
+import com.mz.common.redis.annotation.MzLock;
 import com.mz.common.security.annotation.Ignore;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +42,7 @@ public class TestController {
     @ApiOperation( value = "测试Api忽略",notes ="不进行授权")
     @ResponseBody
     @RequestMapping("/getIsIgnore")
-    // @MzLock(lockKey = "getIsIgnore",waitTime = 15)
+    @MzLock(lockKey = "getIsIgnore",waitTime = 1)
     public R<Map<String, Object>> getIsIgnore() {
         count--;
         log.warn("count 剩余：" + count);
@@ -51,7 +52,7 @@ public class TestController {
         return R.ok(mp);
     }
 
-    @Ignore
+    @Ignore(value = false)
     @ApiOperation(value = "测试Api剩余数量", notes = "不进行授权")
     @ResponseBody
     @GetMapping("/getCount")
